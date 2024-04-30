@@ -19,9 +19,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeController.light,
-      darkTheme: ThemeController.dark,
-      themeMode: ThemeMode.light,
 
       initialBinding: InitControllerBinding(),
       home: const HomePage(),
@@ -32,7 +29,12 @@ class MyApp extends StatelessWidget {
       unknownRoute: AppPage.nofound,
       defaultTransition: Transition.rightToLeft,
 
-      // TranslationService
+      // theme
+      theme: ThemeController.light,
+      darkTheme: ThemeController.dark,
+      themeMode: ThemeMode.light,
+
+      // translation
       locale: const Locale('zh', 'CN'),
       fallbackLocale: TranslationService.fallbackLocal,
       translations: TranslationService(),

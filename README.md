@@ -1,6 +1,6 @@
 # musicbox
 
-A new Flutter project.
+It's a music player for Android platform. It's a Flutter project and under developing.
 
 ## Getting Started
 

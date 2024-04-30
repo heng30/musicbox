@@ -30,6 +30,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+flutter_jank_metrics_*.json
 
 # Symbolication related
 app.*.symbols

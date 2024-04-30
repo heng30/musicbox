@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../lang/controller.dart';
 import '../theme/controller.dart';
+import '../theme/theme.dart';
 import '../components/setting_switch.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -43,9 +44,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
-        backgroundColor: Get.find<ThemeController>().isDarkMode.value
-            ? ThemeController.dark.colorScheme.background
-            : ThemeController.light.colorScheme.background,
+        backgroundColor: CTheme.background,
         appBar: AppBar(
           centerTitle: true,
           title: Text("设 置".tr),

@@ -4,4 +4,5 @@ const Map<String, String> zh = {
   "H O M E": "主 页",
   "Dark mode": "黑暗模式",
   "Language switch": "语言切换",
+  "SONG": "歌 曲",
 };

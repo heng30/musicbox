@@ -3,5 +3,6 @@ const Map<String, String> en = {
   "设 置": "S E T T I N G S",
   "主 页": "H O M E",
   "黑暗模式": "Dark mode",
-  "语言切换": "Switch language"
+  "语言切换": "Switch language",
+  "歌 曲": "SONG"
 };

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../theme/controller.dart';
+import '../theme/theme.dart';
 
 class SettingSwitch extends StatelessWidget {
   const SettingSwitch(
@@ -19,9 +20,7 @@ class SettingSwitch extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Get.find<ThemeController>().isDarkMode.value
-            ? ThemeController.dark.colorScheme.secondary
-            : ThemeController.light.colorScheme.secondary,
+        color: CTheme.secondary,
       ),
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(left: 25, right: 25),

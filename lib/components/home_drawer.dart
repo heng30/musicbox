@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import '../theme/controller.dart';
+import '../theme/theme.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -16,9 +16,7 @@ class HomeDrawer extends StatelessWidget {
               child: Icon(
                 Icons.music_note,
                 size: 40,
-                color: Get.find<ThemeController>().isDarkMode.value
-                    ? ThemeController.dark.colorScheme.inversePrimary
-                    : ThemeController.light.colorScheme.inversePrimary,
+                color: CTheme.inversePrimary,
               ),
             ),
           ),

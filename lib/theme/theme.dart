@@ -1,0 +1,30 @@
+import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+
+import './controller.dart';
+
+class CTheme {
+  static Color get background => Get.find<ThemeController>().isDarkMode.value
+      ? ThemeController.dark.colorScheme.background
+      : ThemeController.light.colorScheme.background;
+
+  static Color get primary => Get.find<ThemeController>().isDarkMode.value
+      ? ThemeController.dark.colorScheme.primary
+      : ThemeController.light.colorScheme.primary;
+
+  static Color get secondary => Get.find<ThemeController>().isDarkMode.value
+      ? ThemeController.dark.colorScheme.secondary
+      : ThemeController.light.colorScheme.secondary;
+
+  static Color get inversePrimary =>
+      Get.find<ThemeController>().isDarkMode.value
+          ? ThemeController.dark.colorScheme.inversePrimary
+          : ThemeController.light.colorScheme.inversePrimary;
+
+  static double get blurRadius =>
+      Get.find<ThemeController>().isDarkMode.value ? margin : margin * 2;
+
+  static double borderRadius = 8;
+  static double padding = 4;
+  static double margin = 4;
+}
