@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import './controller.dart';
 
 class CTheme {
+  static bool get isDarkMode => Get.find<ThemeController>().isDarkMode.value;
+
   static Color get background => Get.find<ThemeController>().isDarkMode.value
       ? ThemeController.dark.colorScheme.background
       : ThemeController.light.colorScheme.background;
@@ -22,7 +24,7 @@ class CTheme {
           : ThemeController.light.colorScheme.inversePrimary;
 
   static double get blurRadius =>
-      Get.find<ThemeController>().isDarkMode.value ? margin : margin * 2;
+      Get.find<ThemeController>().isDarkMode.value ? margin * 2 : margin * 3;
 
   static double borderRadius = 8;
   static double padding = 4;

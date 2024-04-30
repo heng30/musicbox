@@ -4,5 +4,5 @@ const Map<String, String> en = {
   "主 页": "H O M E",
   "黑暗模式": "Dark mode",
   "语言切换": "Switch language",
-  "歌 曲": "SONG"
+  "歌 曲": "S O N G"
 };
