@@ -29,7 +29,7 @@ class PlaylistController extends GetxController {
       albumArtImagePath: "assets/images/3.png",
       audioPath: "audio/leiqiao.mp3",
     ),
-  ].obs;
+  ];
 
   RxInt? _currentSongIndex;
   int? get currentSongIndex => _currentSongIndex?.value;

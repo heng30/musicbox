@@ -38,19 +38,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("播放列表".tr),
-        actions: [
-          IconButton(
-            onPressed: () => Get.toNamed("/search"),
-            icon: const Icon(Icons.search),
-          ),
-        ],
+    return Obx(
+      () => Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("播放列表".tr),
+          backgroundColor: CTheme.background,
+          actions: [
+            IconButton(
+              onPressed: () => Get.toNamed("/search"),
+              icon: const Icon(Icons.search),
+            ),
+          ],
+        ),
+        drawer: const HomeDrawer(),
+        body: _buildBody(context),
       ),
-      drawer: const HomeDrawer(),
-      body: _buildBody(context),
     );
   }
 }

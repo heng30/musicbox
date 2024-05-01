@@ -48,6 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
         appBar: AppBar(
           centerTitle: true,
           title: Text("设 置".tr),
+          backgroundColor: CTheme.background,
         ),
         body: _buildBody(context),
       ),

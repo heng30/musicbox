@@ -7,5 +7,5 @@ const Map<String, String> zh = {
   "Language switch": "语言切换",
   "S O N G": "歌 曲",
   "Search": "搜索",
-  "Please input keyword": "请输入关键字"
+  "Input keyword": "请输入关键字"
 };
