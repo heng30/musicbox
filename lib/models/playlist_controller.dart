@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import './song.dart';
+import '././albums.dart';
 
 enum PlayModel {
   loop,
@@ -10,29 +11,22 @@ enum PlayModel {
 }
 
 class PlaylistController extends GetxController {
-  final playlist = [
-    Song(
-      songName: "泪桥-1",
-      artistName: "古巨基",
-      albumArtImagePath: "assets/images/1.png",
-      audioPath: "audio/leiqiao.mp3",
-    ),
-    Song(
-      songName: "泪桥-2",
-      artistName: "周深",
-      albumArtImagePath: "assets/images/2.png",
-      audioPath: "audio/leiqiao.mp3",
-    ),
-    Song(
-      songName: "泪桥-3",
-      artistName: "古巨基 && 周深",
-      albumArtImagePath: "assets/images/3.png",
-      audioPath: "audio/leiqiao.mp3",
-    ),
-  ];
+  final playlist = [];
+
+  void fakePlaylist() {
+    for (int i = 0; i < 20; i++) {
+      playlist.add(Song(
+        songName: "泪桥-$i",
+        artistName: "古巨基 && 周深",
+        albumArtImagePath: Albums.random(),
+        audioPath: "audio/leiqiao.mp3",
+      ));
+    }
+  }
 
   RxInt? _currentSongIndex;
   int? get currentSongIndex => _currentSongIndex?.value;
+  bool get isValidSongIndex => _currentSongIndex != null;
 
   set currentSongIndex(int? index) {
     if (index == null) {
@@ -76,6 +70,7 @@ class PlaylistController extends GetxController {
   Duration get totalDuration => _totalDuration.value;
 
   PlaylistController() {
+    fakePlaylist();
     listenToDuration();
     _audioPlayer.setVolume(volume);
   }
