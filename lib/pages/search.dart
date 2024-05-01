@@ -16,7 +16,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildBody(BuildContext context) {
     return Container(
-      color: Colors.red,
+      color: CTheme.background,
     );
   }
 
@@ -41,15 +41,28 @@ class _SearchPageState extends State<SearchPage> {
                       hintText: "请输入关键字".tr,
                       contentPadding: const EdgeInsets.all(0),
                       prefixIcon: IconButton(
-                        icon:
-                            const Icon(Icons.search, size: searchHeight * 0.6),
+                        icon: Icon(Icons.search,
+                            size: searchHeight * 0.6, color: CTheme.primary),
                         onPressed: () {},
                       ),
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear, size: searchHeight * 0.6),
+                        icon: Icon(Icons.clear,
+                            size: searchHeight * 0.6, color: CTheme.primary),
                         onPressed: () => _controllerSearch.clear(),
                       ),
                       border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: CTheme.secondary,
+                          width: 1,
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(CTheme.borderRadius * 4),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: CTheme.primary,
+                          width: 1,
+                        ),
                         borderRadius:
                             BorderRadius.circular(CTheme.borderRadius * 4),
                       ),
