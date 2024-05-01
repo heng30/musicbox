@@ -26,7 +26,12 @@ class CTheme {
   static double get blurRadius =>
       Get.find<ThemeController>().isDarkMode.value ? margin * 2 : margin * 3;
 
+  static double windowWidth = 350;
+  static double windowHeight = 800;
+
   static double borderRadius = 8;
   static double padding = 4;
   static double margin = 4;
+
+  static double soundsliderwidth = 15;
 }

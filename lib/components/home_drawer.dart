@@ -21,7 +21,7 @@ class HomeDrawer extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 25.0, top: 25.0),
+            padding: const EdgeInsets.only(left: 25.0, top: 25.0, right: 25.0),
             child: ListTile(
               title: Text("主 页".tr),
               leading: const Icon(
@@ -31,7 +31,19 @@ class HomeDrawer extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 25.0, top: 0),
+            padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 0),
+            child: ListTile(
+              title: Text(
+                "搜 索".tr,
+              ),
+              leading: const Icon(
+                Icons.search,
+              ),
+              onTap: () => Get.offAndToNamed('/search'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 0),
             child: ListTile(
               title: Text(
                 "设 置".tr,

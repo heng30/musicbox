@@ -1,14 +1,37 @@
+import 'dart:io' show Platform;
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'pages/home.dart';
 import 'routes/routes.dart';
 import 'binding/binding.dart';
+import 'theme/theme.dart';
 import 'theme/controller.dart';
 import 'lang/translation_service.dart';
 
-void main() {
+void main() async {
   initGlobalController();
+
+  if (Platform.isMacOS || Platform.isLinux || Platform.isWindows) {
+    WidgetsFlutterBinding.ensureInitialized();
+    await windowManager.ensureInitialized();
+
+    WindowOptions windowOptions = WindowOptions(
+      size: Size(CTheme.windowWidth, CTheme.windowHeight),
+      center: true,
+      fullScreen: false,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.hidden,
+      windowButtonVisibility: false,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
+
   runApp(const MyApp());
 }
 

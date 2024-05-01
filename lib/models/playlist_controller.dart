@@ -3,6 +3,12 @@ import 'package:audioplayers/audioplayers.dart';
 
 import './song.dart';
 
+enum PlayModel {
+  loop,
+  shuffle,
+  single,
+}
+
 class PlaylistController extends GetxController {
   final playlist = [
     Song(
@@ -25,8 +31,8 @@ class PlaylistController extends GetxController {
     ),
   ].obs;
 
-  RxInt? _currentSongIndex = 0.obs;
-  int get currentSongIndex => _currentSongIndex!.value;
+  RxInt? _currentSongIndex;
+  int? get currentSongIndex => _currentSongIndex?.value;
 
   set currentSongIndex(int? index) {
     if (index == null) {
@@ -47,6 +53,19 @@ class PlaylistController extends GetxController {
         !playlist[_currentSongIndex!.value].isFavorite;
   }
 
+  final _playModel = PlayModel.loop.obs;
+  PlayModel get playModel => _playModel.value;
+  void playModelNext() {
+    if (_playModel.value == PlayModel.loop) {
+      _playModel.value = PlayModel.shuffle;
+    } else if (_playModel.value == PlayModel.shuffle) {
+      playlist.shuffle();
+      _playModel.value = PlayModel.single;
+    } else {
+      _playModel.value = PlayModel.loop;
+    }
+  }
+
   final _audioPlayer = AudioPlayer();
   final _isPlaying = false.obs;
   final _currentDuration = Duration.zero.obs;
@@ -58,6 +77,7 @@ class PlaylistController extends GetxController {
 
   PlaylistController() {
     listenToDuration();
+    _audioPlayer.setVolume(volume);
   }
 
   void play() async {
@@ -69,14 +89,6 @@ class PlaylistController extends GetxController {
     await _audioPlayer.stop(); // stop the current song
     await _audioPlayer.play(AssetSource(path));
     _isPlaying.value = true;
-  }
-
-  void stop() async {
-    if (playlist.isEmpty) {
-      return;
-    }
-    await _audioPlayer.stop(); // stop the current song
-    _isPlaying.value = false;
   }
 
   void pause() async {
@@ -101,14 +113,25 @@ class PlaylistController extends GetxController {
     await _audioPlayer.seek(position);
   }
 
+  final _volume = 0.5.obs;
+  bool get isMute => _volume.value <= 0.001;
+  double get volume => _volume.value;
+
+  void setVolumn(double volume) async {
+    _volume.value = volume;
+    await _audioPlayer.setVolume(volume);
+  }
+
+  void updateVolumn() {
+    _volume.value = _audioPlayer.volume;
+  }
+
   void playNextSong() {
     if (playlist.isEmpty) {
       return;
     }
 
     if (_currentSongIndex != null) {
-      stop();
-
       if (_currentSongIndex!.value < playlist.length - 1) {
         _currentSongIndex!.value += 1;
       } else {
@@ -124,17 +147,12 @@ class PlaylistController extends GetxController {
       return;
     }
 
-    if (_currentDuration.value.inSeconds > 2) {
-      seek(Duration.zero);
+    if (_currentSongIndex!.value > 0) {
+      _currentSongIndex!.value -= 1;
     } else {
-      stop();
-      if (_currentSongIndex!.value > 0) {
-        _currentSongIndex!.value -= 1;
-      } else {
-        _currentSongIndex!.value = playlist.length - 1;
-      }
-      play();
+      _currentSongIndex!.value = playlist.length - 1;
     }
+    play();
   }
 
   void listenToDuration() {
@@ -147,7 +165,11 @@ class PlaylistController extends GetxController {
     });
 
     _audioPlayer.onPlayerComplete.listen((event) {
-      playNextSong();
+      if (playModel == PlayModel.single) {
+        play();
+      } else {
+        playNextSong();
+      }
     });
   }
 }
