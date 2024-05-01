@@ -22,35 +22,49 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    const searchHeight = 36.0;
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Container(
-          constraints: const BoxConstraints(maxWidth: 300, maxHeight: 32),
-          child: TextField(
-            maxLines: 1,
-            controller: _controllerSearch,
-            focusNode: focusNodeSearch,
-            autofocus: true,
-            onSubmitted: (v) {},
-            decoration: InputDecoration(
-              hintText: "请输入关键字".tr,
-              contentPadding: const EdgeInsets.all(0),
-              prefixIcon: IconButton(
-                icon: const Icon(Icons.search, size: 20),
-                onPressed: () {},
+          centerTitle: true,
+          title: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  constraints: const BoxConstraints(maxHeight: searchHeight),
+                  child: TextField(
+                    maxLines: 1,
+                    controller: _controllerSearch,
+                    focusNode: focusNodeSearch,
+                    autofocus: true,
+                    onSubmitted: (v) {},
+                    decoration: InputDecoration(
+                      hintText: "请输入关键字".tr,
+                      contentPadding: const EdgeInsets.all(0),
+                      prefixIcon: IconButton(
+                        icon:
+                            const Icon(Icons.search, size: searchHeight * 0.6),
+                        onPressed: () {},
+                      ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear, size: searchHeight * 0.6),
+                        onPressed: () => _controllerSearch.clear(),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(CTheme.borderRadius * 4),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.clear, size: 20),
-                onPressed: () => _controllerSearch.clear(),
+              SizedBox(width: CTheme.margin * 4),
+              GestureDetector(
+                onTap: () {},
+                child:
+                    Text("搜索".tr, style: Theme.of(context).textTheme.bodyLarge),
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(CTheme.borderRadius * 4),
-              ),
-            ),
-          ),
-        ),
-      ),
+            ],
+          )),
       body: _buildBody(context),
     );
   }
