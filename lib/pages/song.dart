@@ -93,7 +93,8 @@ class SongPage extends StatelessWidget {
                             color:
                                 song.isFavorite ? Colors.red : CTheme.secondary,
                             onPressed: () {
-                              Get.find<PlaylistController>().toggleFavorite();
+                              Get.find<PlaylistController>().toggleFavorite(
+                                  playlistController.currentSongIndex);
                             },
                           );
                         },
@@ -139,7 +140,7 @@ class SongPage extends StatelessWidget {
                             ? const Icon(Icons.volume_mute)
                             : const Icon(Icons.volume_down_rounded),
                         onPressed: () {
-                          playlistController.updateVolumn();
+                          playlistController.syncVolumn();
                           showVSliderDialog(
                             context,
                             initValue: playlistController.volume * 100,

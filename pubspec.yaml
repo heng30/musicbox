@@ -38,6 +38,7 @@ dependencies:
   get: ^4.6.6
   audioplayers: ^6.0.0
   window_manager: ^0.3.8
+  path_provider: ^2.1.3
 
 dev_dependencies:
   flutter_test:

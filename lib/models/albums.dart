@@ -12,11 +12,6 @@ class Albums {
     "assets/images/8.png",
     "assets/images/9.png",
     "assets/images/10.png",
-    "assets/images/11.png",
-    "assets/images/12.png",
-    "assets/images/13.png",
-    "assets/images/14.png",
-    "assets/images/15.png",
   ];
 
   static String random() {

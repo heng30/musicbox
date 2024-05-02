@@ -26,7 +26,21 @@ class _HomePageState extends State<HomePage> {
             return ListTile(
               title: Text(song.songName),
               subtitle: Text(song.artistName),
-              leading: Image.asset(song.albumArtImagePath),
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(CTheme.borderRadius),
+                child: Image.asset(song.albumArtImagePath),
+              ),
+              trailing: Obx(
+                () => IconButton(
+                  icon: Icon(
+                    Icons.favorite,
+                    color: song.isFavorite ? Colors.red : CTheme.secondary,
+                  ),
+                  onPressed: () {
+                    Get.find<PlaylistController>().toggleFavorite(index);
+                  },
+                ),
+              ),
               onTap: () =>
                   Get.toNamed("/song", arguments: {"currentSongIndex": index}),
             );
