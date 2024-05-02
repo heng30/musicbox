@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import './albums.dart';
+
 enum AudioLocation {
   asset,
   local,
@@ -15,7 +17,17 @@ class Song {
 
   final RxBool _isFavorite;
   bool get isFavorite => _isFavorite.value;
-  set isFavorite(v) => _isFavorite.value = v;
+  set isFavorite(bool v) => _isFavorite.value = v;
+
+  static const String noneAsset = "audio/none.mp3";
+
+  Song.none({
+    this.songName = "None",
+    this.artistName = "None",
+    this.albumArtImagePath = Albums.noneAsset,
+    this.audioPath = noneAsset,
+    this.audioLocation = AudioLocation.asset,
+  }) : _isFavorite = false.obs;
 
   Song({
     required this.songName,

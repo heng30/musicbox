@@ -1,6 +1,8 @@
 import 'dart:math';
 
 class Albums {
+  static const String noneAsset = "assets/images/none.png";
+
   static const List<String> albumsAsset = [
     "assets/images/1.png",
     "assets/images/2.png",

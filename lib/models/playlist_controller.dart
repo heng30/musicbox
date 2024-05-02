@@ -27,6 +27,14 @@ class PlaylistController extends GetxController {
     });
   }
 
+  Song playingSong() {
+    if (isValidCurrentSongIndex) {
+      return playlist[currentSongIndex!];
+    } else {
+      return Song.none();
+    }
+  }
+
   void fakePlaylist() {
     for (int i = 0; i < 15; i++) {
       playlist.add(
@@ -68,8 +76,7 @@ class PlaylistController extends GetxController {
         songName: "在线mp3音频",
         artistName: "mp3音频",
         albumArtImagePath: Albums.random(),
-        audioPath:
-            "http://downsc.chinaz.net/Files/DownLoad/sound1/201906/11582.mp3",
+        audioPath: "https://download.samplelib.com/mp3/sample-15s.mp3",
         audioLocation: AudioLocation.remote,
         isFavorite: true,
       ),
@@ -97,14 +104,6 @@ class PlaylistController extends GetxController {
 
   void toggleFavorite(index) {
     playlist[index].isFavorite = !playlist[index].isFavorite;
-  }
-
-  String playerCardAlbum() {
-    if (isValidCurrentSongIndex) {
-      return playlist[currentSongIndex!].albumArtImagePath;
-    } else {
-      return Albums.random();
-    }
   }
 
   final _playModel = PlayModel.loop.obs;
@@ -184,6 +183,8 @@ class PlaylistController extends GetxController {
   }
 
   void pauseOrResume() async {
+    if (!isValidCurrentSongIndex) return;
+
     if (isPlaying) {
       pause();
     } else {

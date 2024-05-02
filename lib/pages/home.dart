@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../theme/theme.dart';
 import '../components/home_drawer.dart';
 import '../models/playlist_controller.dart';
+import '../models/player_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +15,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final playlistController = Get.find<PlaylistController>();
+  final playerController = Get.find<PlayerController>();
+
+  void go2song(int index) async {
+    await Get.toNamed("/song", arguments: {"currentSongIndex": index});
+    playerController.playingSong = playlistController.playingSong();
+  }
 
   Widget _buildBodyPlaylist(BuildContext context) {
     return Obx(
@@ -42,9 +49,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
-              onTap: () {
-                Get.toNamed("/song", arguments: {"currentSongIndex": index});
-              },
+              onTap: () => go2song(index),
             );
           },
         ),
@@ -52,20 +57,33 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildPlayerCard(BuildContext context) {
+  Widget _buildBottomPlayer(BuildContext context) {
+    final song = playerController.playingSong;
+
     return Obx(
       () => Container(
-        color: CTheme.inversePrimary,
+        color: CTheme.bottomPlayerBackground,
         child: Padding(
-          padding: EdgeInsets.all(CTheme.padding * 2),
+          padding: EdgeInsets.symmetric(vertical: CTheme.padding),
           child: ListTile(
-              // leading: GestureDetector(
-              //   child: Obx(
-              //     () => Image.asset(playlistController.playerCardAlbum()),
-              //   ),
-              //   onTap: () {},
-              // ),
-              ),
+            title: Text(song.songName),
+            subtitle: Text(song.artistName),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(CTheme.borderRadius),
+              child: Image.asset(song.albumArtImagePath),
+            ),
+            trailing: IconButton(
+              icon: playlistController.isPlaying
+                  ? const Icon(Icons.pause)
+                  : const Icon(Icons.play_arrow),
+              onPressed: playlistController.pauseOrResume,
+            ),
+            onTap: () {
+              if (playlistController.isValidCurrentSongIndex) {
+                go2song(playlistController.currentSongIndex!);
+              }
+            },
+          ),
         ),
       ),
     );
@@ -77,8 +95,7 @@ class _HomePageState extends State<HomePage> {
         Expanded(
           child: _buildBodyPlaylist(context),
         ),
-        SizedBox(height: CTheme.margin * 2),
-        _buildPlayerCard(context),
+        _buildBottomPlayer(context),
       ],
     );
   }
@@ -92,6 +109,10 @@ class _HomePageState extends State<HomePage> {
           title: Text("播放列表".tr),
           backgroundColor: CTheme.background,
           actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.add),
+            ),
             IconButton(
               onPressed: () => Get.toNamed("/search"),
               icon: const Icon(Icons.search),

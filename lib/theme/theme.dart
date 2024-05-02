@@ -23,9 +23,14 @@ class CTheme {
           ? ThemeController.dark.colorScheme.inversePrimary
           : ThemeController.light.colorScheme.inversePrimary;
 
+  static Color get bottomPlayerBackground =>
+      Get.find<ThemeController>().isDarkMode.value
+          ? const Color(0xFF1E1E1E)
+          : const Color(0xFFDADADA);
+
   static Color get favorite => Get.find<ThemeController>().isDarkMode.value
-      ? Colors.red.shade300
-      : Colors.red.shade300;
+      ? Colors.red.shade200
+      : Colors.red.shade200;
 
   static double get blurRadius =>
       Get.find<ThemeController>().isDarkMode.value ? margin * 2 : margin * 3;
