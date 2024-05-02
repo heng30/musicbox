@@ -23,6 +23,10 @@ class CTheme {
           ? ThemeController.dark.colorScheme.inversePrimary
           : ThemeController.light.colorScheme.inversePrimary;
 
+  static Color get favorite => Get.find<ThemeController>().isDarkMode.value
+      ? Colors.red.shade300
+      : Colors.red.shade300;
+
   static double get blurRadius =>
       Get.find<ThemeController>().isDarkMode.value ? margin * 2 : margin * 3;
 

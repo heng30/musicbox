@@ -13,11 +13,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Widget _buildBody(BuildContext context) {
-    final playlistController = Get.find<PlaylistController>();
+  final playlistController = Get.find<PlaylistController>();
 
+  Widget _buildBodyPlaylist(BuildContext context) {
     return Obx(
       () => Container(
+        width: double.infinity,
         color: CTheme.background,
         child: ListView.builder(
           itemCount: Get.find<PlaylistController>().playlist.length,
@@ -34,19 +35,51 @@ class _HomePageState extends State<HomePage> {
                 () => IconButton(
                   icon: Icon(
                     Icons.favorite,
-                    color: song.isFavorite ? Colors.red : CTheme.secondary,
+                    color: song.isFavorite ? CTheme.favorite : CTheme.secondary,
                   ),
                   onPressed: () {
                     Get.find<PlaylistController>().toggleFavorite(index);
                   },
                 ),
               ),
-              onTap: () =>
-                  Get.toNamed("/song", arguments: {"currentSongIndex": index}),
+              onTap: () {
+                Get.toNamed("/song", arguments: {"currentSongIndex": index});
+              },
             );
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildPlayerCard(BuildContext context) {
+    return Obx(
+      () => Container(
+        color: CTheme.inversePrimary,
+        child: Padding(
+          padding: EdgeInsets.all(CTheme.padding * 2),
+          child: ListTile(
+              // leading: GestureDetector(
+              //   child: Obx(
+              //     () => Image.asset(playlistController.playerCardAlbum()),
+              //   ),
+              //   onTap: () {},
+              // ),
+              ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: _buildBodyPlaylist(context),
+        ),
+        SizedBox(height: CTheme.margin * 2),
+        _buildPlayerCard(context),
+      ],
     );
   }
 

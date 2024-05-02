@@ -28,7 +28,7 @@ class PlaylistController extends GetxController {
   }
 
   void fakePlaylist() {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 15; i++) {
       playlist.add(
         Song(
           songName: "泪桥-$i",
@@ -78,6 +78,7 @@ class PlaylistController extends GetxController {
 
   RxInt? _currentSongIndex;
   int? get currentSongIndex => _currentSongIndex?.value;
+
   bool get isValidCurrentSongIndex => _currentSongIndex != null;
 
   set currentSongIndex(int? index) {
@@ -96,6 +97,14 @@ class PlaylistController extends GetxController {
 
   void toggleFavorite(index) {
     playlist[index].isFavorite = !playlist[index].isFavorite;
+  }
+
+  String playerCardAlbum() {
+    if (isValidCurrentSongIndex) {
+      return playlist[currentSongIndex!].albumArtImagePath;
+    } else {
+      return Albums.random();
+    }
   }
 
   final _playModel = PlayModel.loop.obs;
@@ -121,7 +130,10 @@ class PlaylistController extends GetxController {
   set isPlaying(v) => _isPlaying.value = v;
 
   Duration get currentDuration => _currentDuration.value;
+  set currentDuration(v) => _currentDuration.value = v;
+
   Duration get totalDuration => _totalDuration.value;
+  set totalDuration(v) => _totalDuration.value = v;
 
   PlaylistController() {
     fakePlaylist();
@@ -156,8 +168,8 @@ class PlaylistController extends GetxController {
       isPlaying = true;
     } catch (e) {
       await _audioPlayer.release();
-      Get.snackbar("播放失败".tr, e.toString());
       isPlaying = false;
+      Get.snackbar("播放失败".tr, e.toString());
     }
   }
 
@@ -234,11 +246,11 @@ class PlaylistController extends GetxController {
 
   void listenToDuration() {
     _audioPlayer.onDurationChanged.listen((newDuration) {
-      _totalDuration.value = newDuration;
+      totalDuration = newDuration;
     });
 
     _audioPlayer.onPositionChanged.listen((newPosition) {
-      _currentDuration.value = newPosition;
+      currentDuration = newPosition;
     });
 
     _audioPlayer.onPlayerComplete.listen((event) {

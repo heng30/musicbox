@@ -90,8 +90,9 @@ class SongPage extends StatelessWidget {
 
                           return IconButton(
                             icon: const Icon(Icons.favorite),
-                            color:
-                                song.isFavorite ? Colors.red : CTheme.secondary,
+                            color: song.isFavorite
+                                ? CTheme.favorite
+                                : CTheme.secondary,
                             onPressed: () {
                               Get.find<PlaylistController>().toggleFavorite(
                                   playlistController.currentSongIndex);
