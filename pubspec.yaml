@@ -37,6 +37,8 @@ dependencies:
   window_manager: ^0.3.8
   path_provider: ^2.1.3
   file_picker: ^8.0.3
+  audiotagger: ^2.2.1
+  logger: ^2.2.0
 
 dev_dependencies:
   flutter_test:
