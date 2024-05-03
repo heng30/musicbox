@@ -51,40 +51,18 @@ class PlaylistController extends GetxController {
 
   // put fake songs into playlist
   void fakePlaylist() {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 1; i++) {
       playlist.add(
         Song(
-          songName: "泪桥-$i",
-          artistName: "古巨基 && 周深",
+          songName: "本地测试音频",
+          artistName: "测试",
           albumArtImagePath: Albums.random(),
-          audioPath: "audio/leiqiao.mp3",
+          audioPath: "audio/none.mp3",
           audioLocation: AudioLocation.asset,
-          isFavorite: Random().nextInt(5) == 0,
+          isFavorite: Random().nextInt(2) == 0,
         ),
       );
     }
-
-    playlist.add(
-      Song(
-        songName: "泪桥-local",
-        artistName: "古巨基 && 周深",
-        albumArtImagePath: Albums.random(),
-        audioPath: "/home/blue/tmp/leiqiao.mp3",
-        audioLocation: AudioLocation.local,
-        isFavorite: true,
-      ),
-    );
-
-    playlist.add(
-      Song(
-        songName: "泪桥-local-wrong",
-        artistName: "古巨基 && 周深",
-        albumArtImagePath: Albums.random(),
-        audioPath: "/tmp/leiqiao.mp3",
-        audioLocation: AudioLocation.local,
-        isFavorite: true,
-      ),
-    );
 
     playlist.add(
       Song(
