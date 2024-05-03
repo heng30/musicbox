@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/theme.dart';
 import '../components/home_drawer.dart';
@@ -16,10 +17,27 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final playlistController = Get.find<PlaylistController>();
   final playerController = Get.find<PlayerController>();
+  DateTime? currentBackPressTime;
 
   void go2song(int index) async {
     await Get.toNamed("/song", arguments: {"currentSongIndex": index});
     playerController.playingSong = playlistController.playingSong();
+  }
+
+  bool closeOnConfirmed() {
+    const exitDuration = Duration(seconds: 3);
+    DateTime now = DateTime.now();
+
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > exitDuration) {
+      currentBackPressTime = now;
+      Get.snackbar("提醒".tr, "再返回一次退出程序!".tr, duration: exitDuration);
+
+      return false;
+    }
+
+    currentBackPressTime = null;
+    return true;
   }
 
   Widget _buildBodyPlaylist(BuildContext context) {
@@ -102,26 +120,36 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("播放列表".tr),
-          backgroundColor: CTheme.background,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.add),
-            ),
-            IconButton(
-              onPressed: () => Get.toNamed("/search"),
-              icon: const Icon(Icons.search),
-            ),
-          ],
+    return PopScope(
+      canPop: false,
+      child: Obx(
+        () => Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text("播放列表".tr),
+            backgroundColor: CTheme.background,
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.add),
+              ),
+              IconButton(
+                onPressed: () => Get.toNamed("/search"),
+                icon: const Icon(Icons.search),
+              ),
+            ],
+          ),
+          drawer: const HomeDrawer(),
+          body: _buildBody(context),
         ),
-        drawer: const HomeDrawer(),
-        body: _buildBody(context),
       ),
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+
+        if (closeOnConfirmed()) {
+          SystemNavigator.pop();
+        }
+      },
     );
   }
 }

@@ -32,6 +32,11 @@ class CTheme {
       ? Colors.red.shade200
       : Colors.red.shade200;
 
+  static Color get aduioProcessBar =>
+      Get.find<ThemeController>().isDarkMode.value
+          ? Colors.green.shade800
+          : Colors.green.shade300;
+
   static double get blurRadius =>
       Get.find<ThemeController>().isDarkMode.value ? margin * 2 : margin * 3;
 
