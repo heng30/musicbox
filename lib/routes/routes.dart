@@ -5,6 +5,7 @@ import '../pages/nofound.dart';
 import '../pages/settings.dart';
 import '../pages/song.dart';
 import '../pages/search.dart';
+import '../pages/manage.dart';
 
 class AppPage {
   static final nofound = GetPage(
@@ -24,6 +25,10 @@ class AppPage {
     GetPage(
       name: "/search",
       page: () => const SearchPage(),
+    ),
+    GetPage(
+      name: "/manage",
+      page: () => const ManagePage(),
     ),
     GetPage(
       name: "/settings",

@@ -1,5 +1,5 @@
 name: musicbox
-description: "A new Flutter project."
+description: "A Simple Music Player."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -31,14 +31,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.6
   get: ^4.6.6
+  cupertino_icons: ^1.0.6
   audioplayers: ^6.0.0
   window_manager: ^0.3.8
   path_provider: ^2.1.3
+  file_picker: ^8.0.3
 
 dev_dependencies:
   flutter_test:

@@ -3,9 +3,15 @@ const Map<String, String> en = {
   "设 置": "S E T T I N G S",
   "主 页": "H O M E",
   "搜 索": "S E A R C H",
+  "管 理": "M A N A G E",
+  "歌 曲": "S O N G",
+  "提 示": "N O T E",
   "黑暗模式": "Dark mode",
   "语言切换": "Switch language",
-  "歌 曲": "S O N G",
   "搜索": "Search",
-  "请输入关键字": "Input keyword"
+  "请输入关键字": "Input keyword",
+  "再返回一次退出程序": "Try again to exit",
+  "是否删除全部歌曲": "Delete all songs or not",
+  "删除全部": "Delete all",
+  "取消": "Cancel",
 };

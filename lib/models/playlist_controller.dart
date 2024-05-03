@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import './song.dart';
-import '././albums.dart';
+import './albums.dart';
 
 enum PlayModel {
   loop,
@@ -27,6 +27,7 @@ class PlaylistController extends GetxController {
     });
   }
 
+  // get the current playing song info
   Song playingSong() {
     if (isValidCurrentSongIndex) {
       return playlist[currentSongIndex!];
@@ -35,6 +36,7 @@ class PlaylistController extends GetxController {
     }
   }
 
+  // put fake songs into playlist
   void fakePlaylist() {
     for (int i = 0; i < 15; i++) {
       playlist.add(
@@ -91,6 +93,7 @@ class PlaylistController extends GetxController {
   set currentSongIndex(int? index) {
     if (index == null) {
       _currentSongIndex = null;
+      stop();
     } else {
       if (_currentSongIndex == null) {
         _currentSongIndex = index.obs;
@@ -102,14 +105,44 @@ class PlaylistController extends GetxController {
     }
   }
 
+  // toggle favorite song by index
   void toggleFavorite(index) {
     playlist[index].isFavorite = !playlist[index].isFavorite;
+  }
+
+  // remove one song from playlist
+  void remove(int index) {
+    if (index < playlist.length) {
+      if (currentSongIndex == index) {
+        currentSongIndex = null;
+      }
+      playlist.removeAt(index);
+    }
+  }
+
+  // remove all songs from playlist
+  void removeAll() {
+    playlist.value = [];
+    currentSongIndex = null;
+  }
+
+  // add songs to playlist
+  void add(List<Song> songs) {
+    List<Song> newSongs = [];
+    for (var item in songs) {
+      if (playlist.firstWhereOrNull((el) => item.songName == el.songName) ==
+          null) {
+        newSongs.add(item);
+      }
+    }
+    playlist.addAll(newSongs);
   }
 
   final _playModel = PlayModel.loop.obs;
   PlayModel get playModel => _playModel.value;
   set playModel(v) => _playModel.value = v;
 
+  // switch play mode: loop, shuffle, single
   void playModelNext() {
     if (playModel == PlayModel.loop) {
       playModel = PlayModel.shuffle;
@@ -170,6 +203,11 @@ class PlaylistController extends GetxController {
       isPlaying = false;
       Get.snackbar("播放失败".tr, e.toString());
     }
+  }
+
+  void stop() async {
+    await _audioPlayer.stop();
+    isPlaying = false;
   }
 
   void pause() async {

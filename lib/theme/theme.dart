@@ -49,3 +49,7 @@ class CTheme {
 
   static double soundsliderwidth = 15;
 }
+
+class CIcons {
+  static const String favicon = "assets/images/favicon.png";
+}

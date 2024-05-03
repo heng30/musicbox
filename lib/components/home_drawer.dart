@@ -2,37 +2,39 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
+import '../models/player_controller.dart';
+import '../models/playlist_controller.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final playlistController = Get.find<PlaylistController>();
+    final playerController = Get.find<PlayerController>();
+
     return Drawer(
-      child: Column(
-        children: [
-          DrawerHeader(
-            child: Center(
-              child: Icon(
-                Icons.music_note,
-                size: 40,
-                color: CTheme.inversePrimary,
+      child: Padding(
+        padding: EdgeInsets.only(
+            left: CTheme.padding * 5, right: CTheme.padding * 5),
+        child: Column(
+          children: [
+            DrawerHeader(
+              child: Center(
+                child: Image.asset(
+                  CIcons.favicon,
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0, top: 25.0, right: 25.0),
-            child: ListTile(
+            ListTile(
               title: Text("主 页".tr),
-              leading: const Icon(
-                Icons.home,
-              ),
+              leading: const Icon(Icons.home),
               onTap: () => Get.back(),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 0),
-            child: ListTile(
+            ListTile(
               title: Text(
                 "搜 索".tr,
               ),
@@ -41,10 +43,19 @@ class HomeDrawer extends StatelessWidget {
               ),
               onTap: () => Get.offAndToNamed('/search'),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 0),
-            child: ListTile(
+            ListTile(
+              title: Text(
+                "管 理".tr,
+              ),
+              leading: const Icon(
+                Icons.manage_history_sharp,
+              ),
+              onTap: () async {
+                await Get.offAndToNamed('/manage');
+                playerController.playingSong = playlistController.playingSong();
+              },
+            ),
+            ListTile(
               title: Text(
                 "设 置".tr,
               ),
@@ -53,8 +64,8 @@ class HomeDrawer extends StatelessWidget {
               ),
               onTap: () => Get.offAndToNamed('/settings'),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

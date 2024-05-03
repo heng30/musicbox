@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
+import './track_shape.dart';
 
 class VSlider extends StatelessWidget {
   const VSlider({
@@ -28,7 +29,7 @@ class VSlider extends StatelessWidget {
       child: SliderTheme(
         data: SliderTheme.of(context).copyWith(
           thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 0),
-          trackShape: const RoundedRectSliderTrackShape(),
+          trackShape: CustomTrackShape(horizontalPadding: CTheme.padding * 2),
           trackHeight: width,
           activeTrackColor: CTheme.primary,
         ),

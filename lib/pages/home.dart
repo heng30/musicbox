@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../theme/theme.dart';
 import '../components/home_drawer.dart';
+import '../models/song.dart';
 import '../models/playlist_controller.dart';
 import '../models/player_controller.dart';
 
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     if (currentBackPressTime == null ||
         now.difference(currentBackPressTime!) > exitDuration) {
       currentBackPressTime = now;
-      Get.snackbar("提醒".tr, "再返回一次退出程序!".tr, duration: exitDuration);
+      Get.snackbar("提 示".tr, '${"再返回一次退出程序".tr}!', duration: exitDuration);
 
       return false;
     }
@@ -43,7 +44,6 @@ class _HomePageState extends State<HomePage> {
   Widget _buildBodyPlaylist(BuildContext context) {
     return Obx(
       () => Container(
-        width: double.infinity,
         color: CTheme.background,
         child: ListView.builder(
           itemCount: Get.find<PlaylistController>().playlist.length,
@@ -130,7 +130,10 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: CTheme.background,
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: () async {
+                  final songs = await Song.loadLocal();
+                  playlistController.add(songs);
+                },
                 icon: const Icon(Icons.add),
               ),
               IconButton(

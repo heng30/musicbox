@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:get/get.dart';
+import 'package:file_picker/file_picker.dart';
 
 import './albums.dart';
 
@@ -37,4 +39,29 @@ class Song {
     this.audioLocation = AudioLocation.local,
     bool isFavorite = false,
   }) : _isFavorite = isFavorite.obs;
+
+  // TODO: get the artist name from the audio file
+  static Future<List<Song>> loadLocal() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'wav', 'flac', 'ogg'],
+    );
+
+    var songs = <Song>[];
+    if (result != null) {
+      songs = result.xFiles
+          .map(
+            (item) => Song(
+              songName: item.name,
+              artistName: "None",
+              albumArtImagePath: Albums.random(),
+              audioPath: item.path,
+            ),
+          )
+          .toList();
+    }
+
+    return songs;
+  }
 }

@@ -171,6 +171,7 @@ class SongPage extends StatelessWidget {
             max: playlistController.totalDuration.inSeconds.toDouble(),
             value: playlistController.currentDuration.inSeconds.toDouble(),
             activeColor: CTheme.aduioProcessBar,
+            inactiveColor: CTheme.secondary,
             onChanged: (value) {},
             onChangeEnd: (value) {
               playlistController.seek(Duration(seconds: value.toInt()));
