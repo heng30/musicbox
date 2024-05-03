@@ -42,7 +42,8 @@ class ManagePage extends StatelessWidget {
             final song = playlistController.playlist[index];
             return ListTile(
               title: Text(song.songName),
-              subtitle: Text(song.artistName),
+              subtitle:
+                  song.artistName.isNotEmpty ? Text(song.artistName) : null,
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(CTheme.borderRadius),
                 child: Image.asset(song.albumArtImagePath),

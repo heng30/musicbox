@@ -71,19 +71,23 @@ class SongPage extends StatelessWidget {
                             );
                           },
                         ),
-                        Obx(
-                          () {
-                            final song = playlistController
-                                .playlist[playlistController.currentSongIndex!];
+                        if (playlistController
+                            .playlist[playlistController.currentSongIndex!]
+                            .artistName
+                            .isNotEmpty)
+                          Obx(
+                            () {
+                              final song = playlistController.playlist[
+                                  playlistController.currentSongIndex!];
 
-                            return Text(
-                              song.artistName,
-                              softWrap: false,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            );
-                          },
-                        ),
+                              return Text(
+                                song.artistName,
+                                softWrap: false,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              );
+                            },
+                          ),
                       ],
                     ),
                   ),
