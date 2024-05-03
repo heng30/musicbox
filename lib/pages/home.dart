@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
       () => Container(
         color: CTheme.background,
         child: ListView.builder(
-          itemCount: Get.find<PlaylistController>().playlist.length,
+          itemCount: playlistController.playlist.length,
           itemBuilder: (count, index) {
             final song = playlistController.playlist[index];
             return ListTile(
@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                     color: song.isFavorite ? CTheme.favorite : CTheme.secondary,
                   ),
                   onPressed: () {
-                    Get.find<PlaylistController>().toggleFavorite(index);
+                    playlistController.toggleFavorite(index);
                   },
                 ),
               ),

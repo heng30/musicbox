@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:flutter/foundation.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import './song.dart';
 import './albums.dart';
+import '../models/player_controller.dart';
 
 enum PlayModel {
   loop,
@@ -27,6 +29,17 @@ class PlaylistController extends GetxController {
     });
   }
 
+  List<Song> searchByKeyword(String keyword) {
+    if (keyword.isEmpty) return [];
+
+    return playlist.where((item) => item.songName.contains(keyword)).toList();
+  }
+
+  // find the some by sone name
+  int? findByName(String name) {
+    return playlist.indexWhere((item) => item.songName == name);
+  }
+
   // get the current playing song info
   Song playingSong() {
     if (isValidCurrentSongIndex) {
@@ -38,7 +51,7 @@ class PlaylistController extends GetxController {
 
   // put fake songs into playlist
   void fakePlaylist() {
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 10; i++) {
       playlist.add(
         Song(
           songName: "泪桥-$i",
@@ -128,6 +141,8 @@ class PlaylistController extends GetxController {
 
   // add songs to playlist
   void add(List<Song> songs) {
+    if (songs.isEmpty) return;
+
     List<Song> newSongs = [];
     for (var item in songs) {
       if (playlist.firstWhereOrNull((el) => item.songName == el.songName) ==
@@ -135,7 +150,13 @@ class PlaylistController extends GetxController {
         newSongs.add(item);
       }
     }
-    playlist.addAll(newSongs);
+
+    if (newSongs.isNotEmpty) {
+      Get.snackbar("提 示".tr, '${"添加".tr} ${newSongs.length} ${"首歌曲".tr}');
+      playlist.addAll(newSongs);
+    } else {
+      Get.snackbar("提 示".tr, "歌曲已经在播放列表".tr);
+    }
   }
 
   final _playModel = PlayModel.loop.obs;
@@ -168,7 +189,8 @@ class PlaylistController extends GetxController {
   set totalDuration(v) => _totalDuration.value = v;
 
   PlaylistController() {
-    fakePlaylist();
+    if (!kReleaseMode) fakePlaylist();
+
     sortPlaylist();
     listenToDuration();
     _audioPlayer.setVolume(volume);
@@ -297,6 +319,7 @@ class PlaylistController extends GetxController {
         play();
       } else {
         playNextSong();
+        Get.find<PlayerController>().playingSong = playingSong();
       }
     });
   }

@@ -42,6 +42,7 @@ class CTheme {
 
   static double windowWidth = 350;
   static double windowHeight = 800;
+  static double faviconSize = 80;
 
   static double borderRadius = 8;
   static double padding = 4;
@@ -51,5 +52,5 @@ class CTheme {
 }
 
 class CIcons {
-  static const String favicon = "assets/images/favicon.png";
+  static const String favicon = "assets/icons/favicon.png";
 }

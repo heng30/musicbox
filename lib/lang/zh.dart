@@ -14,4 +14,8 @@ const Map<String, String> zh = {
   "Delete all songs or not": "是否删除全部歌曲",
   "Delete all": "删除全部",
   "Cancel": "取消",
+  "No match song": "没有搜索到歌曲",
+  "Add": "添加",
+  "songs": "首歌曲",
+  "Songs have been in the playlist": "歌曲已经在播放列表",
 };

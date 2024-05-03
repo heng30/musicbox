@@ -23,8 +23,8 @@ class HomeDrawer extends StatelessWidget {
               child: Center(
                 child: Image.asset(
                   CIcons.favicon,
-                  width: 80,
-                  height: 80,
+                  width: CTheme.faviconSize,
+                  height: CTheme.faviconSize,
                   fit: BoxFit.cover,
                 ),
               ),

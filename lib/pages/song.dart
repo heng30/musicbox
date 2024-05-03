@@ -1,4 +1,3 @@
-import 'dart:io' show Platform;
 import 'dart:math';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import '../widgets/neubox.dart';
 import '../widgets/vslider.dart';
 import '../widgets/track_shape.dart';
 import '../models/playlist_controller.dart';
+import '../models/util.dart';
 
 class SongPage extends StatelessWidget {
   const SongPage({super.key});
@@ -248,14 +248,6 @@ class SongPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final windowSize = MediaQuery.of(context).size;
 
-    bool isDesktop = false;
-    if (Platform.isMacOS ||
-        Platform.isLinux ||
-        Platform.isWindows ||
-        Platform.isFuchsia) {
-      isDesktop = true;
-    }
-
     return Scaffold(
       backgroundColor: CTheme.background,
       appBar: AppBar(
@@ -265,10 +257,10 @@ class SongPage extends StatelessWidget {
       ),
       body: Center(
         child: SizedBox(
-          width: isDesktop
+          width: isDesktopPlatform()
               ? min(windowSize.width, CTheme.windowWidth)
               : double.infinity,
-          height: isDesktop
+          height: isDesktopPlatform()
               ? max(windowSize.height, CTheme.windowHeight)
               : double.infinity,
           child: _buildBody(context),

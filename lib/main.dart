@@ -1,8 +1,8 @@
-import 'dart:io' show Platform;
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'models/util.dart';
 import 'pages/home.dart';
 import 'routes/routes.dart';
 import 'binding/binding.dart';
@@ -13,7 +13,7 @@ import 'lang/translation_service.dart';
 void main() async {
   initGlobalController();
 
-  if (Platform.isMacOS || Platform.isLinux || Platform.isWindows) {
+  if (isDesktopPlatform()) {
     WidgetsFlutterBinding.ensureInitialized();
     await windowManager.ensureInitialized();
 
