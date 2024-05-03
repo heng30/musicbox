@@ -53,32 +53,39 @@ class SongPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Obx(
-                        () {
-                          final song = playlistController
-                              .playlist[playlistController.currentSongIndex!];
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Obx(
+                          () {
+                            final song = playlistController
+                                .playlist[playlistController.currentSongIndex!];
 
-                          return Text(
-                            song.songName,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          );
-                        },
-                      ),
-                      Obx(
-                        () {
-                          final song = playlistController
-                              .playlist[playlistController.currentSongIndex!];
+                            return Text(
+                              song.songName,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            );
+                          },
+                        ),
+                        Obx(
+                          () {
+                            final song = playlistController
+                                .playlist[playlistController.currentSongIndex!];
 
-                          return Text(
-                            song.artistName,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          );
-                        },
-                      ),
-                    ],
+                            return Text(
+                              song.artistName,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   Obx(
                     () {
