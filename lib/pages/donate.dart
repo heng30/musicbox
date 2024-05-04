@@ -30,7 +30,7 @@ class _DonatePageState extends State<DonatePage> with TickerProviderStateMixin {
 
   List<Widget> _buildTabItems(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final width = min(size.height * 0.7, min(500.0, size.width * 0.7));
+    final width = min(size.height * 0.5, min(500.0, size.width * 0.7));
 
     return [
       Center(

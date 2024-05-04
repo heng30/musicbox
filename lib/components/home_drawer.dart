@@ -86,16 +86,16 @@ class HomeDrawer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            onPressed: () => Get.offAndToNamed('/donate'),
+            onPressed: () => Get.offAndToNamed('/feedback'),
             icon: const Icon(
-              IconFonts.donate,
+              IconFonts.send,
             ),
           ),
           SizedBox(width: CTheme.padding),
           IconButton(
-            onPressed: () => Get.offAndToNamed('/feedback'),
+            onPressed: () => Get.offAndToNamed('/donate'),
             icon: const Icon(
-              IconFonts.send,
+              IconFonts.donate,
             ),
           ),
           SizedBox(width: CTheme.padding),

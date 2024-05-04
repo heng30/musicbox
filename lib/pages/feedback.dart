@@ -39,16 +39,18 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Widget _buildBody(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(CTheme.padding * 2),
-      child: Column(
-        children: [
-          Expanded(
-            child: TextEdit(
-              controller: _textController,
-              hintText: "请输入内容".tr,
-              onChanged: _onTextChange,
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: Column(
+          children: [
+            Expanded(
+              child: TextEdit(
+                controller: _textController,
+                hintText: "请输入内容".tr,
+                onChanged: _onTextChange,
+              ),
             ),
-          ),
-          Padding(
+            Padding(
               padding: EdgeInsets.all(CTheme.padding * 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,8 +87,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     ],
                   ),
                 ],
-              )),
-        ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -32,7 +32,7 @@ class _SearchPageState extends State<SearchPage> {
     var items = playlistController.searchByKeyword(text.trim());
 
     if (items.isEmpty) {
-      Get.snackbar("提 示".tr, "没有搜索到歌曲".tr);
+      Get.snackbar("提 示".tr, "没有搜索到歌曲".tr, snackPosition: SnackPosition.BOTTOM);
     }
 
     songs.value = items;

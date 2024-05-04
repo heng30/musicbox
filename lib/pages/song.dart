@@ -33,20 +33,39 @@ class SongPage extends StatelessWidget {
     }
 
     Widget buildAlbum(BuildContext context) {
+      final orientation = MediaQuery.of(context).orientation;
+
+      Widget buildAlbumImage(BuildContext context) {
+        return Obx(() {
+          final song =
+              playlistController.playlist[playlistController.currentSongIndex!];
+
+          return Image.asset(
+            song.albumArtImagePath,
+            fit: BoxFit.cover,
+          );
+        });
+      }
+
       return NeuBox(
         child: Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(CTheme.borderRadius),
-              child: Obx(() {
-                final song = playlistController
-                    .playlist[playlistController.currentSongIndex!];
+            if (orientation == Orientation.portrait)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(CTheme.borderRadius),
+                child: buildAlbumImage(context),
+              ),
 
-                return Image.asset(
-                  song.albumArtImagePath,
-                );
-              }),
-            ),
+            if (orientation == Orientation.landscape)
+              Expanded(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(CTheme.borderRadius),
+                    child: buildAlbumImage(context),
+                  ),
+                ),
+              ),
 
             // song artist name and icon
             Padding(
@@ -244,40 +263,9 @@ class SongPage extends StatelessWidget {
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 25, right: 25, bottom: 25),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          buildAlbum(context),
-          buildCtrl(context),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final windowSize = MediaQuery.of(context).size;
-
-    return Scaffold(
-      backgroundColor: CTheme.background,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: CTheme.background,
-        title: Text("歌 曲".tr),
-        actions: [
-          IconButton(
-            onPressed: () => Get.find<ThemeController>().toggleTheme(),
-            icon: Icon(
-              Get.find<ThemeController>().isDarkMode.value
-                  ? Icons.dark_mode
-                  : Icons.light_mode,
-            ),
-          ),
-        ],
-      ),
-      body: Center(
+    Widget buildPortraitLayout(BuildContext context) {
+      final windowSize = MediaQuery.of(context).size;
+      return Center(
         child: SizedBox(
           width: isDesktopPlatform()
               ? min(windowSize.width, CTheme.windowWidth)
@@ -285,8 +273,77 @@ class SongPage extends StatelessWidget {
           height: isDesktopPlatform()
               ? max(windowSize.height, CTheme.windowHeight)
               : double.infinity,
-          child: _buildBody(context),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: CTheme.padding * 5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                buildAlbum(context),
+                buildCtrl(context),
+              ],
+            ),
+          ),
         ),
+      );
+    }
+
+    Widget buildLandscapeLayout(BuildContext context) {
+      return Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: CTheme.padding * 5, vertical: CTheme.padding * 2),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: buildAlbum(context),
+            ),
+            SizedBox(width: CTheme.padding * 5),
+            Expanded(
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  buildCtrl(context),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        if (orientation == Orientation.portrait) {
+          return buildPortraitLayout(context);
+        } else {
+          return buildLandscapeLayout(context);
+        }
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () => Scaffold(
+        backgroundColor: CTheme.background,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: CTheme.background,
+          title: Text("歌 曲".tr),
+          actions: [
+            IconButton(
+              onPressed: () => Get.find<ThemeController>().toggleTheme(),
+              icon: Icon(
+                Get.find<ThemeController>().isDarkMode.value
+                    ? Icons.dark_mode
+                    : Icons.light_mode,
+              ),
+            ),
+          ],
+        ),
+        body: _buildBody(context),
       ),
     );
   }
