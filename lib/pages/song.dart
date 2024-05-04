@@ -289,8 +289,7 @@ class SongPage extends StatelessWidget {
 
     Widget buildLandscapeLayout(BuildContext context) {
       return Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: CTheme.padding * 5, vertical: CTheme.padding * 2),
+        padding: EdgeInsets.all(CTheme.padding * 5),
         child: Row(
           children: [
             Expanded(
