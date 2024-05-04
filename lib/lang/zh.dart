@@ -12,7 +12,7 @@ const Map<String, String> zh = {
   "Switch theme": "主题切换",
   "Switch language": "语言切换",
   "Search": "搜索",
-  "Input keyword": "请输入关键字",
+  "Keyword": "请输入关键字",
   "Try again to exit": "再返回一次退出程序",
   "Delete all songs or not": "是否删除全部歌曲",
   "Delete all": "删除全部",

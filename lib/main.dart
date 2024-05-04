@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'models/util.dart';
 import 'pages/home.dart';
@@ -64,6 +65,15 @@ class MyApp extends StatelessWidget {
         locale: const Locale('zh', 'CN'),
         fallbackLocale: TranslationService.fallbackLocal,
         translations: TranslationService(),
+        supportedLocales: const <Locale>[
+          Locale('en', 'US'),
+          Locale('zh', 'CN'),
+        ],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
       ),
     );
   }
