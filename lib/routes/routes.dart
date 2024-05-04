@@ -6,6 +6,9 @@ import '../pages/settings.dart';
 import '../pages/song.dart';
 import '../pages/search.dart';
 import '../pages/manage.dart';
+import "../pages/about.dart";
+import "../pages/donate.dart";
+import "../pages/feedback.dart";
 
 class AppPage {
   static final nofound = GetPage(
@@ -33,6 +36,18 @@ class AppPage {
     GetPage(
       name: "/settings",
       page: () => const SettingsPage(),
+    ),
+    GetPage(
+      name: "/about",
+      page: () => const AboutPage(),
+    ),
+    GetPage(
+      name: "/donate",
+      page: () => const DonatePage(),
+    ),
+    GetPage(
+      name: "/feedback",
+      page: () => const FeedbackPage(),
     ),
   ];
 }

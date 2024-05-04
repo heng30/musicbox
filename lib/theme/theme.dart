@@ -54,3 +54,26 @@ class CTheme {
 class CIcons {
   static const String favicon = "assets/icons/favicon.png";
 }
+
+class IconFonts {
+  static const IconData nodata = IconData(
+    0xe60e,
+    fontFamily: "iconfont",
+    matchTextDirection: true,
+  );
+  static const IconData send = IconData(
+    0xe7f7,
+    fontFamily: "iconfont",
+    matchTextDirection: true,
+  );
+  static const IconData donate = IconData(
+    0xefa1,
+    fontFamily: "iconfont",
+    matchTextDirection: true,
+  );
+  static const IconData github = IconData(
+    0xe632,
+    fontFamily: "iconfont",
+    matchTextDirection: true,
+  );
+}

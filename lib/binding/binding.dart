@@ -4,6 +4,7 @@ import '../theme/controller.dart';
 import '../lang/controller.dart';
 import '../models/playlist_controller.dart';
 import '../models/player_controller.dart';
+import '../models/about_controller.dart';
 
 class InitControllerBinding extends Bindings {
   @override
@@ -12,8 +13,12 @@ class InitControllerBinding extends Bindings {
   }
 }
 
-void initGlobalController() {
+void initGlobalController() async {
   Get.put(LangController());
   Get.put(PlaylistController());
   Get.put(PlayerController());
+
+  final aboutController = AboutController();
+  aboutController.init();
+  Get.put(aboutController);
 }

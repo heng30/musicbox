@@ -1,18 +1,19 @@
-import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../theme/controller.dart';
 import '../theme/theme.dart';
 
 class SettingSwitch extends StatelessWidget {
-  const SettingSwitch(
-      {super.key,
-      required this.title,
-      required this.isOn,
-      required this.onChanged});
+  const SettingSwitch({
+    super.key,
+    required this.title,
+    required this.isOn,
+    required this.icon,
+    required this.onChanged,
+  });
 
   final String title;
   final bool isOn;
+  final IconData icon;
   final ValueChanged<bool>? onChanged;
 
   @override
@@ -27,10 +28,14 @@ class SettingSwitch extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
+          Icon(icon),
+          SizedBox(width: CTheme.padding * 2),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           CupertinoSwitch(

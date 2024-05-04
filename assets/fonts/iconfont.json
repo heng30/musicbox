@@ -1,0 +1,37 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "929751",
+      "name": "send",
+      "font_class": "send",
+      "unicode": "e7f7",
+      "unicode_decimal": 59383
+    },
+    {
+      "icon_id": "5633997",
+      "name": "donate",
+      "font_class": "donate",
+      "unicode": "efa1",
+      "unicode_decimal": 61345
+    },
+    {
+      "icon_id": "7141689",
+      "name": "github",
+      "font_class": "github",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "9782884",
+      "name": "forum-nodata",
+      "font_class": "forum-nodata",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../theme/theme.dart';
 import '../models/song.dart';
 import '../models/playlist_controller.dart';
+import '../widgets/nodata.dart';
 
 class ManagePage extends StatelessWidget {
   const ManagePage({super.key});
@@ -16,15 +17,22 @@ class ManagePage extends StatelessWidget {
         onPressed: () {
           Get.find<PlaylistController>().removeAll();
           Get.back();
+          Get.snackbar("提 示".tr, "已经删除全部歌曲".tr);
         },
         child: Obx(
-          () => Text("删除全部".tr, style: TextStyle(color: CTheme.inversePrimary)),
+          () => Text(
+            "删除全部".tr,
+            style: TextStyle(color: CTheme.inversePrimary),
+          ),
         ),
       ),
       cancel: ElevatedButton(
         onPressed: () => Get.back(),
         child: Obx(
-          () => Text("取消".tr, style: TextStyle(color: CTheme.inversePrimary)),
+          () => Text(
+            "取消".tr,
+            style: TextStyle(color: CTheme.inversePrimary),
+          ),
         ),
       ),
     );
@@ -33,29 +41,32 @@ class ManagePage extends StatelessWidget {
   Widget _buildBody(BuildContext context) {
     final playlistController = Get.find<PlaylistController>();
 
-    return Obx(
-      () => Container(
-        color: CTheme.background,
-        child: ListView.builder(
-          itemCount: Get.find<PlaylistController>().playlist.length,
-          itemBuilder: (count, index) {
-            final song = playlistController.playlist[index];
-            return ListTile(
-              title: Text(song.songName),
-              subtitle: song.artistName != null ? Text(song.artistName!) : null,
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(CTheme.borderRadius),
-                child: Image.asset(song.albumArtImagePath),
+    return playlistController.playlist.isNotEmpty
+        ? Obx(
+            () => Container(
+              color: CTheme.background,
+              child: ListView.builder(
+                itemCount: Get.find<PlaylistController>().playlist.length,
+                itemBuilder: (count, index) {
+                  final song = playlistController.playlist[index];
+                  return ListTile(
+                    title: Text(song.songName),
+                    subtitle:
+                        song.artistName != null ? Text(song.artistName!) : null,
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(CTheme.borderRadius),
+                      child: Image.asset(song.albumArtImagePath),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete_outline),
+                      onPressed: () => playlistController.remove(index),
+                    ),
+                  );
+                },
               ),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete_outline),
-                onPressed: () => playlistController.remove(index),
-              ),
-            );
-          },
-        ),
-      ),
-    );
+            ),
+          )
+        : const NoData();
   }
 
   @override

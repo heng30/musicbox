@@ -12,3 +12,6 @@ run:
 linux:
 	fvm flutter run -d linux
 
+clean:
+	rm -rf ./flutter_jank_metrics_*.json
+	fvm flutter clean

@@ -11,6 +11,7 @@ import 'theme/controller.dart';
 import 'lang/translation_service.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   initGlobalController();
 
   if (isDesktopPlatform()) {

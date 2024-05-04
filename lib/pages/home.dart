@@ -7,6 +7,7 @@ import '../components/home_drawer.dart';
 import '../models/song.dart';
 import '../models/playlist_controller.dart';
 import '../models/player_controller.dart';
+import '../widgets/nodata.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     if (currentBackPressTime == null ||
         now.difference(currentBackPressTime!) > exitDuration) {
       currentBackPressTime = now;
-      Get.snackbar("提 示".tr, '${"再返回一次退出程序".tr}!', duration: exitDuration);
+      Get.snackbar("提 示".tr, "再返回一次退出程序".tr, duration: exitDuration);
 
       return false;
     }
@@ -111,7 +112,9 @@ class _HomePageState extends State<HomePage> {
     return Column(
       children: [
         Expanded(
-          child: _buildBodyPlaylist(context),
+          child: playlistController.playlist.isNotEmpty
+              ? _buildBodyPlaylist(context)
+              : const NoData(),
         ),
         _buildBottomPlayer(context),
       ],

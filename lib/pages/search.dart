@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 import '../widgets/searchbar.dart';
+import '../widgets/nodata.dart';
 import '../models/playlist_controller.dart';
 import '../models/player_controller.dart';
 import '../models/song.dart';
@@ -63,32 +64,36 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Obx(
-      () => Container(
-        color: CTheme.background,
-        child: ListView.builder(
-          itemCount: songs.length,
-          itemBuilder: (count, index) {
-            final song = songs[index];
-            return ListTile(
-                title: Text(song.songName),
-                subtitle:
-                    song.artistName != null ? Text(song.artistName!) : null,
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(CTheme.borderRadius),
-                  child: Image.asset(song.albumArtImagePath),
-                ),
-                onTap: () {
-                  var realIndex = playlistController.findByName(song.songName);
+    return playlistController.playlist.isNotEmpty
+        ? Obx(
+            () => Container(
+              color: CTheme.background,
+              child: ListView.builder(
+                itemCount: songs.length,
+                itemBuilder: (count, index) {
+                  final song = songs[index];
+                  return ListTile(
+                    title: Text(song.songName),
+                    subtitle:
+                        song.artistName != null ? Text(song.artistName!) : null,
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(CTheme.borderRadius),
+                      child: Image.asset(song.albumArtImagePath),
+                    ),
+                    onTap: () {
+                      var realIndex =
+                          playlistController.findByName(song.songName);
 
-                  if (realIndex != null) {
-                    go2song(realIndex);
-                  }
-                });
-          },
-        ),
-      ),
-    );
+                      if (realIndex != null) {
+                        go2song(realIndex);
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
+          )
+        : const NoData();
   }
 
   @override

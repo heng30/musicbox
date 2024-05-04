@@ -21,8 +21,11 @@ class _SettingsPageState extends State<SettingsPage> {
         children: [
           const SizedBox(height: 25),
           SettingSwitch(
-            title: '黑暗模式'.tr,
+            title: '主题切换'.tr,
             isOn: Get.find<ThemeController>().isDarkMode.value,
+            icon: Get.find<ThemeController>().isDarkMode.value
+                ? Icons.dark_mode
+                : Icons.light_mode,
             onChanged: (value) {
               Get.find<ThemeController>().changeTheme(value);
             },
@@ -31,6 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
           SettingSwitch(
             title: '语言切换'.tr,
             isOn: Get.find<LangController>().isZh.value,
+            icon: Icons.translate,
             onChanged: (value) {
               Get.find<LangController>().changeLang(value);
             },
