@@ -24,4 +24,12 @@ const Map<String, String> zh = {
   "NO DATA": "没有数据",
   "Have deleted all songs": "已经删除全部歌曲",
   "Can't access the project": "无法访问项目",
+  "Wechat": "微信支付",
+  "Crypto": "加密支付",
+  "Please input content": "请输入内容",
+  "Send": "发送",
+  "Input text is over the max limit char counts. The over limited chars will be discarded":
+      "输入长度超过2048个字, 多余的字会被丢弃",
+  "Paste": "粘贴",
+  "Select all": "选择全部",
 };

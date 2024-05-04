@@ -91,12 +91,14 @@ class HomeDrawer extends StatelessWidget {
               IconFonts.donate,
             ),
           ),
+          SizedBox(width: CTheme.padding),
           IconButton(
             onPressed: () => Get.offAndToNamed('/feedback'),
             icon: const Icon(
               IconFonts.send,
             ),
           ),
+          SizedBox(width: CTheme.padding),
           IconButton(
             onPressed: () async {
               final Uri url = Uri.parse('https://github.com/Heng30/musicbox');

@@ -41,27 +41,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
+    return TooltipVisibility(
+      visible: false,
+      child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
 
-      initialBinding: InitControllerBinding(),
-      home: const HomePage(),
+        initialBinding: InitControllerBinding(),
+        home: const HomePage(),
 
-      // routes
-      initialRoute: "/",
-      getPages: AppPage.routes,
-      unknownRoute: AppPage.nofound,
-      defaultTransition: Transition.rightToLeft,
+        // routes
+        initialRoute: "/",
+        getPages: AppPage.routes,
+        unknownRoute: AppPage.nofound,
+        defaultTransition: Transition.rightToLeft,
 
-      // theme
-      theme: ThemeController.light,
-      darkTheme: ThemeController.dark,
-      themeMode: ThemeMode.light,
+        // theme
+        theme: ThemeController.light,
+        darkTheme: ThemeController.dark,
+        themeMode: ThemeMode.light,
 
-      // translation
-      locale: const Locale('zh', 'CN'),
-      fallbackLocale: TranslationService.fallbackLocal,
-      translations: TranslationService(),
+        // translation
+        locale: const Locale('zh', 'CN'),
+        fallbackLocale: TranslationService.fallbackLocal,
+        translations: TranslationService(),
+      ),
     );
   }
 }

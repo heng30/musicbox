@@ -49,10 +49,18 @@ class CTheme {
   static double margin = 4;
 
   static double soundsliderwidth = 15;
+  static double iconSize = 24;
 }
 
 class CIcons {
   static const String favicon = "assets/icons/favicon.png";
+  static const String wechat = "assets/icons/wechat-light.svg";
+  static const String metamask = "assets/icons/metamask-light.svg";
+}
+
+class CImages {
+  static const String wechatPay = "assets/images/wechat-pay.png";
+  static const String metamaskPay = "assets/images/metamask-pay.png";
 }
 
 class IconFonts {

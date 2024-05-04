@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
+import '../theme/controller.dart';
 import '../widgets/neubox.dart';
 import '../widgets/vslider.dart';
 import '../widgets/track_shape.dart';
@@ -265,6 +266,16 @@ class SongPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: CTheme.background,
         title: Text("歌 曲".tr),
+        actions: [
+          IconButton(
+            onPressed: () => Get.find<ThemeController>().toggleTheme(),
+            icon: Icon(
+              Get.find<ThemeController>().isDarkMode.value
+                  ? Icons.dark_mode
+                  : Icons.light_mode,
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: SizedBox(

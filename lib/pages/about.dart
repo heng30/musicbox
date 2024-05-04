@@ -13,16 +13,15 @@ class AboutPage extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final iconSize = min(min(100.0, size.width * 0.5), size.height * 0.5);
 
-    return Padding(
-      padding: EdgeInsets.only(
-        top: CTheme.padding * 5,
-        left: CTheme.padding * 2,
-        right: CTheme.padding * 2,
-        bottom: CTheme.padding * 2,
-      ),
-      child: Container(
-        alignment: Alignment.center,
-        color: CTheme.background,
+    return Container(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: EdgeInsets.only(
+          top: CTheme.padding * 5,
+          left: CTheme.padding * 2,
+          right: CTheme.padding * 2,
+          bottom: CTheme.padding * 2,
+        ),
         child: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
           child: Column(
@@ -57,6 +56,7 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
+        backgroundColor: CTheme.background,
         appBar: AppBar(
           centerTitle: true,
           title: Text("关 于".tr),
