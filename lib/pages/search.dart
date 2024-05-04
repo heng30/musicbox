@@ -73,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
             return ListTile(
                 title: Text(song.songName),
                 subtitle:
-                    song.artistName.isNotEmpty ? Text(song.artistName) : null,
+                    song.artistName != null ? Text(song.artistName!) : null,
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(CTheme.borderRadius),
                   child: Image.asset(song.albumArtImagePath),

@@ -72,16 +72,16 @@ class SongPage extends StatelessWidget {
                           },
                         ),
                         if (playlistController
-                            .playlist[playlistController.currentSongIndex!]
-                            .artistName
-                            .isNotEmpty)
+                                .playlist[playlistController.currentSongIndex!]
+                                .artistName !=
+                            null)
                           Obx(
                             () {
                               final song = playlistController.playlist[
                                   playlistController.currentSongIndex!];
 
                               return Text(
-                                song.artistName,
+                                song.artistName!,
                                 softWrap: false,
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context).textTheme.bodyMedium,

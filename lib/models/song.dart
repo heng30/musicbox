@@ -13,7 +13,7 @@ enum AudioLocation {
 
 class Song {
   final String songName;
-  final String artistName;
+  final String? artistName;
   final String albumArtImagePath;
   final String audioPath;
   final AudioLocation audioLocation;
@@ -26,7 +26,7 @@ class Song {
 
   Song.none({
     this.songName = "None",
-    this.artistName = "None",
+    this.artistName,
     this.albumArtImagePath = Albums.noneAsset,
     this.audioPath = noneAsset,
     this.audioLocation = AudioLocation.asset,
@@ -54,12 +54,12 @@ class Song {
 
       for (var item in result.xFiles) {
         String trackName = item.name;
-        String artistName = "";
+        String? artistName;
 
         try {
           final tag = await tagger.readTags(path: item.path);
           trackName = tag?.title ?? item.name;
-          artistName = tag?.artist ?? "";
+          artistName = tag?.artist;
         } catch (e) {
           Logger().d("$e");
         } finally {
