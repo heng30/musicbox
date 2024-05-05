@@ -18,6 +18,12 @@ class AboutController extends GetxController {
 
   PackageInfo get packageInfo => _packageInfo.value;
 
+  @override
+  void onInit() async {
+    super.onInit();
+    init();
+  }
+
   void init() async {
     try {
       _packageInfo.value = await PackageInfo.fromPlatform();

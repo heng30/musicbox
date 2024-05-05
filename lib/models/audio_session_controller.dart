@@ -7,6 +7,12 @@ import './playlist_controller.dart';
 class AudioSessionController extends GetxController {
   AudioSession? session;
 
+  @override
+  void onInit() async {
+    super.onInit();
+    init();
+  }
+
   void init() async {
     try {
       session = await AudioSession.instance;

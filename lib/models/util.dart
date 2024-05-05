@@ -6,3 +6,7 @@ bool isDesktopPlatform() {
       Platform.isWindows ||
       Platform.isFuchsia;
 }
+
+bool isSqfliteSupportPlatform() {
+  return Platform.isIOS || Platform.isAndroid || Platform.isMacOS;
+}
