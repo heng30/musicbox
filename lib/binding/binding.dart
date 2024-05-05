@@ -5,6 +5,7 @@ import '../lang/controller.dart';
 import '../models/playlist_controller.dart';
 import '../models/player_controller.dart';
 import '../models/about_controller.dart';
+import '../models/audio_session_controller.dart';
 
 class InitControllerBinding extends Bindings {
   @override
@@ -15,6 +16,11 @@ class InitControllerBinding extends Bindings {
 
 void initGlobalController() async {
   Get.put(LangController());
+
+  final audioSessionController = AudioSessionController();
+  audioSessionController.init();
+  Get.put(audioSessionController);
+
   Get.put(PlaylistController());
   Get.put(PlayerController());
 

@@ -25,7 +25,6 @@ class SongPage extends StatelessWidget {
 
     if (playlistController.currentSongIndex != currentSongIndex) {
       playlistController.currentSongIndex = currentSongIndex;
-      playlistController.play();
     } else {
       if (!playlistController.isPlaying) {
         playlistController.resume();

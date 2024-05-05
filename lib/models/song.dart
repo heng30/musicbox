@@ -9,6 +9,7 @@ enum AudioLocation {
   asset,
   local,
   remote,
+  memory,
 }
 
 class Song {

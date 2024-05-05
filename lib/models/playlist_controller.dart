@@ -6,6 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 
 import './song.dart';
 import './albums.dart';
+import './audio_session_controller.dart';
 import '../models/player_controller.dart';
 
 enum PlayModel {
@@ -174,7 +175,13 @@ class PlaylistController extends GetxController {
     _audioPlayer.setVolume(volume);
   }
 
+  Future<void> setAudioSessionActive(bool flag) async {
+    final audioSessionController = Get.find<AudioSessionController>();
+    await audioSessionController.setActive(flag);
+  }
+
   void play() async {
+    print("xxxxx:$currentSongIndex");
     if (playlist.isEmpty) {
       return;
     }
@@ -183,21 +190,34 @@ class PlaylistController extends GetxController {
       return;
     }
 
-    final song = playlist[currentSongIndex!];
-    await _audioPlayer.stop(); // stop the current song
-    late Source src;
+    print("0");
+    await setAudioSessionActive(false);
+    print("1");
 
+    await _audioPlayer.stop(); // stop the current song
+    print("2");
+
+    late Source src;
+    final song = playlist[currentSongIndex!];
     try {
       if (song.audioLocation == AudioLocation.asset) {
         src = AssetSource(song.audioPath);
       } else if (song.audioLocation == AudioLocation.local) {
+        src = DeviceFileSource(song.audioPath);
+      } else if (song.audioLocation == AudioLocation.memory) {
         final file = File(song.audioPath);
         src = BytesSource(await file.readAsBytes());
       } else {
         src = UrlSource(song.audioPath);
       }
+
+      print("3");
       await _audioPlayer.play(src);
       isPlaying = true;
+
+      print("4");
+      await setAudioSessionActive(true);
+      print("5");
     } catch (e) {
       await _audioPlayer.release();
       isPlaying = false;
@@ -206,18 +226,36 @@ class PlaylistController extends GetxController {
   }
 
   void stop() async {
+    await setAudioSessionActive(false);
+
     await _audioPlayer.stop();
     isPlaying = false;
   }
 
-  void pause() async {
+  void pause({bool isActiveAduioSession = false}) async {
+    if (!isActiveAduioSession) {
+      await setAudioSessionActive(false);
+    }
+
     await _audioPlayer.pause();
     isPlaying = false;
+
+    if (isActiveAduioSession) {
+      await setAudioSessionActive(true);
+    }
   }
 
-  void resume() async {
+  void resume({bool isActiveAduioSession = true}) async {
+    if (!isActiveAduioSession) {
+      await setAudioSessionActive(false);
+    }
+
     await _audioPlayer.resume();
     isPlaying = true;
+
+    if (isActiveAduioSession) {
+      await setAudioSessionActive(true);
+    }
   }
 
   void pauseOrResume() async {
@@ -243,8 +281,19 @@ class PlaylistController extends GetxController {
     await _audioPlayer.setVolume(volume);
   }
 
+  // get the real volume and update the _volume variable
   void syncVolumn() {
     _volume.value = _audioPlayer.volume;
+  }
+
+  // this is for AudioSession, so we should change the _valume variable
+  void duck(double volume) async {
+    await _audioPlayer.setVolume(volume);
+  }
+
+  // this is for AudioSession, resume the audio volume
+  void unduck() async {
+    await _audioPlayer.setVolume(volume);
   }
 
   void playNextSong() {
@@ -254,6 +303,7 @@ class PlaylistController extends GetxController {
 
     if (playModel == PlayModel.shuffle) {
       currentSongIndex = Random().nextInt(playlist.length);
+      return;
     }
 
     if (isValidCurrentSongIndex) {
@@ -272,6 +322,7 @@ class PlaylistController extends GetxController {
 
     if (playModel == PlayModel.shuffle) {
       currentSongIndex = Random().nextInt(playlist.length);
+      return;
     }
 
     if (isValidCurrentSongIndex) {
