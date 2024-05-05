@@ -16,7 +16,7 @@ class AudioSessionController extends GetxController {
 
       await session?.configure(const AudioSessionConfiguration.music());
 
-      // initListener();
+      initListener();
     } catch (e) {
       Get.snackbar("初始化AudioSession失败".tr, "$e.toString()");
     }

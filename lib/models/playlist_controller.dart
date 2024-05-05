@@ -181,7 +181,6 @@ class PlaylistController extends GetxController {
   }
 
   void play() async {
-    print("xxxxx:$currentSongIndex");
     if (playlist.isEmpty) {
       return;
     }
@@ -190,12 +189,8 @@ class PlaylistController extends GetxController {
       return;
     }
 
-    print("0");
     await setAudioSessionActive(false);
-    print("1");
-
     await _audioPlayer.stop(); // stop the current song
-    print("2");
 
     late Source src;
     final song = playlist[currentSongIndex!];
@@ -211,13 +206,10 @@ class PlaylistController extends GetxController {
         src = UrlSource(song.audioPath);
       }
 
-      print("3");
       await _audioPlayer.play(src);
       isPlaying = true;
 
-      print("4");
       await setAudioSessionActive(true);
-      print("5");
     } catch (e) {
       await _audioPlayer.release();
       isPlaying = false;
