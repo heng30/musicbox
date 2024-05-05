@@ -97,17 +97,12 @@ class _SongPageState extends State<SongPage> {
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          if (playlistController
-                                  .playlist[
-                                      playlistController.currentSongIndex!]
-                                  .artistName !=
-                              null)
-                            Text(
-                              song.artistName!,
-                              softWrap: false,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
+                          Text(
+                            song.artistName ?? "",
+                            softWrap: false,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ],
                       );
                     },
