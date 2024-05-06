@@ -29,7 +29,11 @@ Future<void> initGlobalController() async {
 
   Get.put(LangController());
   Get.put(AudioSessionController());
-  Get.put(PlaylistController());
+
+  final playlistController = PlaylistController();
+  await playlistController.init();
+  Get.put(playlistController);
+
   Get.put(PlayerController());
   Get.put(PlayerTileController());
   Get.put(AboutController());

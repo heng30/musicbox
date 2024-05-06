@@ -17,14 +17,14 @@ class DbController extends GetxController {
   }
 
   Future<bool> createTable(String tableName) async {
-    final createTableSql =
-        'CREATE TABLE $tableName (id INTEGER PRIMARY KEY, uuid TEXT NOT NULL UNIQUE, data TEXT NOT NULL)';
+    final sql =
+        'CREATE TABLE IF NOT EXISTS $tableName (id INTEGER PRIMARY KEY, uuid TEXT NOT NULL UNIQUE, data TEXT NOT NULL)';
 
     try {
       if (isSqfliteSupportPlatform()) {
         db = await openDatabase(settingController.dbPath, version: 1,
             onCreate: (Database db, int version) async {
-          await db.execute(createTableSql);
+          await db.execute(sql);
         });
       } else {
         log.d("Database not implement");
@@ -38,13 +38,13 @@ class DbController extends GetxController {
   }
 
   Future<bool> insert(String tableName, String uuid, String data) async {
+    final sql = "INSERT INTO $tableName (uuid, data) VALUES('$uuid', '$data')";
+
     try {
       if (isSqfliteSupportPlatform()) {
-        await db.readTransaction(
+        await db.transaction(
           (txn) async {
-            await txn.rawInsert(
-                'INSERT INTO $tableName (uuid, data) VALUES(?, ?)',
-                [uuid, data]);
+            await txn.rawInsert(sql);
           },
         );
       } else {
@@ -59,10 +59,11 @@ class DbController extends GetxController {
   }
 
   Future<bool> updateData(String tableName, String uuid, String data) async {
+    final sql = "UPDATE $tableName SET data='$data' WHERE uuid='$uuid'";
+
     try {
       if (isSqfliteSupportPlatform()) {
-        await db.rawUpdate(
-            'UPDATE $tableName SET data=? WHERE uuid=?', [data, uuid]);
+        await db.rawUpdate(sql);
       } else {
         log.d("Database not implement");
         return false;
@@ -75,9 +76,11 @@ class DbController extends GetxController {
   }
 
   Future<bool> delete(String tableName, String uuid) async {
+    final sql = "DELETE FROM $tableName WHERE uuid='$uuid'";
+
     try {
       if (isSqfliteSupportPlatform()) {
-        await db.rawDelete('DELETE FROM $tableName WHERE uuid = ?', [uuid]);
+        await db.rawDelete(sql);
       } else {
         log.d("Database not implement");
         return false;
@@ -90,9 +93,11 @@ class DbController extends GetxController {
   }
 
   Future<bool> deleteAll(String tableName) async {
+    final sql = "DELETE FROM $tableName";
+
     try {
       if (isSqfliteSupportPlatform()) {
-        await db.rawDelete('DELETE FROM $tableName');
+        await db.rawDelete(sql);
       } else {
         log.d("Database not implement");
         return false;
@@ -104,32 +109,35 @@ class DbController extends GetxController {
     return true;
   }
 
-  Future<List<Map>?> select(String tableName, String uuid) async {
+  Future<List<Map<String, dynamic>>> select(
+      String tableName, String uuid) async {
+    final sql = "SELECT * FROM $tableName WHERE uuid='$uuid'";
+
     try {
       if (isSqfliteSupportPlatform()) {
-        return await db
-            .rawQuery('SELECT * FROM $tableName WHERE uuid = ?', [uuid]);
+        return await db.rawQuery(sql);
       } else {
         log.d("Database not implement");
-        return null;
+        return [];
       }
     } catch (e) {
       log.w("Database select error: $e.toString()");
-      return null;
+      return [];
     }
   }
 
-  Future<List<Map>?> selectAll(String tableName) async {
+  Future<List<Map<String, dynamic>>> selectAll(String tableName) async {
+    final sql = "SELECT * FROM $tableName";
     try {
       if (isSqfliteSupportPlatform()) {
-        return await db.rawQuery('SELECT * FROM $tableName');
+        return await db.rawQuery(sql);
       } else {
         log.d("Database not implement");
-        return null;
+        return [];
       }
     } catch (e) {
       log.w("Database select all error: $e.toString()");
-      return null;
+      return [];
     }
   }
 }

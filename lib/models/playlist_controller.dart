@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/foundation.dart';
@@ -8,9 +9,19 @@ import 'package:audiotagger/audiotagger.dart';
 import './song.dart';
 import './albums.dart';
 import './player_controller.dart';
+import './db_controller.dart';
 
 class PlaylistController extends GetxController {
   final playlist = <Song>[].obs;
+  final dbController = Get.find<DbController>();
+  final log = Logger();
+
+  Future<void> init() async {
+    if (!kReleaseMode) fakePlaylist();
+
+    await initFromDB();
+    sortPlaylist();
+  }
 
   void sortPlaylist() {
     playlist.sort((a, b) {
@@ -104,23 +115,29 @@ class PlaylistController extends GetxController {
   }
 
   // remove one song from playlist
-  void remove(int index) {
+  void remove(int index) async {
     if (index < playlist.length) {
       if (currentSongIndex == index) {
         currentSongIndex = null;
       }
+
+      await dbController.delete(
+          DbController.playlistTable, playlist[index].uuid);
+
       playlist.removeAt(index);
     }
   }
 
   // remove all songs from playlist
-  void removeAll() {
+  void removeAll() async {
     playlist.value = [];
     currentSongIndex = null;
+
+    await dbController.deleteAll(DbController.playlistTable);
   }
 
   // add songs to playlist
-  void add(List<Song> songs) {
+  void add(List<Song> songs) async {
     if (songs.isEmpty) return;
 
     List<Song> newSongs = [];
@@ -137,12 +154,25 @@ class PlaylistController extends GetxController {
     } else {
       Get.snackbar("提 示".tr, "歌曲已经在播放列表".tr);
     }
+
+    for (var song in newSongs) {
+      // log.d(jsonEncode(song.toJson()));
+
+      await dbController.insert(
+          DbController.playlistTable, song.uuid, jsonEncode(song.toJson()));
+    }
   }
 
-  PlaylistController() {
-    if (!kReleaseMode) fakePlaylist();
+  Future<void> initFromDB() async {
+    final entrys = await dbController.selectAll(DbController.playlistTable);
 
-    sortPlaylist();
+    var items = <Song>[];
+    for (Map<String, dynamic> item in entrys) {
+      final data = item['data'];
+      Map<String, dynamic> json = jsonDecode(data);
+      items.add(Song.fromJson(json));
+    }
+    playlist.addAll(items);
   }
 
   static Future<List<Song>> loadLocal() async {

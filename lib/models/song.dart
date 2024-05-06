@@ -10,13 +10,25 @@ enum AudioLocation {
   memory,
 }
 
+AudioLocation audioLocationFromStr(String v) {
+  if (v == "AudioLocation.asset") {
+    return AudioLocation.asset;
+  } else if (v == "AudioLocation.local") {
+    return AudioLocation.local;
+  } else if (v == "AudioLocation.remote") {
+    return AudioLocation.remote;
+  } else {
+    return AudioLocation.memory;
+  }
+}
+
 class Song {
-  final String uuid;
-  final String songName;
-  final String? artistName;
-  final String albumArtImagePath;
-  final String audioPath;
-  final AudioLocation audioLocation;
+  String uuid;
+  String songName;
+  String? artistName;
+  String albumArtImagePath;
+  String audioPath;
+  AudioLocation audioLocation;
 
   final RxBool _isFavorite;
   bool get isFavorite => _isFavorite.value;
@@ -42,4 +54,25 @@ class Song {
     bool isFavorite = false,
   })  : _isFavorite = isFavorite.obs,
         uuid = const Uuid().v4();
+
+  Song.fromJson(Map<String, dynamic> json)
+      : uuid = json['uuid'],
+        songName = json['songName'],
+        artistName = json['artistName'],
+        albumArtImagePath = Albums.random(),
+        audioPath = json['audioPath'],
+        audioLocation = audioLocationFromStr(json['audioLocation']),
+        _isFavorite = (json['isFavorite'] as bool).obs;
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> data = {
+      'uuid': uuid,
+      'songName': songName,
+      'artistName': artistName,
+      'audioPath': audioPath,
+      'audioLocation': audioLocation.toString(),
+      'isFavorite': isFavorite,
+    };
+    return data;
+  }
 }

@@ -21,7 +21,7 @@ class SettingController extends GetxController {
       final root = await getApplicationSupportDirectory();
       configPath = "${root.path}/${packageInfo.appName}.toml";
       dbName = "${packageInfo.appName}.db";
-      dbPath = "${root.path}/$dbName.db";
+      dbPath = "${root.path}/$dbName";
 
       log.d("config path: $configPath");
       log.d("database path: $dbPath");
