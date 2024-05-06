@@ -35,6 +35,7 @@ dependencies:
     sdk: flutter
 
   get: ^4.6.6
+  uuid: ^4.4.0
   toml: ^0.15.0
   logger: ^2.2.0
   sqflite: ^2.3.3+1

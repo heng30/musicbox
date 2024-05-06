@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 import '../theme/theme.dart';
 import '../components/home_drawer.dart';
-import '../models/song.dart';
 import '../models/player_controller.dart';
 import '../models/playlist_controller.dart';
 import '../models/player_tile_controller.dart';
@@ -136,7 +135,7 @@ class _HomePageState extends State<HomePage> {
             actions: [
               IconButton(
                 onPressed: () async {
-                  final songs = await Song.loadLocal();
+                  final songs = await PlaylistController.loadLocal();
                   playlistController.add(songs);
                 },
                 icon: const Icon(Icons.add),

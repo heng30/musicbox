@@ -58,6 +58,29 @@ class PlayerController extends GetxController {
     await audioSessionController.setActive(flag);
   }
 
+  Future<Source> genSrc(int index) async {
+    late Source src;
+    final song = playlistController.playlist[index];
+
+    if (song.audioLocation == AudioLocation.asset) {
+      src = AssetSource(song.audioPath);
+    } else if (song.audioLocation == AudioLocation.local) {
+      src = DeviceFileSource(song.audioPath);
+    } else if (song.audioLocation == AudioLocation.memory) {
+      final file = File(song.audioPath);
+      src = BytesSource(await file.readAsBytes());
+    } else {
+      src = UrlSource(song.audioPath);
+    }
+
+    return src;
+  }
+
+  Future<void> setSrc(int index) async {
+    final src = await genSrc(index);
+    _audioPlayer.setSource(src);
+  }
+
   void play() async {
     if (playlistController.playlist.isEmpty) {
       return;
@@ -70,21 +93,8 @@ class PlayerController extends GetxController {
     await setAudioSessionActive(false);
     await _audioPlayer.stop(); // stop the current song
 
-    late Source src;
-    final song =
-        playlistController.playlist[playlistController.currentSongIndex!];
-
     try {
-      if (song.audioLocation == AudioLocation.asset) {
-        src = AssetSource(song.audioPath);
-      } else if (song.audioLocation == AudioLocation.local) {
-        src = DeviceFileSource(song.audioPath);
-      } else if (song.audioLocation == AudioLocation.memory) {
-        final file = File(song.audioPath);
-        src = BytesSource(await file.readAsBytes());
-      } else {
-        src = UrlSource(song.audioPath);
-      }
+      final src = await genSrc(playlistController.currentSongIndex!);
 
       await _audioPlayer.play(src);
       await _audioPlayer.setPlaybackRate(speed);

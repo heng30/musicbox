@@ -82,7 +82,7 @@ class ManagePage extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () async {
-                final songs = await Song.loadLocal();
+                final songs = await PlaylistController.loadLocal();
                 playlistController.add(songs);
               },
               icon: const Icon(Icons.add),

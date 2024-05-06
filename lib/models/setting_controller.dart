@@ -12,6 +12,7 @@ class SettingController extends GetxController {
 
   late String configPath;
   late String dbPath;
+  late String dbName;
 
   Future<bool> init() async {
     final log = Logger();
@@ -19,7 +20,8 @@ class SettingController extends GetxController {
       final packageInfo = await PackageInfo.fromPlatform();
       final root = await getApplicationSupportDirectory();
       configPath = "${root.path}/${packageInfo.appName}.toml";
-      dbPath = "${root.path}/${packageInfo.appName}.db";
+      dbName = "${packageInfo.appName}.db";
+      dbPath = "${root.path}/$dbName.db";
 
       log.d("config path: $configPath");
       log.d("database path: $dbPath");

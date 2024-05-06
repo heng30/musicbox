@@ -8,6 +8,7 @@ import '../models/player_tile_controller.dart';
 import '../models/about_controller.dart';
 import '../models/audio_session_controller.dart';
 import '../models/setting_controller.dart';
+import '../models/db_controller.dart';
 
 class InitControllerBinding extends Bindings {
   @override
@@ -22,10 +23,14 @@ Future<void> initGlobalController() async {
   await settingController.init();
   Get.put(settingController);
 
+  final dbController = DbController();
+  await dbController.init();
+  Get.put(dbController);
+
   Get.put(LangController());
   Get.put(AudioSessionController());
   Get.put(PlaylistController());
-  Get.put(PlayerTileController());
   Get.put(PlayerController());
+  Get.put(PlayerTileController());
   Get.put(AboutController());
 }

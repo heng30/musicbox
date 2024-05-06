@@ -1,6 +1,9 @@
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:flutter/foundation.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:audiotagger/audiotagger.dart';
 
 import './song.dart';
 import './albums.dart';
@@ -43,10 +46,10 @@ class PlaylistController extends GetxController {
 
   // put fake songs into playlist
   void fakePlaylist() {
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 2; i++) {
       playlist.add(
         Song(
-          songName: "本地测试音频",
+          songName: "$i本地测试音频",
           artistName: "测试",
           albumArtImagePath: Albums.random(),
           audioPath: "audio/none.mp3",
@@ -55,7 +58,6 @@ class PlaylistController extends GetxController {
         ),
       );
     }
-
     playlist.add(
       Song(
         songName: "在线mp3音频",
@@ -63,7 +65,7 @@ class PlaylistController extends GetxController {
         albumArtImagePath: Albums.random(),
         audioPath: "https://download.samplelib.com/mp3/sample-15s.mp3",
         audioLocation: AudioLocation.remote,
-        isFavorite: true,
+        isFavorite: false,
       ),
     );
   }
@@ -87,6 +89,13 @@ class PlaylistController extends GetxController {
 
       playerController.play();
     }
+  }
+
+  void setCurrentSongIndexWithoutPlay(int index) {
+    _currentSongIndex = index.obs;
+
+    final playerController = Get.find<PlayerController>();
+    playerController.setSrc(index);
   }
 
   // toggle favorite song by index
@@ -134,5 +143,44 @@ class PlaylistController extends GetxController {
     if (!kReleaseMode) fakePlaylist();
 
     sortPlaylist();
+  }
+
+  static Future<List<Song>> loadLocal() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'wav', 'flac', 'ogg'],
+    );
+
+    var songs = <Song>[];
+    if (result != null) {
+      final tagger = Audiotagger();
+
+      for (var item in result.xFiles) {
+        String trackName = item.name;
+        String? artistName;
+
+        try {
+          final tag = await tagger.readTags(path: item.path);
+          trackName = tag?.title ?? item.name;
+          artistName = tag?.artist;
+        } catch (e) {
+          Logger().d("$e");
+        } finally {
+          if (trackName.isEmpty) trackName = item.name;
+        }
+
+        songs.add(
+          Song(
+            songName: trackName,
+            artistName: artistName,
+            albumArtImagePath: Albums.random(),
+            audioPath: item.path,
+          ),
+        );
+      }
+    }
+
+    return songs;
   }
 }
