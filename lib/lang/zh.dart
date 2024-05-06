@@ -32,4 +32,5 @@ const Map<String, String> zh = {
       "输入长度超过2048个字, 多余的字会被丢弃",
   "Paste": "粘贴",
   "Select all": "选择全部",
+  "Save setting failed": "保存配置失败",
 };

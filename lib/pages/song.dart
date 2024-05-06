@@ -332,7 +332,7 @@ class _SongPageState extends State<SongPage> {
             IconButton(
               onPressed: () => Get.find<ThemeController>().toggleTheme(),
               icon: Icon(
-                Get.find<ThemeController>().isDarkMode.value
+                Get.find<ThemeController>().isDarkMode
                     ? Icons.dark_mode
                     : Icons.light_mode,
               ),

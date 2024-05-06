@@ -32,4 +32,5 @@ const Map<String, String> en = {
       "Input text is over the max limit char counts. The over limited chars will be discarded",
   "粘贴": "Paste",
   "选择全部": "Select all",
+  "保存配置失败": "Save setting failed",
 };

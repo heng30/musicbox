@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import '../lang/controller.dart';
-import '../theme/controller.dart';
 import '../theme/theme.dart';
+import '../theme/controller.dart';
+import '../lang/controller.dart';
 import '../components/setting_switch.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -22,22 +22,18 @@ class _SettingsPageState extends State<SettingsPage> {
           const SizedBox(height: 25),
           SettingSwitch(
             title: '主题切换'.tr,
-            isOn: Get.find<ThemeController>().isDarkMode.value,
-            icon: Get.find<ThemeController>().isDarkMode.value
+            isOn: Get.find<ThemeController>().isDarkMode,
+            icon: Get.find<ThemeController>().isDarkMode
                 ? Icons.dark_mode
                 : Icons.light_mode,
-            onChanged: (value) {
-              Get.find<ThemeController>().changeTheme(value);
-            },
+            onChanged: Get.find<ThemeController>().changeTheme,
           ),
           const SizedBox(height: 25),
           SettingSwitch(
             title: '语言切换'.tr,
-            isOn: Get.find<LangController>().isZh.value,
+            isOn: Get.find<LangController>().isZh,
             icon: Icons.translate,
-            onChanged: (value) {
-              Get.find<LangController>().changeLang(value);
-            },
+            onChanged: Get.find<LangController>().changeLang,
           ),
         ],
       ),

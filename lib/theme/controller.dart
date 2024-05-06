@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import '../models/setting_controller.dart';
+
 ThemeData lightMode = ThemeData(
   colorScheme: ColorScheme.light(
     background: Colors.grey.shade300,
@@ -20,19 +22,34 @@ ThemeData darkMode = ThemeData(
 );
 
 class ThemeController extends GetxController {
-  final isDarkMode = false.obs;
+  final _isDarkMode = false.obs;
+  bool get isDarkMode => _isDarkMode.value;
+  set isDarkMode(bool v) => _isDarkMode.value = v;
 
   static final light = lightMode;
   static final dark = darkMode;
 
-  void changeTheme(bool isDarkMode) {
-    this.isDarkMode.value = isDarkMode;
-    Get.changeTheme(
-        this.isDarkMode.value ? ThemeData.dark() : ThemeData.light());
+  final settingController = Get.find<SettingController>();
+
+  @override
+  void onInit() {
+    super.onInit();
+    isDarkMode = settingController.isDarkMode;
   }
 
-  void toggleTheme() {
-    isDarkMode.value = !isDarkMode.value;
-    Get.changeTheme(isDarkMode.value ? ThemeData.dark() : ThemeData.light());
+  void changeTheme(bool darkMode) async {
+    isDarkMode = darkMode;
+    Get.changeTheme(isDarkMode ? ThemeData.dark() : ThemeData.light());
+
+    settingController.isDarkMode = isDarkMode;
+    await settingController.save();
+  }
+
+  void toggleTheme() async {
+    isDarkMode = !isDarkMode;
+    Get.changeTheme(isDarkMode ? ThemeData.dark() : ThemeData.light());
+
+    settingController.isDarkMode = isDarkMode;
+    await settingController.save();
   }
 }

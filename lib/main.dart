@@ -10,6 +10,7 @@ import 'binding/binding.dart';
 import 'theme/theme.dart';
 import 'theme/controller.dart';
 import 'lang/translation_service.dart';
+import 'models/setting_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,11 +35,11 @@ void main() async {
     });
   }
 
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +60,14 @@ class MyApp extends StatelessWidget {
         // theme
         theme: ThemeController.light,
         darkTheme: ThemeController.dark,
-        themeMode: ThemeMode.light,
+        themeMode: Get.find<SettingController>().isDarkMode
+            ? ThemeMode.dark
+            : ThemeMode.light,
 
         // translation
-        locale: const Locale('zh', 'CN'),
+        locale: Get.find<SettingController>().isLangZh
+            ? const Locale('zh', 'CN')
+            : const Locale('en', 'US'),
         fallbackLocale: TranslationService.fallbackLocal,
         translations: TranslationService(),
         supportedLocales: const <Locale>[
