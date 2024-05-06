@@ -8,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 class SettingController extends GetxController {
   bool isDarkMode = false;
   bool isLangZh = true;
+  double playbackSpeed = 1.0;
 
   late String configPath;
   late String dbPath;
@@ -38,6 +39,7 @@ class SettingController extends GetxController {
       final conf = (await TomlDocument.load(configPath)).toMap();
       isDarkMode = conf['isDarkMode'] ?? false;
       isLangZh = conf['isLangZh'] ?? true;
+      playbackSpeed = conf['playbackSpeed'] ?? 1.0;
       log.d(conf.toString());
     } catch (e) {
       log.d("Load configure error: ${e.toString()}");
@@ -51,6 +53,7 @@ class SettingController extends GetxController {
     final conf = TomlDocument.fromMap({
       'isDarkMode': isDarkMode,
       'isLangZh': isLangZh,
+      'playbackSpeed': playbackSpeed,
     }).toString();
 
     final f = File(configPath);

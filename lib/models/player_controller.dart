@@ -6,6 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import './song.dart';
 import './playlist_controller.dart';
 import './audio_session_controller.dart';
+import './setting_controller.dart';
 import '../models/player_tile_controller.dart';
 
 enum PlayModel {
@@ -17,6 +18,7 @@ enum PlayModel {
 class PlayerController extends GetxController {
   final _audioPlayer = AudioPlayer();
   final playlistController = Get.find<PlaylistController>();
+  final settingController = Get.find<SettingController>();
 
   final _isPlaying = false.obs;
   bool get isPlaying => _isPlaying.value;
@@ -32,6 +34,7 @@ class PlayerController extends GetxController {
 
   PlayerController() {
     listenToDuration();
+    speed = settingController.playbackSpeed;
     _audioPlayer.setVolume(volume);
   }
 
@@ -150,6 +153,9 @@ class PlayerController extends GetxController {
   void setSpeed(double v) async {
     _speed.value = v;
     await _audioPlayer.setPlaybackRate(speed);
+
+    settingController.playbackSpeed = v;
+    await settingController.save();
   }
 
   final _volume = 0.5.obs;
