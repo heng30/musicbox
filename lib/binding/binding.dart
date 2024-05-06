@@ -4,6 +4,7 @@ import '../theme/controller.dart';
 import '../lang/controller.dart';
 import '../models/playlist_controller.dart';
 import '../models/player_controller.dart';
+import '../models/player_tile_controller.dart';
 import '../models/about_controller.dart';
 import '../models/audio_session_controller.dart';
 import '../models/setting_controller.dart';
@@ -24,6 +25,7 @@ Future<void> initGlobalController() async {
   Get.put(LangController());
   Get.put(AudioSessionController());
   Get.put(PlaylistController());
+  Get.put(PlayerTileController());
   Get.put(PlayerController());
   Get.put(AboutController());
 }

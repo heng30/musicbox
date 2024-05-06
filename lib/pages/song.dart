@@ -7,6 +7,7 @@ import '../theme/controller.dart';
 import '../widgets/neubox.dart';
 import '../widgets/vslider.dart';
 import '../widgets/track_shape.dart';
+import '../models/player_controller.dart';
 import '../models/playlist_controller.dart';
 import '../models/util.dart';
 
@@ -25,6 +26,7 @@ class _SongPageState extends State<SongPage> {
   }
 
   final playlistController = Get.find<PlaylistController>();
+  final playerController = Get.find<PlayerController>();
   final currentSongIndex = Get.arguments["currentSongIndex"];
 
   @override
@@ -34,14 +36,14 @@ class _SongPageState extends State<SongPage> {
     if (playlistController.currentSongIndex != currentSongIndex) {
       playlistController.currentSongIndex = currentSongIndex;
     } else {
-      if (!playlistController.isPlaying) {
-        playlistController.resume();
+      if (!playerController.isPlaying) {
+        playerController.resume();
       }
     }
   }
 
   void updateSpeed(double speed) {
-    playlistController.speed = speed;
+    playerController.speed = speed;
     Get.back();
   }
 
@@ -172,33 +174,33 @@ class _SongPageState extends State<SongPage> {
             width: 50,
             alignment: Alignment.centerLeft,
             child: Obx(
-              () => Text(formatTime(playlistController.currentDuration)),
+              () => Text(formatTime(playerController.currentDuration)),
             ),
           ),
           Obx(
             () => IconButton(
-              icon: playlistController.playModel == PlayModel.loop
+              icon: playerController.playModel == PlayModel.loop
                   ? const Icon(Icons.repeat)
-                  : (playlistController.playModel == PlayModel.shuffle
+                  : (playerController.playModel == PlayModel.shuffle
                       ? const Icon(Icons.shuffle)
                       : const Icon(Icons.loop)),
               onPressed: () {
-                playlistController.playModelNext();
+                playerController.playModelNext();
               },
             ),
           ),
           Obx(
             () => IconButton(
-              icon: playlistController.isMute
+              icon: playerController.isMute
                   ? const Icon(Icons.volume_mute)
                   : const Icon(Icons.volume_down_rounded),
               onPressed: () {
-                playlistController.syncVolumn();
+                playerController.syncVolumn();
                 showVSliderDialog(
                   context,
-                  initValue: playlistController.volume * 100,
+                  initValue: playerController.volume * 100,
                   onChanged: (value) {
-                    playlistController.setVolumn(value / 100.0);
+                    playerController.setVolumn(value / 100.0);
                   },
                 );
               },
@@ -207,7 +209,7 @@ class _SongPageState extends State<SongPage> {
           TextButton(
             onPressed: selectSpeedRate,
             child: Obx(
-              () => Text("${playlistController.speed}x",
+              () => Text("${playerController.speed}x",
                   style: Theme.of(context).textTheme.bodyMedium),
             ),
           ),
@@ -215,7 +217,7 @@ class _SongPageState extends State<SongPage> {
             width: 50,
             alignment: Alignment.centerRight,
             child: Obx(
-              () => Text(formatTime(playlistController.totalDuration)),
+              () => Text(formatTime(playerController.totalDuration)),
             ),
           )
         ],
@@ -232,13 +234,13 @@ class _SongPageState extends State<SongPage> {
       child: Obx(
         () => Slider(
           min: 0,
-          max: playlistController.totalDuration.inSeconds.toDouble(),
-          value: playlistController.currentDuration.inSeconds.toDouble(),
+          max: playerController.totalDuration.inSeconds.toDouble(),
+          value: playerController.currentDuration.inSeconds.toDouble(),
           activeColor: CTheme.aduioProcessBar,
           inactiveColor: CTheme.secondary,
           onChanged: (value) {},
           onChangeEnd: (value) {
-            playlistController.seek(Duration(seconds: value.toInt()));
+            playerController.seek(Duration(seconds: value.toInt()));
           },
         ),
       ),
@@ -251,7 +253,7 @@ class _SongPageState extends State<SongPage> {
         Expanded(
           flex: 1,
           child: GestureDetector(
-            onTap: playlistController.playPreviousSong,
+            onTap: playerController.playPreviousSong,
             child: const NeuBox(child: Icon(Icons.skip_previous)),
           ),
         ),
@@ -260,9 +262,9 @@ class _SongPageState extends State<SongPage> {
           () => Expanded(
             flex: 2,
             child: GestureDetector(
-              onTap: playlistController.pauseOrResume,
+              onTap: playerController.pauseOrResume,
               child: NeuBox(
-                child: Icon(playlistController.isPlaying
+                child: Icon(playerController.isPlaying
                     ? Icons.pause
                     : Icons.play_arrow),
               ),
@@ -273,7 +275,7 @@ class _SongPageState extends State<SongPage> {
         Expanded(
           flex: 1,
           child: GestureDetector(
-            onTap: () => playlistController.playNextSong(),
+            onTap: () => playerController.playNextSong(),
             child: const NeuBox(child: Icon(Icons.skip_next)),
           ),
         ),

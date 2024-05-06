@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../theme/theme.dart';
-import '../models/player_controller.dart';
+import '../models/player_tile_controller.dart';
 import '../models/playlist_controller.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -12,7 +12,7 @@ class HomeDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final playlistController = Get.find<PlaylistController>();
-    final playerController = Get.find<PlayerController>();
+    final playerTileController = Get.find<PlayerTileController>();
 
     Widget buildHeader(BuildContext context) {
       return DrawerHeader(
@@ -55,7 +55,8 @@ class HomeDrawer extends StatelessWidget {
               ),
               onTap: () async {
                 await Get.offAndToNamed('/manage');
-                playerController.playingSong = playlistController.playingSong();
+                playerTileController.playingSong =
+                    playlistController.playingSong();
               },
             ),
             ListTile(

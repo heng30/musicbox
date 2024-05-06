@@ -5,7 +5,7 @@ import '../theme/theme.dart';
 import '../widgets/searchbar.dart';
 import '../widgets/nodata.dart';
 import '../models/playlist_controller.dart';
-import '../models/player_controller.dart';
+import '../models/player_tile_controller.dart';
 import '../models/song.dart';
 
 class SearchPage extends StatefulWidget {
@@ -19,13 +19,13 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controllerSearch = TextEditingController();
   final FocusNode _focusNodeSearch = FocusNode();
   final playlistController = Get.find<PlaylistController>();
-  final playerController = Get.find<PlayerController>();
+  final playerTileController = Get.find<PlayerTileController>();
 
   final songs = <Song>[].obs;
 
   void go2song(int index) async {
     await Get.offAndToNamed("/song", arguments: {"currentSongIndex": index});
-    playerController.playingSong = playlistController.playingSong();
+    playerTileController.playingSong = playlistController.playingSong();
   }
 
   void search(String text) {

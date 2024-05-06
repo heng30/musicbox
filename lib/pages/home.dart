@@ -5,8 +5,9 @@ import 'package:flutter/services.dart';
 import '../theme/theme.dart';
 import '../components/home_drawer.dart';
 import '../models/song.dart';
-import '../models/playlist_controller.dart';
 import '../models/player_controller.dart';
+import '../models/playlist_controller.dart';
+import '../models/player_tile_controller.dart';
 import '../widgets/nodata.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,13 +18,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  DateTime? currentBackPressTime;
   final playlistController = Get.find<PlaylistController>();
   final playerController = Get.find<PlayerController>();
-  DateTime? currentBackPressTime;
+  final playerTileController = Get.find<PlayerTileController>();
 
   void go2song(int index) async {
     await Get.toNamed("/song", arguments: {"currentSongIndex": index});
-    playerController.playingSong = playlistController.playingSong();
+    playerTileController.playingSong = playlistController.playingSong();
   }
 
   bool closeOnConfirmed() {
@@ -77,7 +79,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBottomPlayer(BuildContext context) {
-    final song = playerController.playingSong;
+    final song = playerTileController.playingSong;
 
     return Obx(
       () => Container(
@@ -92,10 +94,10 @@ class _HomePageState extends State<HomePage> {
               child: Image.asset(song.albumArtImagePath),
             ),
             trailing: IconButton(
-              icon: playlistController.isPlaying
+              icon: playerController.isPlaying
                   ? const Icon(Icons.pause)
                   : const Icon(Icons.play_arrow),
-              onPressed: playlistController.pauseOrResume,
+              onPressed: playerController.pauseOrResume,
             ),
             onTap: () {
               if (playlistController.isValidCurrentSongIndex) {

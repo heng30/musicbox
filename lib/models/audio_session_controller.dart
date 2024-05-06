@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import "package:logger/logger.dart";
 import 'package:audio_session/audio_session.dart';
 
-import './playlist_controller.dart';
+import './player_controller.dart';
 
 class AudioSessionController extends GetxController {
   AudioSession? session;
@@ -52,20 +52,20 @@ class AudioSessionController extends GetxController {
   void initListener() {
     session?.interruptionEventStream.listen(
       (event) {
-        final playlistController = Get.find<PlaylistController>();
+        final playerController = Get.find<PlayerController>();
 
         if (event.begin) {
           switch (event.type) {
             case AudioInterruptionType.duck:
               // Another app started playing audio and we should duck.
               Logger().d("should duck");
-              playlistController.duck(0.1);
+              playerController.duck(0.1);
               break;
             case AudioInterruptionType.pause:
             case AudioInterruptionType.unknown:
               // Another app started playing audio and we should pause.
               Logger().d("should pause");
-              playlistController.pause();
+              playerController.pause();
               break;
           }
         } else {
@@ -73,12 +73,12 @@ class AudioSessionController extends GetxController {
             case AudioInterruptionType.duck:
               // The interruption ended and we should unduck.
               Logger().d("should unduck");
-              playlistController.unduck();
+              playerController.unduck();
               break;
             case AudioInterruptionType.pause:
               // The interruption ended and we should resume.
               Logger().d("should resume");
-              playlistController.resume();
+              playerController.resume();
               break;
             case AudioInterruptionType.unknown:
               // The interruption ended but we should not resume.
@@ -91,8 +91,8 @@ class AudioSessionController extends GetxController {
 
     session?.becomingNoisyEventStream.listen((_) {
       Logger().d("device unplug");
-      final playlistController = Get.find<PlaylistController>();
-      playlistController.duck(0.1);
+      final playerController = Get.find<PlayerController>();
+      playerController.duck(0.1);
     });
   }
 }
