@@ -40,6 +40,36 @@ class _SongPageState extends State<SongPage> {
     }
   }
 
+  void updateSpeed(double speed) {
+    playlistController.speed = speed;
+    Get.back();
+  }
+
+  void selectSpeedRate() {
+    Get.bottomSheet(
+      Container(
+        color: CTheme.background,
+        height: 350,
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [2.0, 1.75, 1.5, 1.25, 1.0, 0.75, 0.5]
+              .map(
+                (item) => SizedBox(
+                  height: 50,
+                  width: double.infinity,
+                  child: ListTile(
+                    title: Text(item.toString(), textAlign: TextAlign.center),
+                    onTap: () => updateSpeed(item),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ),
+    );
+  }
+
   Widget buildAlbum(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
 
@@ -172,6 +202,13 @@ class _SongPageState extends State<SongPage> {
                   },
                 );
               },
+            ),
+          ),
+          TextButton(
+            onPressed: selectSpeedRate,
+            child: Obx(
+              () => Text("${playlistController.speed}x",
+                  style: Theme.of(context).textTheme.bodyMedium),
             ),
           ),
           Container(

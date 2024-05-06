@@ -207,6 +207,8 @@ class PlaylistController extends GetxController {
       }
 
       await _audioPlayer.play(src);
+      await _audioPlayer.setPlaybackRate(speed);
+
       isPlaying = true;
 
       await setAudioSessionActive(true);
@@ -262,6 +264,15 @@ class PlaylistController extends GetxController {
 
   void seek(Duration position) async {
     await _audioPlayer.seek(position);
+  }
+
+  final _speed = 1.0.obs;
+  double get speed => _speed.value;
+  set speed(double v) => setSpeed(v);
+
+  void setSpeed(double v) async {
+    _speed.value = v;
+    await _audioPlayer.setPlaybackRate(speed);
   }
 
   final _volume = 0.5.obs;
