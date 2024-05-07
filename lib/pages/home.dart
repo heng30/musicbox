@@ -9,6 +9,9 @@ import '../models/playlist_controller.dart';
 import '../models/player_tile_controller.dart';
 import '../widgets/nodata.dart';
 
+import '../src/rust/api/simple.dart';
+import '../src/rust/api/hello.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -118,6 +121,14 @@ class _HomePageState extends State<HomePage> {
               : const NoData(),
         ),
         _buildBottomPlayer(context),
+        Text(
+            'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`'),
+        ElevatedButton(
+            onPressed: () async {
+              print(await hello(a: "hi"));
+              print(await getIp());
+            },
+            child: const Text("Say Hello from Rust")),
       ],
     );
   }

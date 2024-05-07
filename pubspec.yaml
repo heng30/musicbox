@@ -50,6 +50,11 @@ dependencies:
   cupertino_icons: ^1.0.6
   package_info_plus: ^8.0.0
 
+  # this automatically add from the cmd: `flutter_rust_bridge_codegen integrate`
+  rust_lib_musicbox:
+    path: rust_builder
+  flutter_rust_bridge: 2.0.0-dev.33
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -62,6 +67,8 @@ dev_dependencies:
   flutter_lints: ^3.0.0
   flutter_native_splash: ^2.4.0
   flutter_launcher_icons: ^0.13.1
+  integration_test:
+    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

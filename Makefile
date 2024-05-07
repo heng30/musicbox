@@ -1,5 +1,7 @@
 #!/bin/bash
 
+run-evn= RUST_LOG=debug,sqlx=off,reqwest=off
+
 gen-icons:
 	fvm flutter pub run flutter_launcher_icons
 
@@ -7,10 +9,10 @@ gen-splash:
 	fvm dart run flutter_native_splash:create
 
 run:
-	fvm flutter run
+	$(run-evn) fvm flutter run
 
-linux:
-	fvm flutter run -d linux
+run-linux:
+	$(run-evn) fvm flutter run -d linux
 
 clean:
 	rm -rf ./flutter_jank_metrics_*.json
@@ -18,3 +20,12 @@ clean:
 
 clean-jank:
 	rm -rf ./flutter_jank_metrics_*.json
+
+# just call this cmd once
+# integrate-rust:
+# 	flutter_rust_bridge_codegen integrate
+
+# it will watch the rust codes and generate dart codes on the background
+generate-rust-watch:
+	flutter_rust_bridge_codegen generate --watch
+
