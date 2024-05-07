@@ -2,6 +2,9 @@ import 'dart:math';
 
 class Albums {
   static const String noneAsset = "assets/images/album_none.png";
+  static int _currentIndex = 0;
+  static int _previousRandomIndex = 0;
+  static int _currentRandomIndex = 0;
 
   static const List<String> albumsAsset = [
     "assets/images/album_1.png",
@@ -17,7 +20,18 @@ class Albums {
   ];
 
   static String random() {
-    int index = Random().nextInt(albumsAsset.length);
-    return albumsAsset[index];
+    _currentRandomIndex = Random().nextInt(albumsAsset.length);
+    if (_currentRandomIndex == _previousRandomIndex) {
+      _currentIndex = (_currentIndex + 1) % albumsAsset.length;
+      return albumsAsset[_currentRandomIndex];
+    }
+
+    _previousRandomIndex = _currentRandomIndex;
+    return albumsAsset[_currentRandomIndex];
+  }
+
+  static String next() {
+    _currentIndex = (_currentIndex + 1) % albumsAsset.length;
+    return albumsAsset[_currentIndex];
   }
 }

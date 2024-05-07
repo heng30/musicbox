@@ -110,8 +110,11 @@ class PlaylistController extends GetxController {
   }
 
   // toggle favorite song by index
-  void toggleFavorite(index) {
+  void toggleFavorite(index) async {
     playlist[index].isFavorite = !playlist[index].isFavorite;
+
+    await dbController.updateData(DbController.playlistTable,
+        playlist[index].uuid, jsonEncode(playlist[index].toJson()));
   }
 
   // remove one song from playlist
@@ -204,7 +207,7 @@ class PlaylistController extends GetxController {
           Song(
             songName: trackName,
             artistName: artistName,
-            albumArtImagePath: Albums.random(),
+            albumArtImagePath: Albums.next(),
             audioPath: item.path,
           ),
         );

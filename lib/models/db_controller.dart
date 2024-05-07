@@ -16,6 +16,26 @@ class DbController extends GetxController {
     await createTable(playlistTable);
   }
 
+  Future<bool> deleteDB() async {
+    try {
+      await deleteDatabase(settingController.dbPath);
+    } catch (e) {
+      log.w("Delete database error: $e.toString()");
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> closeDB() async {
+    try {
+      await db.close();
+    } catch (e) {
+      log.w("Delete database error: $e.toString()");
+      return false;
+    }
+    return true;
+  }
+
   Future<bool> createTable(String tableName) async {
     final sql =
         'CREATE TABLE IF NOT EXISTS $tableName (id INTEGER PRIMARY KEY, uuid TEXT NOT NULL UNIQUE, data TEXT NOT NULL)';
@@ -138,6 +158,39 @@ class DbController extends GetxController {
     } catch (e) {
       log.w("Database select all error: $e.toString()");
       return [];
+    }
+  }
+
+  Future<bool> dropTable(String tableName) async {
+    final sql = "DROP TABLE IF EXISTS $tableName";
+
+    try {
+      if (isSqfliteSupportPlatform()) {
+        await db.execute(sql);
+      } else {
+        log.d("Database not implement");
+        return false;
+      }
+    } catch (e) {
+      log.w("Database drop table error: $e.toString()");
+      return false;
+    }
+    return true;
+  }
+
+  Future<int> tableCount(String tableName) async {
+    final sql = "SELECT COUNT(*) FROM $tableName";
+
+    try {
+      if (isSqfliteSupportPlatform()) {
+        return Sqflite.firstIntValue(await db.rawQuery(sql)) ?? 0;
+      } else {
+        log.d("Database not implement");
+        return -1;
+      }
+    } catch (e) {
+      log.w("Database drop table error: $e.toString()");
+      return -1;
     }
   }
 }
