@@ -2,20 +2,29 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
-import '../models/song.dart';
 import '../models/playlist_controller.dart';
 import '../widgets/nodata.dart';
 
-class ManagePage extends StatelessWidget {
+class ManagePage extends StatefulWidget {
   const ManagePage({super.key});
 
-  void clearPlaylistDialog() {
+  @override
+  State<ManagePage> createState() => _ManagePageState();
+}
+
+class _ManagePageState extends State<ManagePage> {
+  final playlistController = Get.find<PlaylistController>();
+  final GlobalKey<AnimatedListState> animatedListGlobalKey =
+      GlobalKey<AnimatedListState>(
+          debugLabel: "manage page listview debug label");
+
+  void _clearPlaylistDialog() {
     Get.defaultDialog(
       title: "提 示".tr,
       middleText: '${"是否删除全部歌曲".tr}?',
       confirm: ElevatedButton(
         onPressed: () {
-          Get.find<PlaylistController>().removeAll();
+          playlistController.removeAll();
           Get.back();
           Get.snackbar("提 示".tr, "已经删除全部歌曲".tr);
         },
@@ -38,29 +47,52 @@ class ManagePage extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    final playlistController = Get.find<PlaylistController>();
+  Widget _buildAnimationListTile(int index) {
+    final song = playlistController.playlist[index];
+    return ListTile(
+      title: Text(song.songName),
+      subtitle: song.artistName != null ? Text(song.artistName!) : null,
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(CTheme.borderRadius),
+        child: Image.asset(song.albumArtImagePath),
+      ),
+      trailing: IconButton(
+        icon: const Icon(Icons.delete_outline),
+        onPressed: () {
+          if (index >= playlistController.playlist.length) {
+            return;
+          }
 
+          var item = _buildAnimationListTile(index);
+
+          animatedListGlobalKey.currentState!.removeItem(
+            index,
+            (context, animation) {
+              return ScaleTransition(
+                scale: animation,
+                child: item,
+              );
+            },
+          );
+
+          playlistController.remove(index);
+        },
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
     return playlistController.playlist.isNotEmpty
         ? Obx(
             () => Container(
               color: CTheme.background,
-              child: ListView.builder(
-                itemCount: Get.find<PlaylistController>().playlist.length,
-                itemBuilder: (count, index) {
-                  final song = playlistController.playlist[index];
-                  return ListTile(
-                    title: Text(song.songName),
-                    subtitle:
-                        song.artistName != null ? Text(song.artistName!) : null,
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(CTheme.borderRadius),
-                      child: Image.asset(song.albumArtImagePath),
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => playlistController.remove(index),
-                    ),
+              child: AnimatedList(
+                initialItemCount: playlistController.playlist.length,
+                key: animatedListGlobalKey,
+                itemBuilder: (context, index, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: _buildAnimationListTile(index),
                   );
                 },
               ),
@@ -71,8 +103,6 @@ class ManagePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final playlistController = Get.find<PlaylistController>();
-
     return Obx(
       () => Scaffold(
         appBar: AppBar(
@@ -88,7 +118,7 @@ class ManagePage extends StatelessWidget {
               icon: const Icon(Icons.add),
             ),
             IconButton(
-              onPressed: clearPlaylistDialog,
+              onPressed: _clearPlaylistDialog,
               icon: const Icon(Icons.delete),
             ),
           ],
