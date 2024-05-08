@@ -12,13 +12,13 @@ import 'theme/controller.dart';
 import 'lang/translation_service.dart';
 import 'models/setting_controller.dart';
 import 'src/rust/frb_generated.dart';
-import 'src/rust/api/log.dart' as rust_log;
+import 'src/rust/api/log.dart' as rustlog;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await RustLib.init();
-  await rust_log.init();
+  await rustlog.init();
 
   await initGlobalController();
 

@@ -10,18 +10,21 @@ crate-type = ["cdylib", "staticlib"]
 log = "0.4"
 anyhow = "1.0"
 chrono = "0.4"
+lazy_static = "1.4"
 flutter_rust_bridge = "=2.0.0-dev.33"
 tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["serde_derive"] }
 
-[target.'cfg(not(target_os = "android"))'.dependencies]
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 env_logger = "0.10"
+reqwest = { version = "0.12", features = ["json", "socks"] }
+sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite"] }
+
+[target.'cfg(target_os = "ios")'.dependencies]
+oslog = "0.2.0"
 
 [target.'cfg(target_os = "android")'.dependencies]
 android_logger = "0.13"
-
-# desktop platform
-[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-reqwest = { version = "0.12", features = ["json", "socks"] }
 
 # mobile platform
 [target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
@@ -31,5 +34,3 @@ reqwest = { version = "0.12", features = [
   "json",
   "socks",
 ] }
-
-

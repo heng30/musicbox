@@ -8,5 +8,12 @@ bool isDesktopPlatform() {
 }
 
 bool isSqfliteSupportPlatform() {
-  return Platform.isIOS || Platform.isAndroid || Platform.isMacOS;
+  return Platform.isIOS || Platform.isAndroid;
+}
+
+bool isRustSqliteSupportPlatform() {
+  return Platform.isLinux ||
+      Platform.isWindows ||
+      Platform.isMacOS ||
+      Platform.isFuchsia;
 }

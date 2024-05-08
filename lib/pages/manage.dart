@@ -51,7 +51,7 @@ class _ManagePageState extends State<ManagePage> {
     final song = playlistController.playlist[index];
     return ListTile(
       title: Text(song.songName),
-      subtitle: song.artistName != null ? Text(song.artistName!) : null,
+      subtitle: Text(song.artistName ?? ""),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(CTheme.borderRadius),
         child: Image.asset(song.albumArtImagePath),

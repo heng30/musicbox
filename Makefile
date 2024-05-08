@@ -14,6 +14,9 @@ run:
 run-linux:
 	$(run-evn) fvm flutter run -d linux
 
+build-apk:
+	fvm flutter build apk
+
 clean:
 	rm -rf ./flutter_jank_metrics_*.json
 	fvm flutter clean
@@ -24,6 +27,10 @@ clean-jank:
 # just call this cmd once
 # integrate-rust:
 # 	flutter_rust_bridge_codegen integrate
+
+# it will watch the rust codes and generate dart codes on the background
+generate-rust:
+	flutter_rust_bridge_codegen generate
 
 # it will watch the rust codes and generate dart codes on the background
 generate-rust-watch:

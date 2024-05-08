@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 
 import './util.dart';
 import './setting_controller.dart';
+import '../src/rust/api/db.dart' as rustdb;
 
 class DbController extends GetxController {
   static const playlistTable = "playlist";
@@ -13,24 +14,66 @@ class DbController extends GetxController {
   late Database db;
 
   Future<void> init() async {
-    await createTable(playlistTable);
+    try {
+      if (isSqfliteSupportPlatform()) {
+        await createDb(settingController.dbPath);
+        await createTable(playlistTable);
+      } else if (isRustSqliteSupportPlatform()) {
+        await rustdb.createDb(dbPath: settingController.dbPath);
+        await createTable(playlistTable);
+      } else {
+        log.d("Database not implement");
+      }
+    } catch (e) {
+      log.w("init database error: $e");
+    }
   }
 
-  Future<bool> deleteDB() async {
+  Future<bool> createDb(String dbPath) async {
     try {
-      await deleteDatabase(settingController.dbPath);
+      if (isSqfliteSupportPlatform()) {
+        db = await openDatabase(dbPath, version: 1);
+        return true;
+      } else if (isRustSqliteSupportPlatform()) {
+        await rustdb.createDb(dbPath: settingController.dbPath);
+        return true;
+      } else {
+        log.d("Create database not implement");
+        return false;
+      }
     } catch (e) {
-      log.w("Delete database error: $e.toString()");
+      log.w("init database error: $e");
+      return false;
+    }
+  }
+
+  Future<bool> deleteDb() async {
+    try {
+      if (isSqfliteSupportPlatform()) {
+        await deleteDatabase(settingController.dbPath);
+      } else if (isRustSqliteSupportPlatform()) {
+        await rustdb.deleteDb(dbPath: settingController.dbPath);
+      } else {
+        log.d("Database not implement");
+      }
+    } catch (e) {
+      log.w("Delete database error: $e");
       return false;
     }
     return true;
   }
 
-  Future<bool> closeDB() async {
+  Future<bool> closeDb() async {
     try {
-      await db.close();
+      if (isSqfliteSupportPlatform()) {
+        await db.close();
+      } else if (isRustSqliteSupportPlatform()) {
+        await rustdb.closeDb();
+      } else {
+        log.d("Database not implement");
+      }
     } catch (e) {
-      log.w("Delete database error: $e.toString()");
+      log.w("Delete database error: $e");
       return false;
     }
     return true;
@@ -38,20 +81,19 @@ class DbController extends GetxController {
 
   Future<bool> createTable(String tableName) async {
     final sql =
-        'CREATE TABLE IF NOT EXISTS $tableName (id INTEGER PRIMARY KEY, uuid TEXT NOT NULL UNIQUE, data TEXT NOT NULL)';
+        "CREATE TABLE IF NOT EXISTS $tableName (id INTEGER PRIMARY KEY, uuid TEXT NOT NULL UNIQUE, data TEXT NOT NULL)";
 
     try {
       if (isSqfliteSupportPlatform()) {
-        db = await openDatabase(settingController.dbPath, version: 1,
-            onCreate: (Database db, int version) async {
-          await db.execute(sql);
-        });
+        await db.execute(sql);
+      } else if (isRustSqliteSupportPlatform()) {
+        await rustdb.createTable(sql: sql);
       } else {
         log.d("Database not implement");
         return false;
       }
     } catch (e) {
-      log.w("Open database error: $e.toString()");
+      log.w("Open database error: $e");
       return false;
     }
     return true;
@@ -67,12 +109,14 @@ class DbController extends GetxController {
             await txn.rawInsert(sql);
           },
         );
+      } else if (isRustSqliteSupportPlatform()) {
+        await rustdb.insert(sql: sql);
       } else {
         log.d("Database not implement");
         return false;
       }
     } catch (e) {
-      log.w("Database insert error: $e.toString()");
+      log.w("Database insert error: $e");
       return false;
     }
     return true;
@@ -84,12 +128,14 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await db.rawUpdate(sql);
+      } else if (isRustSqliteSupportPlatform()) {
+        await rustdb.update(sql: sql);
       } else {
         log.d("Database not implement");
         return false;
       }
     } catch (e) {
-      log.w("Database update error: $e.toString()");
+      log.w("Database update error: $e");
       return false;
     }
     return true;
@@ -101,12 +147,14 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await db.rawDelete(sql);
+      } else if (isRustSqliteSupportPlatform()) {
+        await rustdb.delete(sql: sql);
       } else {
         log.d("Database not implement");
         return false;
       }
     } catch (e) {
-      log.w("Database delete error: $e.toString()");
+      log.w("Database delete error: $e");
       return false;
     }
     return true;
@@ -118,12 +166,14 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await db.rawDelete(sql);
+      } else if (isRustSqliteSupportPlatform()) {
+        await rustdb.deleteAll(sql: sql);
       } else {
-        log.d("Database not implement");
+        log.d("Database delete all not implement");
         return false;
       }
     } catch (e) {
-      log.w("Database delete all error: $e.toString()");
+      log.w("Database delete all error: $e");
       return false;
     }
     return true;
@@ -136,12 +186,14 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         return await db.rawQuery(sql);
+      } else if (isRustSqliteSupportPlatform()) {
+        return await rustdb.select(sql: sql);
       } else {
         log.d("Database not implement");
         return [];
       }
     } catch (e) {
-      log.w("Database select error: $e.toString()");
+      log.w("Database select error: $e");
       return [];
     }
   }
@@ -151,12 +203,14 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         return await db.rawQuery(sql);
+      } else if (isRustSqliteSupportPlatform()) {
+        return await rustdb.selectAll(sql: sql);
       } else {
-        log.d("Database not implement");
+        log.d("Database select all not implement");
         return [];
       }
     } catch (e) {
-      log.w("Database select all error: $e.toString()");
+      log.w("Database select all error: $e");
       return [];
     }
   }
@@ -167,29 +221,33 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await db.execute(sql);
+      } else if (isRustSqliteSupportPlatform()) {
+        await rustdb.dropTable(sql: sql);
       } else {
-        log.d("Database not implement");
+        log.d("Database drop table not implement");
         return false;
       }
     } catch (e) {
-      log.w("Database drop table error: $e.toString()");
+      log.w("Database drop table error: $e");
       return false;
     }
     return true;
   }
 
-  Future<int> tableCount(String tableName) async {
+  Future<int> rowCount(String tableName) async {
     final sql = "SELECT COUNT(*) FROM $tableName";
 
     try {
       if (isSqfliteSupportPlatform()) {
         return Sqflite.firstIntValue(await db.rawQuery(sql)) ?? 0;
+      } else if (isRustSqliteSupportPlatform()) {
+        return await rustdb.rowCount(sql: sql);
       } else {
         log.d("Database not implement");
         return -1;
       }
     } catch (e) {
-      log.w("Database drop table error: $e.toString()");
+      log.w("Database row count error: $e");
       return -1;
     }
   }
