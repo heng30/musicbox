@@ -5,6 +5,8 @@ import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../lang/translation_service.dart';
+
 class SettingController extends GetxController {
   bool isDarkMode = false;
   bool isLangZh = true;
@@ -37,10 +39,12 @@ class SettingController extends GetxController {
 
   Future<bool> load() async {
     final log = Logger();
+    isLangZh = TranslationService.locale?.languageCode == 'zh';
+
     try {
       final conf = (await TomlDocument.load(configPath)).toMap();
       isDarkMode = conf['isDarkMode'] ?? false;
-      isLangZh = conf['isLangZh'] ?? true;
+      isLangZh = conf['isLangZh'] ?? isLangZh;
       playbackSpeed = conf['playbackSpeed'] ?? 1.0;
       log.d(conf.toString());
     } catch (e) {
