@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
             final song = playlistController.playlist[index];
             return ListTile(
               title: Text(song.songName),
-              subtitle: Text(song.artistName ?? ""),
+              subtitle: Text(song.artistName),
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(CTheme.borderRadius),
                 child: Image.asset(song.albumArtImagePath),
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.symmetric(vertical: CTheme.padding),
           child: ListTile(
             title: Text(song.songName),
-            subtitle: Text(song.artistName ?? ""),
+            subtitle: Text(song.artistName),
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(CTheme.borderRadius),
               child: Image.asset(song.albumArtImagePath),

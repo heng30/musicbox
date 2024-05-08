@@ -26,7 +26,8 @@ class _ManagePageState extends State<ManagePage> {
         onPressed: () {
           playlistController.removeAll();
           Get.back();
-          Get.snackbar("提 示".tr, "已经删除全部歌曲".tr);
+          Get.snackbar("提 示".tr, "已经删除全部歌曲".tr,
+              snackPosition: SnackPosition.BOTTOM);
         },
         child: Obx(
           () => Text(
@@ -51,7 +52,7 @@ class _ManagePageState extends State<ManagePage> {
     final song = playlistController.playlist[index];
     return ListTile(
       title: Text(song.songName),
-      subtitle: Text(song.artistName ?? ""),
+      subtitle: Text(song.artistName),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(CTheme.borderRadius),
         child: Image.asset(song.albumArtImagePath),

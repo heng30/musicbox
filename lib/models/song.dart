@@ -25,7 +25,7 @@ AudioLocation audioLocationFromStr(String v) {
 class Song {
   String uuid;
   String songName;
-  String? artistName;
+  String artistName;
   String albumArtImagePath;
   String audioPath;
   AudioLocation audioLocation;
@@ -39,7 +39,7 @@ class Song {
   Song.none({
     this.uuid = "uuid-none",
     this.songName = "None",
-    this.artistName,
+    this.artistName = "",
     this.albumArtImagePath = Albums.noneAsset,
     this.audioPath = noneAsset,
     this.audioLocation = AudioLocation.asset,
@@ -58,7 +58,7 @@ class Song {
   Song.fromJson(Map<String, dynamic> json)
       : uuid = json['uuid'],
         songName = json['songName'],
-        artistName = json['artistName'],
+        artistName = json['artistName'] ?? "",
         albumArtImagePath = Albums.random(),
         audioPath = json['audioPath'],
         audioLocation = audioLocationFromStr(json['audioLocation']),

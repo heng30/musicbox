@@ -152,10 +152,12 @@ class PlaylistController extends GetxController {
     }
 
     if (newSongs.isNotEmpty) {
-      Get.snackbar("提 示".tr, '${"添加".tr} ${newSongs.length} ${"首歌曲".tr}');
+      Get.snackbar("提 示".tr, '${"添加".tr} ${newSongs.length} ${"首歌曲".tr}',
+          snackPosition: SnackPosition.BOTTOM);
       playlist.addAll(newSongs);
     } else {
-      Get.snackbar("提 示".tr, "歌曲已经在播放列表".tr);
+      Get.snackbar("提 示".tr, "歌曲已经在播放列表".tr,
+          snackPosition: SnackPosition.BOTTOM);
     }
 
     for (var song in newSongs) {
@@ -191,12 +193,12 @@ class PlaylistController extends GetxController {
 
       for (var item in result.xFiles) {
         String trackName = item.name;
-        String? artistName;
+        String artistName = "";
 
         try {
           final tag = await tagger.readTags(path: item.path);
           trackName = tag?.title ?? item.name;
-          artistName = tag?.artist;
+          artistName = tag?.artist ?? "";
         } catch (e) {
           Logger().d("$e");
         } finally {

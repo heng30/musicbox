@@ -19,6 +19,7 @@ build-apk:
 
 clean:
 	rm -rf ./flutter_jank_metrics_*.json
+	rm -rf ./rust/target
 	fvm flutter clean
 
 clean-jank:

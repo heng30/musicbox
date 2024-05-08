@@ -130,7 +130,7 @@ class _SongPageState extends State<SongPage> {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           Text(
-                            song.artistName ?? "",
+                            song.artistName,
                             softWrap: false,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodyMedium,

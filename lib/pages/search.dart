@@ -74,7 +74,7 @@ class _SearchPageState extends State<SearchPage> {
                   final song = songs[index];
                   return ListTile(
                     title: Text(song.songName),
-                    subtitle: Text(song.artistName ?? ""),
+                    subtitle: Text(song.artistName),
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(CTheme.borderRadius),
                       child: Image.asset(song.albumArtImagePath),
