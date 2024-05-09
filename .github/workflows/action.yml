@@ -1,0 +1,40 @@
+name: GitHub Actions
+on: [push]
+jobs:
+  action-run:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "The ${{ github.workspace }} is now ready to test your code on the runner."
+      - run: ls ${{ github.workspace }}
+
+      - run: echo "start install Rust..."
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+      - run: echo "end install Rust..."
+
+      - run: echo "start install Cargo..."
+      - name: Install Cargo
+        uses: actions-rs/cargo@v1
+      - run: echo "end install Cargo..."
+
+      - run: echo "start install Flutter..."
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build libgtk-3-dev
+      - run: echo "end install Flutter..."
+
+      - run: echo "start build for linux..."
+      - run: flutter build linux
+      - run: echo "end build for linux..."
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."
