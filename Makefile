@@ -14,6 +14,9 @@ run:
 run-linux:
 	$(run-evn) fvm flutter run -d linux
 
+build-rust:
+	cd ./rust && cargo build
+
 build-apk:
 	fvm flutter build apk
 

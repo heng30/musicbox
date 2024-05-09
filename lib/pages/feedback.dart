@@ -1,8 +1,11 @@
 import 'package:get/get.dart';
+import 'package:dio/dio.dart';
+import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 import '../widgets/textedit.dart';
+import '../models/setting_controller.dart';
 
 class FeedbackPage extends StatefulWidget {
   const FeedbackPage({super.key});
@@ -14,6 +17,7 @@ class FeedbackPage extends StatefulWidget {
 class _FeedbackPageState extends State<FeedbackPage> {
   final _textController = TextEditingController();
   final _currentTextCounts = 0.obs;
+  final _feedbackUrl = "https://heng30.xyz/apisvr/musicbox/feedback";
 
   void _onTextChange(String text) {
     if (text.length > 2048) {
@@ -23,11 +27,41 @@ class _FeedbackPageState extends State<FeedbackPage> {
     _currentTextCounts.value = text.length;
   }
 
-  // TODO
-  void _sendFeedback() {
-    final feedback = _textController.text;
-    print(feedback);
-    print(Get.deviceLocale);
+  void _sendFeedback() async {
+    Dio dio = Dio();
+    final feedback = _textController.text.trim();
+    final settingController = Get.find<SettingController>();
+
+    if (feedback.isEmpty) {
+      Get.snackbar("提 示".tr, "请输入反馈信息".tr);
+      return;
+    }
+
+    Map<String, dynamic> data = {
+      "appid": settingController.appid ?? "",
+      "type": "feedback",
+      "data": feedback,
+    };
+
+    try {
+      final response = await dio.post(
+        _feedbackUrl,
+        data: data,
+        options: Options(
+          contentType: Headers.jsonContentType,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        Get.snackbar("提 示".tr, "发送成功".tr);
+      } else {
+        Get.snackbar(
+            "发送失败".tr, "${response.statusCode}: ${response.statusMessage}");
+      }
+    } catch (e) {
+      Get.snackbar("发送失败".tr, e.toString());
+      Logger().d(e.toString());
+    }
   }
 
   @override

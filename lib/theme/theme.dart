@@ -38,16 +38,17 @@ class CTheme {
   static double get blurRadius =>
       Get.find<ThemeController>().isDarkMode ? margin * 2 : margin * 3;
 
-  static double windowWidth = 350;
-  static double windowHeight = 800;
-  static double faviconSize = 80;
+  static Color brand = const Color(0xFF0000B8);
+  static Color secondaryBrand = const Color(0xFF3F51B5);
 
-  static double borderRadius = 8;
-  static double padding = 4;
-  static double margin = 4;
+  static double windowWidth = 350.0;
+  static double windowHeight = 800.0;
+  static double faviconSize = 80.0;
 
-  static double soundsliderwidth = 15;
-  static double iconSize = 24;
+  static double borderRadius = 8.0;
+  static double padding = 4.0;
+  static double margin = 4.0;
+  static double iconSize = 24.0;
 }
 
 class CIcons {
@@ -59,6 +60,10 @@ class CIcons {
 class CImages {
   static const String wechatPay = "assets/images/wechat-pay.png";
   static const String metamaskPay = "assets/images/metamask-pay.png";
+
+  static const String landingPlayer = "assets/images/landing-player.svg";
+  static const String landingDownload = "assets/images/landing-download.svg";
+  static const String landingWelcome = "assets/images/landing-welcome.svg";
 }
 
 class IconFonts {

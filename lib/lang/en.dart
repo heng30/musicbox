@@ -33,4 +33,18 @@ const Map<String, String> en = {
   "粘贴": "Paste",
   "选择全部": "Select all",
   "保存配置失败": "Save setting failed",
+  "播放音乐": "P L A Y E R",
+  "你可以播放本地音乐，创建播放列表。": "You can play local music and create playlist.",
+  "下载音乐": "D O W N L O A D",
+  "你可以下载Youtube 和 Bilibili 上的音乐，进行离线播放。":
+      "You can download music from Youtube and Bilibili. Playing music offline.",
+  "欢迎使用": "W E L C O M E",
+  "享受你的音乐之旅": "Enjoy your journey of music",
+  "返回": "Back",
+  "完成": "Finish",
+  "下一步": "Next",
+  "跳过": "Skip",
+  "请输入反馈信息": "Please input feedback message",
+  "发送成功": "Send successful",
+  "发送失败": "Send failed",
 };

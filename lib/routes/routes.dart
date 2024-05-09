@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../pages/home.dart';
+import '../pages/landing.dart';
 import '../pages/nofound.dart';
 import '../pages/settings.dart';
 import '../pages/song.dart';
@@ -20,6 +21,10 @@ class AppPage {
     GetPage(
       name: "/",
       page: () => const HomePage(),
+    ),
+    GetPage(
+      name: "/landing",
+      page: () => const LandingPage(),
     ),
     GetPage(
       name: "/song",

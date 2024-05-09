@@ -58,7 +58,8 @@ class App extends StatelessWidget {
         home: const HomePage(),
 
         // routes
-        initialRoute: "/",
+        initialRoute:
+            Get.find<SettingController>().isFirstLaunch ? "/landing" : "/",
         getPages: AppPage.routes,
         unknownRoute: AppPage.nofound,
         defaultTransition: Transition.rightToLeft,
@@ -89,30 +90,3 @@ class App extends StatelessWidget {
     );
   }
 }
-
-
-// import 'package:flutter/material.dart';
-// import 'package:musicbox/src/rust/api/simple.dart';
-// import 'package:musicbox/src/rust/frb_generated.dart';
-
-// Future<void> main() async {
-//   await RustLib.init();
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(title: const Text('flutter_rust_bridge quickstart')),
-//         body: Center(
-//           child: Text(
-//               'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`'),
-//         ),
-//       ),
-//     );
-//   }
-// }

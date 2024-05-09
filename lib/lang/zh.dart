@@ -33,4 +33,18 @@ const Map<String, String> zh = {
   "Paste": "粘贴",
   "Select all": "选择全部",
   "Save setting failed": "保存配置失败",
+  "P L A Y E R": "播放音乐",
+  "You can play local music and create playlist.": "你可以播放本地音乐，创建播放列表。",
+  "D O W N L O A D": "下载音乐",
+  "You can download music from Youtube and Bilibili. Playing music offline.":
+      "你可以下载Youtube 和 Bilibili 上的音乐，进行离线播放。",
+  "W E L C O M E": "欢迎使用",
+  "Enjoy your journey of music": "享受你的音乐之旅",
+  "Back": "返回",
+  "Finish": "完成",
+  "Next": "下一步",
+  "Skip": "跳过",
+  "Please input feedback message": "请输入反馈信息",
+  "Send successful": "发送成功",
+  "Send failed": "发送失败",
 };

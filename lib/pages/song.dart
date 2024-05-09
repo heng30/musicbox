@@ -50,9 +50,15 @@ class _SongPageState extends State<SongPage> {
   void selectSpeedRate() {
     Get.bottomSheet(
       Container(
-        color: CTheme.background,
         height: 350,
         width: double.infinity,
+        decoration: BoxDecoration(
+          color: CTheme.background,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(CTheme.borderRadius),
+            topRight: Radius.circular(CTheme.borderRadius),
+          ),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [2.0, 1.75, 1.5, 1.25, 1.0, 0.75, 0.5]
