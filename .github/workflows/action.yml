@@ -20,11 +20,6 @@ jobs:
           toolchain: stable
       - run: echo "end install Rust..."
 
-      - run: echo "start install Cargo..."
-      - name: Install Cargo
-        uses: actions-rs/cargo@v1
-      - run: echo "end install Cargo..."
-
       - run: echo "start install Flutter..."
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
