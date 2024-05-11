@@ -1,5 +1,7 @@
 pub mod log;
 pub mod db;
+pub mod video_info;
+pub mod youtube;
 
 #[flutter_rust_bridge::frb(init)]
 pub fn init_app() {

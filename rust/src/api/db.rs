@@ -1,7 +1,9 @@
 use anyhow::Result;
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tokio::{fs, sync::Mutex};
+
+#[cfg(not(any(target_os = "android", target_os = "ios")))]
+use serde::{Deserialize, Serialize};
 
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 use sqlx::{
