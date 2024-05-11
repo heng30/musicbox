@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import '../theme/theme.dart';
-import '../theme/controller.dart';
-import '../lang/controller.dart';
-import '../components/setting_switch.dart';
+import '../../theme/theme.dart';
+import '../../theme/controller.dart';
+import '../../lang/controller.dart';
+import '../../widgets/setting_switch.dart';
+import '../../widgets/setting_entry.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -34,6 +35,12 @@ class _SettingsPageState extends State<SettingsPage> {
             isOn: Get.find<LangController>().isZh,
             icon: Icons.translate,
             onChanged: Get.find<LangController>().changeLang,
+          ),
+          const SizedBox(height: 25),
+          SettingEntry(
+            title: '代理设置'.tr,
+            icon: Icons.traffic,
+            onTap: () => Get.toNamed("/settings/proxy"),
           ),
         ],
       ),

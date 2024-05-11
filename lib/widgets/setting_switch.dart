@@ -20,16 +20,16 @@ class SettingSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(CTheme.borderRadius),
         color: CTheme.secondary,
       ),
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(left: 25, right: 25),
+      padding: const EdgeInsets.all(CTheme.padding * 4),
+      margin: const EdgeInsets.symmetric(horizontal: CTheme.margin * 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Icon(icon),
-          SizedBox(width: CTheme.padding * 2),
+          const SizedBox(width: CTheme.padding * 2),
           Expanded(
             child: Text(
               title,

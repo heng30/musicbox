@@ -41,14 +41,14 @@ class CTheme {
   static Color brand = const Color(0xFF0000B8);
   static Color secondaryBrand = const Color(0xFF3F51B5);
 
-  static double windowWidth = 350.0;
-  static double windowHeight = 800.0;
-  static double faviconSize = 80.0;
+  static const double windowWidth = 350.0;
+  static const double windowHeight = 800.0;
+  static const double faviconSize = 80.0;
 
-  static double borderRadius = 8.0;
-  static double padding = 4.0;
-  static double margin = 4.0;
-  static double iconSize = 24.0;
+  static const double borderRadius = 8.0;
+  static const double padding = 4.0;
+  static const double margin = 4.0;
+  static const double iconSize = 24.0;
 }
 
 class CIcons {

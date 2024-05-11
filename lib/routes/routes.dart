@@ -3,13 +3,14 @@ import 'package:get/get.dart';
 import '../pages/home.dart';
 import '../pages/landing.dart';
 import '../pages/nofound.dart';
-import '../pages/settings.dart';
 import '../pages/song.dart';
 import '../pages/search.dart';
 import '../pages/manage.dart';
 import "../pages/about.dart";
 import "../pages/donate.dart";
 import "../pages/feedback.dart";
+import '../pages/setting/settings.dart';
+import '../pages/setting/proxy.dart';
 
 class AppPage {
   static final nofound = GetPage(
@@ -41,6 +42,12 @@ class AppPage {
     GetPage(
       name: "/settings",
       page: () => const SettingsPage(),
+      children: [
+        GetPage(
+          name: "/proxy",
+          page: () => const SettingProxyPage(),
+        ),
+      ],
     ),
     GetPage(
       name: "/about",

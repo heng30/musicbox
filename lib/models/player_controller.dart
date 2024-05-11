@@ -34,7 +34,9 @@ class PlayerController extends GetxController {
 
   PlayerController() {
     listenToDuration();
-    speed = settingController.playbackSpeed;
+    _speed.value = settingController.playbackSpeed;
+
+    _audioPlayer.setPlaybackRate(settingController.playbackSpeed);
     _audioPlayer.setVolume(volume);
   }
 

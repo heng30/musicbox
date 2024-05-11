@@ -8,19 +8,86 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../lang/translation_service.dart';
 
+class Proxy implements TomlEncodableValue {
+  Proxy({
+    this.httpUrl = "127.0.0.1",
+    this.httpPort = 3128,
+    this.socks5Url = "127.0.0.1",
+    this.socks5Port = 1080,
+    bool enableYoutubeHttp = false,
+    bool enableYoutubeSocks5 = false,
+    bool enableBilibiliHttp = false,
+    bool enableBilibiliSocks5 = false,
+  })  : _enableYoutubeHttp = enableYoutubeHttp.obs,
+        _enableYoutubeSocks5 = enableYoutubeSocks5.obs,
+        _enableBilibiliHttp = enableBilibiliHttp.obs,
+        _enableBilibiliSocks5 = enableBilibiliSocks5.obs;
+
+  @override
+  dynamic toTomlValue() {
+    return {
+      'httpUrl': httpUrl,
+      'httpPort': httpPort,
+      'socks5Url': httpUrl,
+      'socks5Port': socks5Port,
+      'enableYoutubeHttp': enableYoutubeHttp,
+      'enableYoutubeSocks5': enableYoutubeSocks5,
+      'enableBilibiliHttp': enableBilibiliHttp,
+      'enableBilibiliSocks5': enableBilibiliSocks5,
+    };
+  }
+
+  void fromMap(Map<String, dynamic> m) {
+    httpUrl = m['httpUrl'] ?? "127.0.0.1";
+    httpPort = m['httpPort'] ?? 3128;
+    socks5Url = m['socks5Url'] ?? "127.0.0.1";
+    socks5Port = m['socks5Port'] ?? 1080;
+    enableYoutubeHttp = m['enableYoutubeHttp'] ?? false;
+    enableYoutubeSocks5 = m['enableYoutubeSocks5'] ?? false;
+    enableBilibiliHttp = m['enableBilibiliHttp'] ?? false;
+    enableBilibiliSocks5 = m['enableBilibiliSocks5'] ?? false;
+  }
+
+  String httpUrl;
+  int httpPort;
+
+  String socks5Url;
+  int socks5Port;
+
+  final RxBool _enableYoutubeHttp;
+  final RxBool _enableYoutubeSocks5;
+  final RxBool _enableBilibiliHttp;
+  final RxBool _enableBilibiliSocks5;
+
+  bool get enableYoutubeHttp => _enableYoutubeHttp.value;
+  set enableYoutubeHttp(bool v) => _enableYoutubeHttp.value = v;
+
+  bool get enableYoutubeSocks5 => _enableYoutubeSocks5.value;
+  set enableYoutubeSocks5(bool v) => _enableYoutubeSocks5.value = v;
+
+  bool get enableBilibiliHttp => _enableBilibiliHttp.value;
+  set enableBilibiliHttp(bool v) => _enableBilibiliHttp.value = v;
+
+  bool get enableBilibiliSocks5 => _enableBilibiliSocks5.value;
+  set enableBilibiliSocks5(bool v) => _enableBilibiliSocks5.value = v;
+}
+
 class SettingController extends GetxController {
   bool isDarkMode = false;
   bool isLangZh = true;
   bool isFirstLaunch = false;
   double playbackSpeed = 1.0;
-  String? appid;
+  String appid = const Uuid().v4();
+
+  Proxy proxy = Proxy();
 
   late String configPath;
   late String dbPath;
   late String dbName;
 
+  final log = Logger();
+
   Future<bool> init() async {
-    final log = Logger();
     try {
       final packageInfo = await PackageInfo.fromPlatform();
       final root = await getApplicationSupportDirectory();
@@ -31,7 +98,9 @@ class SettingController extends GetxController {
       log.d("config path: $configPath");
       log.d("database path: $dbPath");
 
-      await load();
+      if (!(await load())) {
+        return await save();
+      }
     } catch (e) {
       log.w("load path faild. Error: ${e.toString()}");
       log.d("save default configure");
@@ -41,7 +110,6 @@ class SettingController extends GetxController {
   }
 
   Future<bool> load() async {
-    final log = Logger();
     isLangZh = TranslationService.locale?.languageCode == 'zh';
 
     try {
@@ -50,6 +118,8 @@ class SettingController extends GetxController {
       isLangZh = conf['isLangZh'] ?? isLangZh;
       appid = conf['appid'] ?? const Uuid().v4();
       playbackSpeed = conf['playbackSpeed'] ?? 1.0;
+      proxy.fromMap(conf['proxy']);
+
       log.d(conf.toString());
     } catch (e) {
       log.d("Load configure error: ${e.toString()}");
@@ -62,9 +132,11 @@ class SettingController extends GetxController {
 
   Future<bool> save() async {
     final conf = TomlDocument.fromMap({
+      'appid': appid,
       'isDarkMode': isDarkMode,
       'isLangZh': isLangZh,
       'playbackSpeed': playbackSpeed,
+      'proxy': proxy,
     }).toString();
 
     final f = File(configPath);

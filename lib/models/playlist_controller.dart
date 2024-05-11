@@ -184,7 +184,7 @@ class PlaylistController extends GetxController {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
-      allowedExtensions: ['mp3', 'wav', 'flac', 'ogg'],
+      allowedExtensions: ['mp3', 'mp4', 'wav', 'flac', 'ogg'],
     );
 
     var songs = <Song>[];

@@ -54,7 +54,7 @@ class _SongPageState extends State<SongPage> {
         width: double.infinity,
         decoration: BoxDecoration(
           color: CTheme.background,
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(CTheme.borderRadius),
             topRight: Radius.circular(CTheme.borderRadius),
           ),
