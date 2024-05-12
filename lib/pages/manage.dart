@@ -51,8 +51,14 @@ class _ManagePageState extends State<ManagePage> {
   Widget _buildAnimationListTile(int index) {
     final song = playlistController.playlist[index];
     return ListTile(
-      title: Text(song.songName),
-      subtitle: Text(song.artistName),
+      title: Text(
+        song.songName,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        song.artistName,
+        overflow: TextOverflow.ellipsis,
+      ),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(CTheme.borderRadius),
         child: Image.asset(song.albumArtImagePath),

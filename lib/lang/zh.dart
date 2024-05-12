@@ -62,4 +62,7 @@ const Map<String, String> zh = {
   "Youtube has enabled Socks5 proxy": "Youtube 已启用Socks5代理",
   "Youtube disable Socks5 proxy": "Youtube 未启用Socks5代理",
   "F I N D": "发 现",
+  "Fetch audio info failed": "获取音频信息失败",
+  "Search failed": "搜索失败",
+  "Search finished": "搜索完成",
 };

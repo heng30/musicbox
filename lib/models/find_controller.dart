@@ -3,7 +3,9 @@ import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
+import "../models/albums.dart";
 import "../src/rust/api/data.dart";
+import "../models/setting_controller.dart";
 
 enum DownloadState {
   undownload,
@@ -27,6 +29,10 @@ IconData downloadStateIcon(DownloadState state) {
 
 class Info {
   final InfoData raw;
+  Stream<ProgressData>? progress;
+  ProxyType? proxyType;
+  String extention;
+  String albumArtImagePath;
 
   final RxBool _isPlaying;
   bool get isPlaying => _isPlaying.value;
@@ -38,18 +44,29 @@ class Info {
 
   Info({
     required this.raw,
+    this.proxyType,
+    this.extention = "mp3",
+    String? albumArtImagePath,
     bool isPlaying = false,
     DownloadState downloadState = DownloadState.undownload,
   })  : _isPlaying = isPlaying.obs,
-        _downloadState = downloadState.obs;
+        _downloadState = downloadState.obs,
+        albumArtImagePath = albumArtImagePath ?? Albums.random();
+
+  String? proxyUrl() {
+    return Get.find<SettingController>().proxy.url(proxyType);
+  }
 }
 
 class FindController {
   final infoList = <Info>[].obs;
   final log = Logger();
+  late String downloadDir;
 
-  FindController() {
+  Future<void> init() async {
     if (!kReleaseMode) fakeInfos();
+
+    await makeDownloadDir();
   }
 
   void fakeInfos() {
@@ -67,5 +84,12 @@ class FindController {
         ),
       );
     }
+  }
+
+  // TODO
+  Future<void> makeDownloadDir() async {}
+
+  String downloadPath(Info info) {
+    return "$downloadDir/${info.raw.title}_${info.raw.author}.${info.extention}";
   }
 }

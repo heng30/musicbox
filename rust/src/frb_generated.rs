@@ -675,7 +675,7 @@ fn wire_download_video_by_id_with_callback_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_sink = <StreamSink<
-                crate::api::data::ProgerssData,
+                crate::api::data::ProgressData,
                 flutter_rust_bridge::for_generated::SseCodec,
             >>::sse_decode(&mut deserializer);
             let api_id = <String>::sse_decode(&mut deserializer);
@@ -828,7 +828,7 @@ impl SseDecode for std::collections::HashMap<String, String> {
 }
 
 impl SseDecode
-    for StreamSink<crate::api::data::ProgerssData, flutter_rust_bridge::for_generated::SseCodec>
+    for StreamSink<crate::api::data::ProgressData, flutter_rust_bridge::for_generated::SseCodec>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -944,12 +944,12 @@ impl SseDecode for Option<u64> {
     }
 }
 
-impl SseDecode for crate::api::data::ProgerssData {
+impl SseDecode for crate::api::data::ProgressData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_currentSize = <u64>::sse_decode(deserializer);
         let mut var_totalSize = <Option<u64>>::sse_decode(deserializer);
-        return crate::api::data::ProgerssData {
+        return crate::api::data::ProgressData {
             current_size: var_currentSize,
             total_size: var_totalSize,
         };
@@ -1075,7 +1075,7 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::data::InfoData> for crate::ap
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::data::ProgerssData {
+impl flutter_rust_bridge::IntoDart for crate::api::data::ProgressData {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.current_size.into_into_dart().into_dart(),
@@ -1085,13 +1085,13 @@ impl flutter_rust_bridge::IntoDart for crate::api::data::ProgerssData {
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::data::ProgerssData
+    for crate::api::data::ProgressData
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::api::data::ProgerssData>
-    for crate::api::data::ProgerssData
+impl flutter_rust_bridge::IntoIntoDart<crate::api::data::ProgressData>
+    for crate::api::data::ProgressData
 {
-    fn into_into_dart(self) -> crate::api::data::ProgerssData {
+    fn into_into_dart(self) -> crate::api::data::ProgressData {
         self
     }
 }
@@ -1111,7 +1111,7 @@ impl SseEncode for std::collections::HashMap<String, String> {
 }
 
 impl SseEncode
-    for StreamSink<crate::api::data::ProgerssData, flutter_rust_bridge::for_generated::SseCodec>
+    for StreamSink<crate::api::data::ProgressData, flutter_rust_bridge::for_generated::SseCodec>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1205,7 +1205,7 @@ impl SseEncode for Option<u64> {
     }
 }
 
-impl SseEncode for crate::api::data::ProgerssData {
+impl SseEncode for crate::api::data::ProgressData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <u64>::sse_encode(self.current_size, serializer);

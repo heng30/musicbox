@@ -52,8 +52,14 @@ class _HomePageState extends State<HomePage> {
           itemBuilder: (count, index) {
             final song = playlistController.playlist[index];
             return ListTile(
-              title: Text(song.songName),
-              subtitle: Text(song.artistName),
+              title: Text(
+                song.songName,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text(
+                song.artistName,
+                overflow: TextOverflow.ellipsis,
+              ),
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(CTheme.borderRadius),
                 child: Image.asset(song.albumArtImagePath),
@@ -86,8 +92,14 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: CTheme.padding),
           child: ListTile(
-            title: Text(song.songName),
-            subtitle: Text(song.artistName),
+            title: Text(
+              song.songName,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Text(
+              song.artistName,
+              overflow: TextOverflow.ellipsis,
+            ),
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(CTheme.borderRadius),
               child: Image.asset(song.albumArtImagePath),

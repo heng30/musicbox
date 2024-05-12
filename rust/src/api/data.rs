@@ -9,7 +9,7 @@ pub struct InfoData {
 }
 
 #[derive(Debug, Clone, Default)]
-pub struct ProgerssData {
+pub struct ProgressData {
     pub current_size: u64,
     pub total_size: Option<u64>,
 }

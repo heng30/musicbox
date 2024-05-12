@@ -27,7 +27,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Map<String, String> dco_decode_Map_String_String(dynamic raw);
 
   @protected
-  RustStreamSink<ProgerssData> dco_decode_StreamSink_progerss_data_Sse(
+  RustStreamSink<ProgressData> dco_decode_StreamSink_progress_data_Sse(
       dynamic raw);
 
   @protected
@@ -61,7 +61,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int? dco_decode_opt_box_autoadd_u_64(dynamic raw);
 
   @protected
-  ProgerssData dco_decode_progerss_data(dynamic raw);
+  ProgressData dco_decode_progress_data(dynamic raw);
 
   @protected
   (String, String) dco_decode_record_string_string(dynamic raw);
@@ -86,7 +86,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  RustStreamSink<ProgerssData> sse_decode_StreamSink_progerss_data_Sse(
+  RustStreamSink<ProgressData> sse_decode_StreamSink_progress_data_Sse(
       SseDeserializer deserializer);
 
   @protected
@@ -122,7 +122,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
-  ProgerssData sse_decode_progerss_data(SseDeserializer deserializer);
+  ProgressData sse_decode_progress_data(SseDeserializer deserializer);
 
   @protected
   (String, String) sse_decode_record_string_string(
@@ -155,8 +155,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Map<String, String> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_StreamSink_progerss_data_Sse(
-      RustStreamSink<ProgerssData> self, SseSerializer serializer);
+  void sse_encode_StreamSink_progress_data_Sse(
+      RustStreamSink<ProgressData> self, SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
@@ -192,7 +192,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_box_autoadd_u_64(int? self, SseSerializer serializer);
 
   @protected
-  void sse_encode_progerss_data(ProgerssData self, SseSerializer serializer);
+  void sse_encode_progress_data(ProgressData self, SseSerializer serializer);
 
   @protected
   void sse_encode_record_string_string(

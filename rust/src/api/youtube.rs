@@ -1,4 +1,4 @@
-use super::data::{InfoData, ProgerssData};
+use super::data::{InfoData, ProgressData};
 use crate::frb_generated::StreamSink;
 use anyhow::Result;
 use regex::Regex;
@@ -116,7 +116,7 @@ pub async fn download_video_by_id(
 }
 
 pub async fn download_video_by_id_with_callback(
-    sink: StreamSink<ProgerssData>,
+    sink: StreamSink<ProgressData>,
     id: String,
     download_path: String,
     proxy_url: Option<String>,
@@ -131,7 +131,7 @@ pub async fn download_video_by_id_with_callback(
     });
 
     while let Some(item) = rx.recv().await {
-        if let Err(e) = sink.add(ProgerssData {
+        if let Err(e) = sink.add(ProgressData {
             current_size: item.current_chunk as u64,
             total_size: item.content_length,
         }) {

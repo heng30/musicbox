@@ -42,7 +42,7 @@ Future<void> downloadVideoById(
     RustLib.instance.api.downloadVideoById(
         id: id, downloadPath: downloadPath, proxyUrl: proxyUrl, hint: hint);
 
-Stream<ProgerssData> downloadVideoByIdWithCallback(
+Stream<ProgressData> downloadVideoByIdWithCallback(
         {required String id,
         required String downloadPath,
         String? proxyUrl,

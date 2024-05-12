@@ -45,11 +45,11 @@ class InfoData {
           lengthSeconds == other.lengthSeconds;
 }
 
-class ProgerssData {
+class ProgressData {
   final int currentSize;
   final int? totalSize;
 
-  const ProgerssData({
+  const ProgressData({
     required this.currentSize,
     this.totalSize,
   });
@@ -60,7 +60,7 @@ class ProgerssData {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ProgerssData &&
+      other is ProgressData &&
           runtimeType == other.runtimeType &&
           currentSize == other.currentSize &&
           totalSize == other.totalSize;

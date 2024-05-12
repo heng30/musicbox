@@ -18,7 +18,9 @@ class PlaylistController extends GetxController {
   final log = Logger();
 
   Future<void> init() async {
-    if (!kReleaseMode) fakePlaylist();
+    if (!kReleaseMode) {
+      fakePlaylist();
+    }
 
     await initFromDB();
     sortPlaylist();
@@ -80,6 +82,16 @@ class PlaylistController extends GetxController {
         isFavorite: false,
       ),
     );
+    // playlist.add(
+    //   Song(
+    //     songName: "在线mp4视频",
+    //     artistName: "mp4视频",
+    //     albumArtImagePath: Albums.random(),
+    //     audioPath: "https://www.youtube.com/watch?v=vdMTIe5ihYg",
+    //     audioLocation: AudioLocation.remote,
+    //     isFavorite: false,
+    //   ),
+    // );
   }
 
   bool get isValidCurrentSongIndex => _currentSongIndex != null;

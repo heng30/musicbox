@@ -62,4 +62,7 @@ const Map<String, String> en = {
   "Youtube 已启用Socks5代理": "Youtube has enabled Socks5 proxy",
   "Youtube 未启用Socks5代理": "Youtube disable Socks5 proxy",
   "发 现": "F I N D",
+  "获取音频信息失败": "Fetch audio info failed",
+  "搜索失败": "Search failed",
+  "搜索完成": "Search finished",
 };

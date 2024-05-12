@@ -8,6 +8,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../lang/translation_service.dart';
 
+enum ProxyType {
+  youtube,
+  bilibili,
+}
+
 class Proxy implements TomlEncodableValue {
   Proxy({
     this.httpUrl = "127.0.0.1",
@@ -70,6 +75,30 @@ class Proxy implements TomlEncodableValue {
 
   bool get enableBilibiliSocks5 => _enableBilibiliSocks5.value;
   set enableBilibiliSocks5(bool v) => _enableBilibiliSocks5.value = v;
+
+  String? url(ProxyType? type) {
+    if (type == null) {
+      return null;
+    }
+
+    switch (type) {
+      case ProxyType.youtube:
+        if (enableYoutubeHttp) {
+          return "http://$httpUrl:$httpPort";
+        } else if (enableYoutubeSocks5) {
+          return "socks5://$socks5Url:$socks5Port";
+        }
+        break;
+      case ProxyType.bilibili:
+        if (enableBilibiliHttp) {
+          return "http://$httpUrl:$httpPort";
+        } else if (enableBilibiliSocks5) {
+          return "socks5://$socks5Url:$socks5Port";
+        }
+        break;
+    }
+    return null;
+  }
 }
 
 class SettingController extends GetxController {

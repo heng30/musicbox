@@ -121,7 +121,7 @@ abstract class RustLibApi extends BaseApi {
       String? proxyUrl,
       dynamic hint});
 
-  Stream<ProgerssData> downloadVideoByIdWithCallback(
+  Stream<ProgressData> downloadVideoByIdWithCallback(
       {required String id,
       required String downloadPath,
       String? proxyUrl,
@@ -622,16 +622,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Stream<ProgerssData> downloadVideoByIdWithCallback(
+  Stream<ProgressData> downloadVideoByIdWithCallback(
       {required String id,
       required String downloadPath,
       String? proxyUrl,
       dynamic hint}) {
-    final sink = RustStreamSink<ProgerssData>();
+    final sink = RustStreamSink<ProgressData>();
     unawaited(handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_StreamSink_progerss_data_Sse(sink, serializer);
+        sse_encode_StreamSink_progress_data_Sse(sink, serializer);
         sse_encode_String(id, serializer);
         sse_encode_String(downloadPath, serializer);
         sse_encode_opt_String(proxyUrl, serializer);
@@ -755,7 +755,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RustStreamSink<ProgerssData> dco_decode_StreamSink_progerss_data_Sse(
+  RustStreamSink<ProgressData> dco_decode_StreamSink_progress_data_Sse(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     throw UnimplementedError();
@@ -832,12 +832,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ProgerssData dco_decode_progerss_data(dynamic raw) {
+  ProgressData dco_decode_progress_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
     if (arr.length != 2)
       throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return ProgerssData(
+    return ProgressData(
       currentSize: dco_decode_u_64(arr[0]),
       totalSize: dco_decode_opt_box_autoadd_u_64(arr[1]),
     );
@@ -896,7 +896,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RustStreamSink<ProgerssData> sse_decode_StreamSink_progerss_data_Sse(
+  RustStreamSink<ProgressData> sse_decode_StreamSink_progress_data_Sse(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     throw UnimplementedError('Unreachable ()');
@@ -1007,11 +1007,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ProgerssData sse_decode_progerss_data(SseDeserializer deserializer) {
+  ProgressData sse_decode_progress_data(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_currentSize = sse_decode_u_64(deserializer);
     var var_totalSize = sse_decode_opt_box_autoadd_u_64(deserializer);
-    return ProgerssData(currentSize: var_currentSize, totalSize: var_totalSize);
+    return ProgressData(currentSize: var_currentSize, totalSize: var_totalSize);
   }
 
   @protected
@@ -1074,13 +1074,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_StreamSink_progerss_data_Sse(
-      RustStreamSink<ProgerssData> self, SseSerializer serializer) {
+  void sse_encode_StreamSink_progress_data_Sse(
+      RustStreamSink<ProgressData> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(
         self.setupAndSerialize(
             codec: SseCodec(
-                decodeSuccessData: sse_decode_progerss_data,
+                decodeSuccessData: sse_decode_progress_data,
                 decodeErrorData: null)),
         serializer);
   }
@@ -1172,7 +1172,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_progerss_data(ProgerssData self, SseSerializer serializer) {
+  void sse_encode_progress_data(ProgressData self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_64(self.currentSize, serializer);
     sse_encode_opt_box_autoadd_u_64(self.totalSize, serializer);

@@ -28,6 +28,10 @@ Future<void> initGlobalController() async {
   await dbController.init();
   Get.put(dbController);
 
+  final findController = Get.put(FindController());
+  findController.init();
+  Get.put(findController);
+
   Get.put(LangController());
   Get.put(AudioSessionController());
 
@@ -37,6 +41,5 @@ Future<void> initGlobalController() async {
 
   Get.put(PlayerController());
   Get.put(PlayerTileController());
-  Get.put(FindController());
   Get.put(AboutController());
 }
