@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import './albums.dart';
+import '../models/find_controller.dart';
 
 enum AudioLocation {
   asset,
@@ -54,6 +55,16 @@ class Song {
     bool isFavorite = false,
   })  : _isFavorite = isFavorite.obs,
         uuid = const Uuid().v4();
+
+  static Future<Song> fromInfo(Info info) async {
+    final findController = Get.find<FindController>();
+    return Song(
+      songName: info.raw.title,
+      artistName: info.raw.author,
+      albumArtImagePath: info.albumArtImagePath,
+      audioPath: await findController.downloadPath(info),
+    );
+  }
 
   Song.fromJson(Map<String, dynamic> json)
       : uuid = json['uuid'],

@@ -76,11 +76,7 @@ class Proxy implements TomlEncodableValue {
   bool get enableBilibiliSocks5 => _enableBilibiliSocks5.value;
   set enableBilibiliSocks5(bool v) => _enableBilibiliSocks5.value = v;
 
-  String? url(ProxyType? type) {
-    if (type == null) {
-      return null;
-    }
-
+  String? url(ProxyType type) {
     switch (type) {
       case ProxyType.youtube:
         if (enableYoutubeHttp) {

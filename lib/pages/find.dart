@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 
+import '../models/util.dart';
 import '../theme/theme.dart';
 import '../widgets/nodata.dart';
 import '../widgets/searchbar.dart';
@@ -18,25 +20,40 @@ class FindPage extends StatefulWidget {
 class _FindPageState extends State<FindPage> {
   final findController = Get.find<FindController>();
   final settingController = Get.find<SettingController>();
-  final TextEditingController controllerSearch = TextEditingController();
+
   final FocusNode focusNodeSearch = FocusNode();
+  final TextEditingController controllerSearch = TextEditingController();
+  final log = Logger();
 
   Future<void> searchYoutube(String text) async {
     final proxyUrl = settingController.proxy.url(ProxyType.youtube);
     final ids =
         await fetchIds(keyword: text, maxIdCount: 10, proxyUrl: proxyUrl);
+
+    var tmpList = <Info>[];
+
     for (String id in ids) {
       try {
         final vinfo = await videoInfoById(id: id, proxyUrl: proxyUrl);
-        findController.infoList.add(Info(
+        final info = Info(
           raw: vinfo,
           proxyType: ProxyType.youtube,
           extention: "mp4",
-        ));
+        );
+
+        if (vinfo.lengthSeconds < 90) {
+          tmpList.add(info);
+        } else {
+          findController.infoList.add(info);
+        }
       } catch (e) {
         Get.snackbar("提 示".tr, "获取音频信息失败".tr,
             snackPosition: SnackPosition.BOTTOM);
       }
+    }
+
+    if (findController.infoList.length < 5) {
+      findController.infoList.addAll(tmpList);
     }
   }
 
@@ -57,28 +74,33 @@ class _FindPageState extends State<FindPage> {
     Get.snackbar("提 示".tr, "搜索完成".tr, snackPosition: SnackPosition.BOTTOM);
   }
 
-  // TODO
-  void playOrPauseOnlineSong(Info info) {
-    info.isPlaying = !info.isPlaying;
-    if (info.isPlaying) {}
-  }
-
   Future<void> downlaodYoutube(Info info) async {
-    info.progress = downloadVideoByIdWithCallback(
+    final progressStream = downloadVideoByIdWithCallback(
       id: info.raw.videoId,
-      downloadPath: findController.downloadPath(info),
+      downloadPath: await findController.downloadPath(info),
       proxyUrl: info.proxyUrl(),
     );
+
+    info.setProgressStreamWithListen(progressStream, info);
   }
 
   Future<void> startDownload(Info info) async {
+    if (info.downloadState == DownloadState.downloading) {
+      Get.snackbar("提 示".tr, "已经在下载，请耐心等待".tr,
+          snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
     info.downloadState = DownloadState.downloading;
 
     try {
-      await downlaodYoutube(info);
+      if (info.proxyType == ProxyType.youtube) {
+        await downlaodYoutube(info);
+      }
     } catch (e) {
       info.downloadState = DownloadState.failed;
-      Get.snackbar("下载失败".tr, e.toString());
+      Get.snackbar("下载失败".tr, e.toString(),
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
@@ -107,9 +129,41 @@ class _FindPageState extends State<FindPage> {
     );
   }
 
+  Widget buildDownload(BuildContext context, Info info) {
+    return Obx(
+      () => Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (info.downloadState != DownloadState.undownload)
+                Obx(
+                  () => Padding(
+                    padding: const EdgeInsets.only(
+                        right: CTheme.padding * 2, bottom: CTheme.padding),
+                    child: Text("${info.downloadRate.toStringAsFixed(0)}%"),
+                  ),
+                ),
+              Text(
+                formattedTime(info.raw.lengthSeconds),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          IconButton(
+            icon: Icon(downloadStateIcon(info.downloadState)),
+            onPressed: () => startDownload(info),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget buildListTile(BuildContext context, int index) {
     final info = findController.infoList[index];
     return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: CTheme.padding),
       title: Text(
         info.raw.title,
         overflow: TextOverflow.ellipsis,
@@ -122,25 +176,9 @@ class _FindPageState extends State<FindPage> {
         borderRadius: BorderRadius.circular(CTheme.borderRadius),
         child: Image.asset(info.albumArtImagePath),
       ),
-      trailing: Obx(
-        () => SizedBox(
-          width: 100,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                icon: Icon(downloadStateIcon(info.downloadState)),
-                onPressed: () => startDownload(info),
-              ),
-              // IconButton(
-              //   icon: Icon(
-              //     info.isPlaying ? Icons.pause : Icons.play_arrow,
-              //   ),
-              //   onPressed: () => playOrPauseOnlineSong(info),
-              // ),
-            ],
-          ),
-        ),
+      trailing: SizedBox(
+        width: 100,
+        child: buildDownload(context, info),
       ),
     );
   }

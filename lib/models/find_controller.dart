@@ -1,11 +1,17 @@
+import 'dart:io';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
+import "../models/song.dart";
 import "../models/albums.dart";
 import "../src/rust/api/data.dart";
 import "../models/setting_controller.dart";
+import '../models/playlist_controller.dart';
 
 enum DownloadState {
   undownload,
@@ -29,8 +35,7 @@ IconData downloadStateIcon(DownloadState state) {
 
 class Info {
   final InfoData raw;
-  Stream<ProgressData>? progress;
-  ProxyType? proxyType;
+  ProxyType proxyType;
   String extention;
   String albumArtImagePath;
 
@@ -42,9 +47,49 @@ class Info {
   DownloadState get downloadState => _downloadState.value;
   set downloadState(DownloadState v) => _downloadState.value = v;
 
+  final RxDouble _downloadRate = 0.0.obs;
+  double get downloadRate => _downloadRate.value;
+  set downloadRate(double v) => _downloadRate.value = v;
+
+  Stream<ProgressData>? _progressStream;
+  void setProgressStreamWithListen(Stream<ProgressData> stream, Info info) {
+    _progressStream = stream;
+
+    _progressStream!.listen(
+      (value) {
+        if (value.totalSize != null && value.totalSize! > 0) {
+          info.downloadRate = value.currentSize * 100 / value.totalSize!;
+        }
+      },
+      onDone: () async {
+        final findController = Get.find<FindController>();
+        final filepath = await findController.downloadPath(info);
+
+        if (!File(filepath).existsSync()) {
+          info.downloadState = DownloadState.failed;
+          Get.snackbar("提 示".tr, "下载失败".tr,
+              snackPosition: SnackPosition.BOTTOM);
+
+          return;
+        }
+
+        info.downloadState = DownloadState.downloaded;
+        Get.snackbar("下载成功".tr, filepath, snackPosition: SnackPosition.BOTTOM);
+
+        final playlistController = Get.find<PlaylistController>();
+        playlistController.add([await Song.fromInfo(info)]);
+      },
+      onError: (e) {
+        info.downloadState = DownloadState.failed;
+        Get.snackbar("下载失败".tr, e.toString(),
+            snackPosition: SnackPosition.BOTTOM);
+      },
+    );
+  }
+
   Info({
     required this.raw,
-    this.proxyType,
+    this.proxyType = ProxyType.youtube,
     this.extention = "mp3",
     String? albumArtImagePath,
     bool isPlaying = false,
@@ -61,12 +106,12 @@ class Info {
 class FindController {
   final infoList = <Info>[].obs;
   final log = Logger();
-  late String downloadDir;
+  String? downloadDir;
 
-  Future<void> init() async {
-    if (!kReleaseMode) fakeInfos();
-
-    await makeDownloadDir();
+  FindController() {
+    if (!kReleaseMode) {
+      fakeInfos();
+    }
   }
 
   void fakeInfos() {
@@ -86,10 +131,44 @@ class FindController {
     }
   }
 
-  // TODO
-  Future<void> makeDownloadDir() async {}
+  Future<void> makeDownloadDir() async {
+    if (Platform.isAndroid) {
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.storage,
+        Permission.manageExternalStorage,
+      ].request();
 
-  String downloadPath(Info info) {
+      if (!statuses[Permission.manageExternalStorage]!.isGranted) {
+        Get.snackbar("提 示".tr, "请赋予管理外部存储权限，否则无法保存下载文件".tr,
+            snackPosition: SnackPosition.BOTTOM);
+        return;
+      }
+
+      final pname = (await PackageInfo.fromPlatform()).packageName;
+      final dir = "/storage/emulated/0/$pname";
+      Directory(dir).createSync();
+      downloadDir = dir;
+    } else {
+      final dir =
+          await getDownloadsDirectory() ?? await getApplicationCacheDirectory();
+
+      dir.createSync();
+      downloadDir = dir.path;
+    }
+
+    log.d("download dir: $downloadDir");
+  }
+
+  Future<String> downloadPath(Info info) async {
+    if (downloadDir == null || !Directory(downloadDir!).existsSync()) {
+      try {
+        await makeDownloadDir();
+      } catch (e) {
+        Get.snackbar("创建下载目录失败".tr, e.toString(),
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    }
+
     return "$downloadDir/${info.raw.title}_${info.raw.author}.${info.extention}";
   }
 }

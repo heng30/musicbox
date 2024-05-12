@@ -17,3 +17,17 @@ bool isRustSqliteSupportPlatform() {
       Platform.isMacOS ||
       Platform.isFuchsia;
 }
+
+String formattedTime(int seconds) {
+  int hours = (seconds / 3600).truncate();
+  int minutes = ((seconds % 3600) / 60).truncate();
+  int remainingSeconds = seconds % 60;
+
+  if (hours > 0) {
+    return '$hours:$minutes:$remainingSeconds';
+  } else if (minutes > 0) {
+    return '$minutes:$remainingSeconds';
+  } else {
+    return '$remainingSeconds';
+  }
+}

@@ -16,7 +16,7 @@ class AboutPage extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       child: Padding(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           top: CTheme.padding * 5,
           left: CTheme.padding * 2,
           right: CTheme.padding * 2,
@@ -30,7 +30,7 @@ class AboutPage extends StatelessWidget {
                 "${aboutController.packageInfo.appName} v${aboutController.packageInfo.version}",
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
-              SizedBox(height: CTheme.padding * 5),
+              const SizedBox(height: CTheme.padding * 5),
               SizedBox(
                 width: min(size.width * 0.8, 500),
                 child: Text(
@@ -38,7 +38,7 @@ class AboutPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              SizedBox(height: CTheme.padding * 5),
+              const SizedBox(height: CTheme.padding * 5),
               Image.asset(
                 aboutController.logo,
                 width: iconSize,

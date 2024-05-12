@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +8,6 @@ import '../widgets/vslider.dart';
 import '../widgets/track_shape.dart';
 import '../models/player_controller.dart';
 import '../models/playlist_controller.dart';
-import '../models/util.dart';
 
 class SongPage extends StatefulWidget {
   const SongPage({super.key});
@@ -115,7 +113,7 @@ class _SongPageState extends State<SongPage> {
 
           // song artist name and icon
           Padding(
-            padding: EdgeInsets.all(CTheme.padding * 3),
+            padding: const EdgeInsets.all(CTheme.padding * 3),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -172,7 +170,7 @@ class _SongPageState extends State<SongPage> {
 
   Widget buildSongInfo(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: CTheme.padding * 2),
+      padding: const EdgeInsets.symmetric(horizontal: CTheme.padding * 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -263,7 +261,7 @@ class _SongPageState extends State<SongPage> {
             child: const NeuBox(child: Icon(Icons.skip_previous)),
           ),
         ),
-        SizedBox(width: CTheme.padding * 5),
+        const SizedBox(width: CTheme.padding * 5),
         Obx(
           () => Expanded(
             flex: 2,
@@ -277,7 +275,7 @@ class _SongPageState extends State<SongPage> {
             ),
           ),
         ),
-        SizedBox(width: CTheme.padding * 5),
+        const SizedBox(width: CTheme.padding * 5),
         Expanded(
           flex: 1,
           child: GestureDetector(
@@ -305,24 +303,15 @@ class _SongPageState extends State<SongPage> {
   }
 
   Widget buildPortraitLayout(BuildContext context) {
-    final windowSize = MediaQuery.of(context).size;
     return Center(
-      child: SizedBox(
-        width: isDesktopPlatform()
-            ? min(windowSize.width, CTheme.windowWidth)
-            : double.infinity,
-        height: isDesktopPlatform()
-            ? max(windowSize.height, CTheme.windowHeight)
-            : double.infinity,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: CTheme.padding * 5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              buildAlbum(context),
-              buildCtrl(context),
-            ],
-          ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: CTheme.padding * 5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            buildAlbum(context),
+            buildCtrl(context),
+          ],
         ),
       ),
     );
@@ -330,14 +319,14 @@ class _SongPageState extends State<SongPage> {
 
   Widget buildLandscapeLayout(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(CTheme.padding * 5),
+      padding: const EdgeInsets.all(CTheme.padding * 5),
       child: Row(
         children: [
           Expanded(
             flex: 1,
             child: buildAlbum(context),
           ),
-          SizedBox(width: CTheme.padding * 5),
+          const SizedBox(width: CTheme.padding * 5),
           Expanded(
             flex: 1,
             child: Column(

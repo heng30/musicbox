@@ -1,6 +1,7 @@
 pub mod log;
 pub mod db;
 pub mod data;
+pub mod util;
 pub mod youtube;
 
 #[flutter_rust_bridge::frb(init)]

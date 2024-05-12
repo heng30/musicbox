@@ -6,6 +6,7 @@
 import 'api/data.dart';
 import 'api/db.dart';
 import 'api/log.dart';
+import 'api/util.dart';
 import 'api/youtube.dart';
 import 'dart:async';
 import 'dart:convert';

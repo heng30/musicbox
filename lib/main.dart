@@ -1,13 +1,10 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:window_manager/window_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'models/util.dart';
 import 'pages/home.dart';
 import 'routes/routes.dart';
 import 'binding/binding.dart';
-import 'theme/theme.dart';
 import 'theme/controller.dart';
 import 'lang/translation_service.dart';
 import 'models/setting_controller.dart';
@@ -19,28 +16,7 @@ Future<void> main() async {
 
   await RustLib.init();
   await rustlog.init();
-
   await initGlobalController();
-
-  if (isDesktopPlatform()) {
-    WidgetsFlutterBinding.ensureInitialized();
-    await windowManager.ensureInitialized();
-
-    WindowOptions windowOptions = WindowOptions(
-      size: Size(CTheme.windowWidth, CTheme.windowHeight),
-      center: true,
-      fullScreen: false,
-      backgroundColor: Colors.transparent,
-      skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.hidden,
-      windowButtonVisibility: false,
-    );
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-    });
-  }
-
   runApp(const App());
 }
 
