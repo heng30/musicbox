@@ -41,9 +41,10 @@ class CTheme {
   static Color brand = const Color(0xFF0000B8);
   static Color secondaryBrand = const Color(0xFF3F51B5);
 
-  static const double windowWidth = 350.0;
+  static const double windowWidth = 380.0;
   static const double windowHeight = 800.0;
   static const double faviconSize = 80.0;
+  static const double searchBarHeight = 32.0;
 
   static const double borderRadius = 8.0;
   static const double padding = 4.0;

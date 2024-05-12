@@ -1,5 +1,5 @@
 #[derive(Debug, Clone)]
-pub struct Info {
+pub struct InfoData {
     pub title: String,
     pub author: String,
     pub video_id: String,

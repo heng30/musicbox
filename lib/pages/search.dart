@@ -39,14 +39,14 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildTitle(BuildContext context) {
-    const searchHeight = 34.0;
     return Row(
       children: [
         Expanded(
           child: Container(
-            constraints: const BoxConstraints(maxHeight: searchHeight),
+            constraints:
+                const BoxConstraints(maxHeight: CTheme.searchBarHeight),
             child: CSearchBar(
-              height: searchHeight,
+              height: CTheme.searchBarHeight,
               controller: _controllerSearch,
               focusNode: _focusNodeSearch,
               hintText: "请输入关键字".tr,
@@ -54,7 +54,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
-        SizedBox(width: CTheme.margin * 4),
+        const SizedBox(width: CTheme.margin * 4),
         GestureDetector(
           onTap: () => search(_controllerSearch.text),
           child: Text("搜索".tr, style: Theme.of(context).textTheme.bodyLarge),

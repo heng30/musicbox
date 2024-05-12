@@ -22,7 +22,7 @@ class Albums {
   static String random() {
     _currentRandomIndex = Random().nextInt(albumsAsset.length);
     if (_currentRandomIndex == _previousRandomIndex) {
-      _currentIndex = (_currentIndex + 1) % albumsAsset.length;
+      _currentRandomIndex = (_currentRandomIndex + 1) % albumsAsset.length;
       return albumsAsset[_currentRandomIndex];
     }
 

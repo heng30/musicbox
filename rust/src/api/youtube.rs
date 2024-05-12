@@ -1,4 +1,4 @@
-use super::video_info::{Info, ProgerssData};
+use super::data::{InfoData, ProgerssData};
 use crate::frb_generated::StreamSink;
 use anyhow::Result;
 use regex::Regex;
@@ -53,12 +53,12 @@ pub async fn fetch_ids(
     return Ok(ids.into_iter().collect());
 }
 
-pub async fn video_info(url: String, proxy_url: Option<String>) -> Result<Info> {
+pub async fn video_info(url: String, proxy_url: Option<String>) -> Result<InfoData> {
     let id = Id::from_raw(&url)?;
     video_info_by_id(id.to_string(), proxy_url).await
 }
 
-pub async fn video_info_by_id(id: String, proxy_url: Option<String>) -> Result<Info> {
+pub async fn video_info_by_id(id: String, proxy_url: Option<String>) -> Result<InfoData> {
     let id = Id::from_str(&id)?;
     let client = client(proxy_url).await?;
 
@@ -68,7 +68,7 @@ pub async fn video_info_by_id(id: String, proxy_url: Option<String>) -> Result<I
 
     let raw_info = descrambler.video_info();
 
-    Ok(Info {
+    Ok(InfoData {
         title: raw_info.player_response.video_details.title.to_string(),
         author: raw_info.player_response.video_details.author.to_string(),
         video_id: raw_info.player_response.video_details.video_id.to_string(),

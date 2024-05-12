@@ -30,7 +30,7 @@ clean-jank:
 
 # just call this cmd once
 # integrate-rust:
-# 	flutter_rust_bridge_codegen integrate
+#	flutter_rust_bridge_codegen integrate
 
 # it will watch the rust codes and generate dart codes on the background
 generate-rust:

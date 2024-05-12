@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
@@ -145,7 +146,9 @@ class PlaylistController extends GetxController {
 
     List<Song> newSongs = [];
     for (var item in songs) {
-      if (playlist.firstWhereOrNull((el) => item.songName == el.songName) ==
+      if (playlist.firstWhereOrNull((el) =>
+              item.songName == el.songName &&
+              item.artistName == el.artistName) ==
           null) {
         newSongs.add(item);
       }
@@ -192,8 +195,13 @@ class PlaylistController extends GetxController {
       final tagger = Audiotagger();
 
       for (var item in result.xFiles) {
-        String trackName = item.name;
+        final entrys = basenameWithoutExtension(item.name).split('_');
+        String trackName = entrys.first;
         String artistName = "";
+
+        if (entrys.length > 1) {
+          artistName = entrys[1];
+        }
 
         try {
           final tag = await tagger.readTags(path: item.path);

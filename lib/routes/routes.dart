@@ -4,6 +4,7 @@ import '../pages/home.dart';
 import '../pages/landing.dart';
 import '../pages/nofound.dart';
 import '../pages/song.dart';
+import '../pages/find.dart';
 import '../pages/search.dart';
 import '../pages/manage.dart';
 import "../pages/about.dart";
@@ -30,6 +31,10 @@ class AppPage {
     GetPage(
       name: "/song",
       page: () => const SongPage(),
+    ),
+    GetPage(
+      name: "/find",
+      page: () => const FindPage(),
     ),
     GetPage(
       name: "/search",

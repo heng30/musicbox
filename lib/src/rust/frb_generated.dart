@@ -3,8 +3,10 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/data.dart';
 import 'api/db.dart';
 import 'api/log.dart';
+import 'api/youtube.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.io.dart' if (dart.library.html) 'frb_generated.web.dart';
@@ -55,7 +57,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.0.0-dev.33';
 
   @override
-  int get rustContentHash => -1162977169;
+  int get rustContentHash => -1177922139;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -94,6 +96,48 @@ abstract class RustLibApi extends BaseApi {
   Future<void> init({dynamic hint});
 
   Future<void> initLogger({dynamic hint});
+
+  Future<void> downloadAudio(
+      {required String url,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint});
+
+  Future<void> downloadAudioById(
+      {required String id,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint});
+
+  Future<void> downloadVideo(
+      {required String url,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint});
+
+  Future<void> downloadVideoById(
+      {required String id,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint});
+
+  Stream<ProgerssData> downloadVideoByIdWithCallback(
+      {required String id,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint});
+
+  Future<List<String>> fetchIds(
+      {required String keyword,
+      required int maxIdCount,
+      String? proxyUrl,
+      dynamic hint});
+
+  Future<InfoData> videoInfo(
+      {required String url, String? proxyUrl, dynamic hint});
+
+  Future<InfoData> videoInfoById(
+      {required String id, String? proxyUrl, dynamic hint});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -453,6 +497,250 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: [],
       );
 
+  @override
+  Future<void> downloadAudio(
+      {required String url,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(url, serializer);
+        sse_encode_String(downloadPath, serializer);
+        sse_encode_opt_String(proxyUrl, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 21, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kDownloadAudioConstMeta,
+      argValues: [url, downloadPath, proxyUrl],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kDownloadAudioConstMeta => const TaskConstMeta(
+        debugName: "download_audio",
+        argNames: ["url", "downloadPath", "proxyUrl"],
+      );
+
+  @override
+  Future<void> downloadAudioById(
+      {required String id,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(downloadPath, serializer);
+        sse_encode_opt_String(proxyUrl, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 22, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kDownloadAudioByIdConstMeta,
+      argValues: [id, downloadPath, proxyUrl],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kDownloadAudioByIdConstMeta => const TaskConstMeta(
+        debugName: "download_audio_by_id",
+        argNames: ["id", "downloadPath", "proxyUrl"],
+      );
+
+  @override
+  Future<void> downloadVideo(
+      {required String url,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(url, serializer);
+        sse_encode_String(downloadPath, serializer);
+        sse_encode_opt_String(proxyUrl, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 18, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kDownloadVideoConstMeta,
+      argValues: [url, downloadPath, proxyUrl],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kDownloadVideoConstMeta => const TaskConstMeta(
+        debugName: "download_video",
+        argNames: ["url", "downloadPath", "proxyUrl"],
+      );
+
+  @override
+  Future<void> downloadVideoById(
+      {required String id,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(downloadPath, serializer);
+        sse_encode_opt_String(proxyUrl, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 19, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kDownloadVideoByIdConstMeta,
+      argValues: [id, downloadPath, proxyUrl],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kDownloadVideoByIdConstMeta => const TaskConstMeta(
+        debugName: "download_video_by_id",
+        argNames: ["id", "downloadPath", "proxyUrl"],
+      );
+
+  @override
+  Stream<ProgerssData> downloadVideoByIdWithCallback(
+      {required String id,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint}) {
+    final sink = RustStreamSink<ProgerssData>();
+    unawaited(handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_StreamSink_progerss_data_Sse(sink, serializer);
+        sse_encode_String(id, serializer);
+        sse_encode_String(downloadPath, serializer);
+        sse_encode_opt_String(proxyUrl, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 20, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kDownloadVideoByIdWithCallbackConstMeta,
+      argValues: [sink, id, downloadPath, proxyUrl],
+      apiImpl: this,
+      hint: hint,
+    )));
+    return sink.stream;
+  }
+
+  TaskConstMeta get kDownloadVideoByIdWithCallbackConstMeta =>
+      const TaskConstMeta(
+        debugName: "download_video_by_id_with_callback",
+        argNames: ["sink", "id", "downloadPath", "proxyUrl"],
+      );
+
+  @override
+  Future<List<String>> fetchIds(
+      {required String keyword,
+      required int maxIdCount,
+      String? proxyUrl,
+      dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(keyword, serializer);
+        sse_encode_usize(maxIdCount, serializer);
+        sse_encode_opt_String(proxyUrl, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kFetchIdsConstMeta,
+      argValues: [keyword, maxIdCount, proxyUrl],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kFetchIdsConstMeta => const TaskConstMeta(
+        debugName: "fetch_ids",
+        argNames: ["keyword", "maxIdCount", "proxyUrl"],
+      );
+
+  @override
+  Future<InfoData> videoInfo(
+      {required String url, String? proxyUrl, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(url, serializer);
+        sse_encode_opt_String(proxyUrl, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 16, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_info_data,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kVideoInfoConstMeta,
+      argValues: [url, proxyUrl],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kVideoInfoConstMeta => const TaskConstMeta(
+        debugName: "video_info",
+        argNames: ["url", "proxyUrl"],
+      );
+
+  @override
+  Future<InfoData> videoInfoById(
+      {required String id, String? proxyUrl, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_opt_String(proxyUrl, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 17, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_info_data,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kVideoInfoByIdConstMeta,
+      argValues: [id, proxyUrl],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kVideoInfoByIdConstMeta => const TaskConstMeta(
+        debugName: "video_info_by_id",
+        argNames: ["id", "proxyUrl"],
+      );
+
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -467,9 +755,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RustStreamSink<ProgerssData> dco_decode_StreamSink_progerss_data_Sse(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
+  }
+
+  @protected
+  int dco_decode_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_u_64(raw);
   }
 
   @protected
@@ -479,9 +780,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  InfoData dco_decode_info_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return InfoData(
+      title: dco_decode_String(arr[0]),
+      author: dco_decode_String(arr[1]),
+      videoId: dco_decode_String(arr[2]),
+      shortDescription: dco_decode_String(arr[3]),
+      viewCount: dco_decode_u_64(arr[4]),
+      lengthSeconds: dco_decode_u_64(arr[5]),
+    );
+  }
+
+  @protected
   List<Map<String, String>> dco_decode_list_Map_String_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_Map_String_String).toList();
+  }
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
   }
 
   @protected
@@ -494,6 +817,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_record_string_string).toList();
+  }
+
+  @protected
+  String? dco_decode_opt_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_64(raw);
+  }
+
+  @protected
+  ProgerssData dco_decode_progerss_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return ProgerssData(
+      currentSize: dco_decode_u_64(arr[0]),
+      totalSize: dco_decode_opt_box_autoadd_u_64(arr[1]),
+    );
   }
 
   @protected
@@ -510,6 +857,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeI64OrU64(raw);
+  }
+
+  @protected
   int dco_decode_u_8(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -519,6 +872,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void dco_decode_unit(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return;
+  }
+
+  @protected
+  int dco_decode_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeI64OrU64(raw);
   }
 
   @protected
@@ -537,6 +896,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RustStreamSink<ProgerssData> sse_decode_StreamSink_progerss_data_Sse(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
@@ -544,9 +910,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int sse_decode_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_64(deserializer));
+  }
+
+  @protected
   int sse_decode_i_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getInt64();
+  }
+
+  @protected
+  InfoData sse_decode_info_data(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_title = sse_decode_String(deserializer);
+    var var_author = sse_decode_String(deserializer);
+    var var_videoId = sse_decode_String(deserializer);
+    var var_shortDescription = sse_decode_String(deserializer);
+    var var_viewCount = sse_decode_u_64(deserializer);
+    var var_lengthSeconds = sse_decode_u_64(deserializer);
+    return InfoData(
+        title: var_title,
+        author: var_author,
+        videoId: var_videoId,
+        shortDescription: var_shortDescription,
+        viewCount: var_viewCount,
+        lengthSeconds: var_lengthSeconds);
   }
 
   @protected
@@ -558,6 +948,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var ans_ = <Map<String, String>>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
       ans_.add(sse_decode_Map_String_String(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
     }
     return ans_;
   }
@@ -583,12 +985,48 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_64(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  ProgerssData sse_decode_progerss_data(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_currentSize = sse_decode_u_64(deserializer);
+    var var_totalSize = sse_decode_opt_box_autoadd_u_64(deserializer);
+    return ProgerssData(currentSize: var_currentSize, totalSize: var_totalSize);
+  }
+
+  @protected
   (String, String) sse_decode_record_string_string(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_field0 = sse_decode_String(deserializer);
     var var_field1 = sse_decode_String(deserializer);
     return (var_field0, var_field1);
+  }
+
+  @protected
+  int sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint64();
   }
 
   @protected
@@ -600,6 +1038,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_decode_unit(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  int sse_decode_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint64();
   }
 
   @protected
@@ -630,9 +1074,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_StreamSink_progerss_data_Sse(
+      RustStreamSink<ProgerssData> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+        self.setupAndSerialize(
+            codec: SseCodec(
+                decodeSuccessData: sse_decode_progerss_data,
+                decodeErrorData: null)),
+        serializer);
+  }
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_u_64(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self, serializer);
   }
 
   @protected
@@ -642,12 +1104,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_info_data(InfoData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.title, serializer);
+    sse_encode_String(self.author, serializer);
+    sse_encode_String(self.videoId, serializer);
+    sse_encode_String(self.shortDescription, serializer);
+    sse_encode_u_64(self.viewCount, serializer);
+    sse_encode_u_64(self.lengthSeconds, serializer);
+  }
+
+  @protected
   void sse_encode_list_Map_String_String(
       List<Map<String, String>> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
       sse_encode_Map_String_String(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
     }
   }
 
@@ -670,11 +1152,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_String(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(int? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_64(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_progerss_data(ProgerssData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.currentSize, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.totalSize, serializer);
+  }
+
+  @protected
   void sse_encode_record_string_string(
       (String, String) self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.$1, serializer);
     sse_encode_String(self.$2, serializer);
+  }
+
+  @protected
+  void sse_encode_u_64(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint64(self);
   }
 
   @protected
@@ -686,6 +1201,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_unit(void self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_usize(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint64(self);
   }
 
   @protected

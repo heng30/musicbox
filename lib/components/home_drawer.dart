@@ -48,6 +48,15 @@ class HomeDrawer extends StatelessWidget {
             ),
             ListTile(
               title: Text(
+                "发 现".tr,
+              ),
+              leading: const Icon(
+                Icons.explore,
+              ),
+              onTap: () => Get.offAndToNamed('/find'),
+            ),
+            ListTile(
+              title: Text(
                 "管 理".tr,
               ),
               leading: const Icon(

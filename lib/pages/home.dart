@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
       () => Container(
         color: CTheme.bottomPlayerBackground,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: CTheme.padding),
+          padding: const EdgeInsets.symmetric(vertical: CTheme.padding),
           child: ListTile(
             title: Text(song.songName),
             subtitle: Text(song.artistName),
