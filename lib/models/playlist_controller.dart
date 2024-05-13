@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:convert';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ import './song.dart';
 import './albums.dart';
 import './player_controller.dart';
 import './db_controller.dart';
+import './find_controller.dart';
 
 class PlaylistController extends GetxController {
   final playlist = <Song>[].obs;
@@ -82,16 +84,6 @@ class PlaylistController extends GetxController {
         isFavorite: false,
       ),
     );
-    // playlist.add(
-    //   Song(
-    //     songName: "在线mp4视频",
-    //     artistName: "mp4视频",
-    //     albumArtImagePath: Albums.random(),
-    //     audioPath: "https://www.youtube.com/watch?v=vdMTIe5ihYg",
-    //     audioLocation: AudioLocation.remote,
-    //     isFavorite: false,
-    //   ),
-    // );
   }
 
   bool get isValidCurrentSongIndex => _currentSongIndex != null;
@@ -130,22 +122,47 @@ class PlaylistController extends GetxController {
         playlist[index].uuid, jsonEncode(playlist[index].toJson()));
   }
 
+  Future<void> _removeFileInDownloadDir(String path) async {
+    final findController = Get.find<FindController>();
+    if (await findController.isInDownloadDir(path)) {
+      final file = File(path);
+      final realFile =
+          File("${findController.downloadDir!}/${basename(file.path)}");
+
+      await realFile.delete();
+      await file.delete();
+    }
+  }
+
   // remove one song from playlist
   void remove(int index) async {
-    if (index < playlist.length) {
-      if (currentSongIndex == index) {
-        currentSongIndex = null;
+    try {
+      if (index < playlist.length) {
+        if (currentSongIndex == index) {
+          currentSongIndex = null;
+        }
+
+        final song = playlist[index];
+        playlist.removeAt(index);
+
+        await dbController.delete(DbController.playlistTable, song.uuid);
+        await _removeFileInDownloadDir(song.audioPath);
       }
-
-      await dbController.delete(
-          DbController.playlistTable, playlist[index].uuid);
-
-      playlist.removeAt(index);
+    } catch (e) {
+      log.d(e);
     }
   }
 
   // remove all songs from playlist
   void removeAll() async {
+    for (Song song in playlist) {
+      try {
+        await _removeFileInDownloadDir(song.audioPath);
+      } catch (e) {
+        log.d(e);
+      }
+    }
+
     playlist.value = [];
     currentSongIndex = null;
 
@@ -215,14 +232,16 @@ class PlaylistController extends GetxController {
           artistName = entrys[1];
         }
 
-        try {
-          final tag = await tagger.readTags(path: item.path);
-          trackName = tag?.title ?? item.name;
-          artistName = tag?.artist ?? "";
-        } catch (e) {
-          Logger().d("$e");
-        } finally {
-          if (trackName.isEmpty) trackName = item.name;
+        if (item.path.endsWith(".mp3")) {
+          try {
+            final tag = await tagger.readTags(path: item.path);
+            trackName = tag?.title ?? entrys.first;
+            artistName = tag?.artist ?? "";
+          } catch (e) {
+            Logger().d("$e");
+          } finally {
+            if (trackName.isEmpty) trackName = entrys.first;
+          }
         }
 
         songs.add(

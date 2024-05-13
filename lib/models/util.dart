@@ -23,10 +23,13 @@ String formattedTime(int seconds) {
   int minutes = ((seconds % 3600) / 60).truncate();
   int remainingSeconds = seconds % 60;
 
+  String m = minutes.toString().padLeft(2, '0');
+  String s = remainingSeconds.toString().padLeft(2, '0');
+
   if (hours > 0) {
-    return '$hours:$minutes:$remainingSeconds';
+    return '$hours:$m:$s';
   } else if (minutes > 0) {
-    return '$minutes:$remainingSeconds';
+    return '$minutes:$s';
   } else {
     return '$remainingSeconds';
   }

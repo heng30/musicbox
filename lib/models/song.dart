@@ -61,7 +61,7 @@ class Song {
     return Song(
       songName: info.raw.title,
       artistName: info.raw.author,
-      albumArtImagePath: info.albumArtImagePath,
+      albumArtImagePath: Albums.random(),
       audioPath: await findController.downloadPath(info),
     );
   }

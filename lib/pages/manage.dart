@@ -14,9 +14,6 @@ class ManagePage extends StatefulWidget {
 
 class _ManagePageState extends State<ManagePage> {
   final playlistController = Get.find<PlaylistController>();
-  final GlobalKey<AnimatedListState> animatedListGlobalKey =
-      GlobalKey<AnimatedListState>(
-          debugLabel: "manage page listview debug label");
 
   void _clearPlaylistDialog() {
     Get.defaultDialog(
@@ -65,53 +62,29 @@ class _ManagePageState extends State<ManagePage> {
       ),
       trailing: IconButton(
         icon: const Icon(Icons.delete_outline),
-        onPressed: () {
-          if (index >= playlistController.playlist.length) {
-            return;
-          }
-
-          var item = _buildAnimationListTile(index);
-
-          animatedListGlobalKey.currentState!.removeItem(
-            index,
-            (context, animation) {
-              return ScaleTransition(
-                scale: animation,
-                child: item,
-              );
-            },
-          );
-
-          playlistController.remove(index);
-        },
+        onPressed: () => playlistController.remove(index),
       ),
     );
   }
 
   Widget _buildBody(BuildContext context) {
-    return playlistController.playlist.isNotEmpty
+    return Obx(() => playlistController.playlist.isNotEmpty
         ? Obx(
-            () => Container(
-              color: CTheme.background,
-              child: AnimatedList(
-                initialItemCount: playlistController.playlist.length,
-                key: animatedListGlobalKey,
-                itemBuilder: (context, index, animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: _buildAnimationListTile(index),
-                  );
-                },
-              ),
+            () => ListView.builder(
+              itemCount: playlistController.playlist.length,
+              itemBuilder: (context, index) {
+                return _buildAnimationListTile(index);
+              },
             ),
           )
-        : const NoData();
+        : const NoData());
   }
 
   @override
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
+        backgroundColor: CTheme.background,
         appBar: AppBar(
           centerTitle: true,
           title: Text("管 理".tr),

@@ -3,6 +3,7 @@ import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 
 import '../models/util.dart';
+import '../models/albums.dart';
 import '../theme/theme.dart';
 import '../widgets/nodata.dart';
 import '../widgets/searchbar.dart';
@@ -37,11 +38,13 @@ class _FindPageState extends State<FindPage> {
         final vinfo = await videoInfoById(id: id, proxyUrl: proxyUrl);
         final info = Info(
           raw: vinfo,
-          proxyType: ProxyType.youtube,
           extention: "mp4",
+          proxyType: ProxyType.youtube,
+          albumArtImagePath: Albums.youtubeAsset,
         );
 
-        if (vinfo.lengthSeconds < 90) {
+        // song duration too short or too long would be ignored
+        if (vinfo.lengthSeconds < 90 || vinfo.lengthSeconds > 600) {
           tmpList.add(info);
         } else {
           findController.infoList.add(info);
@@ -57,21 +60,34 @@ class _FindPageState extends State<FindPage> {
     }
   }
 
+  // TODO
+  Future<void> searchBilibili(String text) async {}
+
   void search(String text) async {
     if (text.isEmpty) {
       Get.snackbar("提 示".tr, "请输入内容".tr, snackPosition: SnackPosition.BOTTOM);
       return;
     }
 
+    int searchErrorCount = 0;
     findController.infoList.clear();
     try {
       await searchYoutube(text);
     } catch (e) {
-      Get.snackbar("提 示".tr, "搜索失败".tr, snackPosition: SnackPosition.BOTTOM);
-      return;
+      searchErrorCount++;
     }
 
-    Get.snackbar("提 示".tr, "搜索完成".tr, snackPosition: SnackPosition.BOTTOM);
+    try {
+      await searchBilibili(text);
+    } catch (e) {
+      searchErrorCount++;
+    }
+
+    if (searchErrorCount == 2) {
+      Get.snackbar("提 示".tr, "搜索失败".tr, snackPosition: SnackPosition.BOTTOM);
+    } else {
+      Get.snackbar("提 示".tr, "搜索完成".tr, snackPosition: SnackPosition.BOTTOM);
+    }
   }
 
   Future<void> downlaodYoutube(Info info) async {
@@ -82,6 +98,17 @@ class _FindPageState extends State<FindPage> {
     );
 
     info.setProgressStreamWithListen(progressStream, info);
+  }
+
+  // TODO
+  Future<void> downlaodBilibili(Info info) async {
+    // final progressStream = downloadVideoByIdWithCallback(
+    //   id: info.raw.videoId,
+    //   downloadPath: await findController.downloadPath(info),
+    //   proxyUrl: info.proxyUrl(),
+    // );
+
+    // info.setProgressStreamWithListen(progressStream, info);
   }
 
   Future<void> startDownload(Info info) async {
@@ -96,6 +123,8 @@ class _FindPageState extends State<FindPage> {
     try {
       if (info.proxyType == ProxyType.youtube) {
         await downlaodYoutube(info);
+      } else if (info.proxyType == ProxyType.bilibili) {
+        await downlaodBilibili(info);
       }
     } catch (e) {
       info.downloadState = DownloadState.failed;
@@ -116,6 +145,7 @@ class _FindPageState extends State<FindPage> {
               controller: controllerSearch,
               focusNode: focusNodeSearch,
               hintText: "请输入关键字".tr,
+              autofocus: findController.infoList.isEmpty,
               onSubmitted: (value) => search(value),
             ),
           ),
@@ -163,7 +193,7 @@ class _FindPageState extends State<FindPage> {
   Widget buildListTile(BuildContext context, int index) {
     final info = findController.infoList[index];
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: CTheme.padding),
+      contentPadding: const EdgeInsets.only(left: CTheme.padding * 2),
       title: Text(
         info.raw.title,
         overflow: TextOverflow.ellipsis,

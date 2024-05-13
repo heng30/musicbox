@@ -99,7 +99,6 @@ class _SongPageState extends State<SongPage> {
               borderRadius: BorderRadius.circular(CTheme.borderRadius),
               child: buildAlbumImage(context),
             ),
-
           if (orientation == Orientation.landscape)
             Expanded(
               child: SizedBox(
@@ -110,58 +109,33 @@ class _SongPageState extends State<SongPage> {
                 ),
               ),
             ),
+          Obx(
+            () {
+              final song = playlistController
+                  .playlist[playlistController.currentSongIndex!];
 
-          // song artist name and icon
-          Padding(
-            padding: const EdgeInsets.all(CTheme.padding * 3),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Obx(
-                    () {
-                      final song = playlistController
-                          .playlist[playlistController.currentSongIndex!];
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            song.songName,
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          Text(
-                            song.artistName,
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+              return ListTile(
+                contentPadding: const EdgeInsets.all(0),
+                title: Text(
+                  song.songName,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-                Obx(
-                  () {
-                    final song = playlistController
-                        .playlist[playlistController.currentSongIndex!];
-
-                    return IconButton(
-                      icon: const Icon(Icons.favorite),
-                      color:
-                          song.isFavorite ? CTheme.favorite : CTheme.secondary,
-                      onPressed: () {
-                        Get.find<PlaylistController>().toggleFavorite(
-                            playlistController.currentSongIndex);
-                      },
-                    );
+                subtitle: Text(
+                  song.artistName,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.favorite),
+                  color: song.isFavorite ? CTheme.favorite : CTheme.secondary,
+                  onPressed: () {
+                    Get.find<PlaylistController>()
+                        .toggleFavorite(playlistController.currentSongIndex);
                   },
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ],
       ),

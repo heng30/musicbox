@@ -96,7 +96,7 @@ class Info {
     DownloadState downloadState = DownloadState.undownload,
   })  : _isPlaying = isPlaying.obs,
         _downloadState = downloadState.obs,
-        albumArtImagePath = albumArtImagePath ?? Albums.random();
+        albumArtImagePath = albumArtImagePath ?? Albums.youtubeAsset;
 
   String? proxyUrl() {
     return Get.find<SettingController>().proxy.url(proxyType);
@@ -131,7 +131,7 @@ class FindController {
     }
   }
 
-  Future<void> makeDownloadDir() async {
+  Future<void> _makeDownloadDir() async {
     if (Platform.isAndroid) {
       Map<Permission, PermissionStatus> statuses = await [
         Permission.storage,
@@ -145,24 +145,31 @@ class FindController {
       }
 
       final pname = (await PackageInfo.fromPlatform()).packageName;
-      final dir = "/storage/emulated/0/$pname";
-      Directory(dir).createSync();
-      downloadDir = dir;
+      final d = Directory("/storage/emulated/0/$pname");
+
+      if (!(await d.exists())) {
+        await d.create();
+      }
+
+      downloadDir = d.path;
     } else {
-      final dir =
+      final d =
           await getDownloadsDirectory() ?? await getApplicationCacheDirectory();
 
-      dir.createSync();
-      downloadDir = dir.path;
+      if (!(await d.exists())) {
+        await d.create();
+      }
+
+      downloadDir = d.path;
     }
 
     log.d("download dir: $downloadDir");
   }
 
   Future<String> downloadPath(Info info) async {
-    if (downloadDir == null || !Directory(downloadDir!).existsSync()) {
+    if (downloadDir == null) {
       try {
-        await makeDownloadDir();
+        await _makeDownloadDir();
       } catch (e) {
         Get.snackbar("创建下载目录失败".tr, e.toString(),
             snackPosition: SnackPosition.BOTTOM);
@@ -170,5 +177,14 @@ class FindController {
     }
 
     return "$downloadDir/${info.raw.title}_${info.raw.author}.${info.extention}";
+  }
+
+  Future<bool> isInDownloadDir(String path) async {
+    if (downloadDir == null) {
+      await _makeDownloadDir();
+    }
+
+    final pname = (await PackageInfo.fromPlatform()).packageName;
+    return path.contains(pname);
   }
 }

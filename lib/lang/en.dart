@@ -65,4 +65,10 @@ const Map<String, String> en = {
   "获取音频信息失败": "Fetch audio info failed",
   "搜索失败": "Search failed",
   "搜索完成": "Search finished",
+  "已经在下载，请耐心等待": "It is downloading...",
+  "下载失败": "Download failed",
+  "下载成功": "Download successful",
+  "请赋予管理外部存储权限，否则无法保存下载文件":
+      "Please grant an external storage permission to save the downlad files",
+  "创建下载目录失败": "Create the download directory failed",
 };
