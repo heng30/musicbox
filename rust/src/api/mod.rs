@@ -3,6 +3,7 @@ pub mod db;
 pub mod data;
 pub mod util;
 pub mod youtube;
+pub mod msg_center;
 
 #[flutter_rust_bridge::frb(init)]
 pub fn init_app() {

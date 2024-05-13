@@ -6,6 +6,8 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// The type `DownloadError` is not used by any `pub` functions, thus it is ignored.
+
 class InfoData {
   final String title;
   final String author;
@@ -43,6 +45,33 @@ class InfoData {
           shortDescription == other.shortDescription &&
           viewCount == other.viewCount &&
           lengthSeconds == other.lengthSeconds;
+}
+
+class MsgItem {
+  final MsgType ty;
+  final String data;
+
+  const MsgItem({
+    required this.ty,
+    required this.data,
+  });
+
+  @override
+  int get hashCode => ty.hashCode ^ data.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MsgItem &&
+          runtimeType == other.runtimeType &&
+          ty == other.ty &&
+          data == other.data;
+}
+
+enum MsgType {
+  plainText,
+  youtubeDownloadError,
+  ;
 }
 
 class ProgressData {

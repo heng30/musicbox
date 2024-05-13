@@ -103,10 +103,14 @@ class Info {
   }
 }
 
-class FindController {
+class FindController extends GetxController {
   final infoList = <Info>[].obs;
   final log = Logger();
   String? downloadDir;
+
+  final _isSearching = false.obs;
+  bool get isSearching => _isSearching.value;
+  set isSearching(bool v) => _isSearching.value = v;
 
   FindController() {
     if (!kReleaseMode) {
@@ -129,6 +133,15 @@ class FindController {
         ),
       );
     }
+  }
+
+  void retainDownloadingInfo() {
+    final l = infoList
+        .where((info) => info.downloadState == DownloadState.downloading)
+        .toList();
+
+    infoList.clear();
+    infoList.addAll(l);
   }
 
   Future<void> _makeDownloadDir() async {

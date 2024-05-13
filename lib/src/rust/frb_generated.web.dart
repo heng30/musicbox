@@ -6,6 +6,7 @@
 import 'api/data.dart';
 import 'api/db.dart';
 import 'api/log.dart';
+import 'api/msg_center.dart';
 import 'api/util.dart';
 import 'api/youtube.dart';
 import 'dart:async';
@@ -28,6 +29,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Map<String, String> dco_decode_Map_String_String(dynamic raw);
 
   @protected
+  RustStreamSink<MsgItem> dco_decode_StreamSink_msg_item_Sse(dynamic raw);
+
+  @protected
   RustStreamSink<ProgressData> dco_decode_StreamSink_progress_data_Sse(
       dynamic raw);
 
@@ -35,7 +39,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  MsgItem dco_decode_box_autoadd_msg_item(dynamic raw);
+
+  @protected
   int dco_decode_box_autoadd_u_64(dynamic raw);
+
+  @protected
+  int dco_decode_i_32(dynamic raw);
 
   @protected
   int dco_decode_i_64(dynamic raw);
@@ -54,6 +64,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
+
+  @protected
+  MsgItem dco_decode_msg_item(dynamic raw);
+
+  @protected
+  MsgType dco_decode_msg_type(dynamic raw);
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
@@ -87,6 +103,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  RustStreamSink<MsgItem> sse_decode_StreamSink_msg_item_Sse(
+      SseDeserializer deserializer);
+
+  @protected
   RustStreamSink<ProgressData> sse_decode_StreamSink_progress_data_Sse(
       SseDeserializer deserializer);
 
@@ -94,7 +114,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  MsgItem sse_decode_box_autoadd_msg_item(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_64(SseDeserializer deserializer);
@@ -115,6 +141,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   List<(String, String)> sse_decode_list_record_string_string(
       SseDeserializer deserializer);
+
+  @protected
+  MsgItem sse_decode_msg_item(SseDeserializer deserializer);
+
+  @protected
+  MsgType sse_decode_msg_type(SseDeserializer deserializer);
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
@@ -142,9 +174,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_usize(SseDeserializer deserializer);
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
-
-  @protected
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
@@ -156,6 +185,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Map<String, String> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_StreamSink_msg_item_Sse(
+      RustStreamSink<MsgItem> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_StreamSink_progress_data_Sse(
       RustStreamSink<ProgressData> self, SseSerializer serializer);
 
@@ -163,7 +196,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_msg_item(MsgItem self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_u_64(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_64(int self, SseSerializer serializer);
@@ -185,6 +224,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_record_string_string(
       List<(String, String)> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_msg_item(MsgItem self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_msg_type(MsgType self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
@@ -210,9 +255,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_usize(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);

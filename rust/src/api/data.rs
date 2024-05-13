@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 #[derive(Debug, Clone)]
 pub struct InfoData {
     pub title: String,
@@ -14,3 +16,20 @@ pub struct ProgressData {
     pub total_size: Option<u64>,
 }
 
+#[derive(Debug, Clone)]
+pub enum MsgType {
+    PlainText,
+    YoutubeDownloadError,
+}
+
+#[derive(Debug, Clone)]
+pub struct MsgItem {
+    pub ty: MsgType,
+    pub data: String,
+}
+
+#[derive(Serialize, Debug, Clone)]
+pub struct DownloadError {
+    pub id: String,
+    pub msg: String,
+}

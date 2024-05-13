@@ -1,0 +1,28 @@
+use super::data::MsgItem;
+use crate::frb_generated::StreamSink;
+use tokio::sync::{mpsc, Mutex};
+
+lazy_static! {
+    static ref CHANNEL: Mutex<Option<mpsc::Sender<MsgItem>>> = Mutex::new(None);
+}
+
+pub async fn msg_center_init(sink: StreamSink<MsgItem>) {
+    let (tx, mut rx) = mpsc::channel(1024);
+    *CHANNEL.lock().await = Some(tx);
+
+    while let Some(item) = rx.recv().await {
+        if let Err(e) = sink.add(item) {
+            log::warn!("msg_center sink add error: {e:?}");
+        }
+    }
+}
+
+pub async fn send(item: MsgItem) {
+    CHANNEL
+        .lock()
+        .await
+        .clone()
+        .expect("I know i already set the sender")
+        .send(item)
+        .await;
+}

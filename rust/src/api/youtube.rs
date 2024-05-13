@@ -1,4 +1,7 @@
-use super::data::{InfoData, ProgressData};
+use super::{
+    data::{DownloadError, InfoData, MsgItem, MsgType, ProgressData},
+    msg_center,
+};
 use crate::frb_generated::StreamSink;
 use anyhow::Result;
 use regex::Regex;
@@ -123,9 +126,31 @@ pub async fn download_video_by_id_with_callback(
 ) -> Result<()> {
     let (tx, mut rx) = mpsc::channel(1024);
 
+    // For logging in dart
+    msg_center::send(MsgItem {
+        ty: MsgType::PlainText,
+        data: format!("start downlaod youtube video: {id}"),
+    })
+    .await;
+
     tokio::spawn(async move {
-        match inner_download_video_by_id_with_callback(id, download_path, proxy_url, tx).await {
-            Err(e) => log::warn!("{e:?}"),
+        match inner_download_video_by_id_with_callback(id.clone(), download_path, proxy_url, tx)
+            .await
+        {
+            Err(e) => {
+                let de = DownloadError {
+                    id,
+                    msg: e.to_string(),
+                };
+
+                let mi = MsgItem {
+                    ty: MsgType::YoutubeDownloadError,
+                    data: serde_json::to_string(&de).unwrap_or("{}".to_string()),
+                };
+
+                msg_center::send(mi).await;
+                log::warn!("{e:?}");
+            }
             _ => (),
         }
     });

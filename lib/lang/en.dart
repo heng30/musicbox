@@ -71,4 +71,6 @@ const Map<String, String> en = {
   "请赋予管理外部存储权限，否则无法保存下载文件":
       "Please grant an external storage permission to save the downlad files",
   "创建下载目录失败": "Create the download directory failed",
+  "请勿重复下载": "It has been downloaded",
+  "开始下载": "Start downloading",
 };

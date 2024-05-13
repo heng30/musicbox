@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import '../models/util.dart';
 import '../models/albums.dart';
@@ -70,7 +72,9 @@ class _FindPageState extends State<FindPage> {
     }
 
     int searchErrorCount = 0;
-    findController.infoList.clear();
+    findController.retainDownloadingInfo();
+    findController.isSearching = true;
+
     try {
       await searchYoutube(text);
     } catch (e) {
@@ -88,6 +92,8 @@ class _FindPageState extends State<FindPage> {
     } else {
       Get.snackbar("提 示".tr, "搜索完成".tr, snackPosition: SnackPosition.BOTTOM);
     }
+
+    findController.isSearching = false;
   }
 
   Future<void> downlaodYoutube(Info info) async {
@@ -101,15 +107,7 @@ class _FindPageState extends State<FindPage> {
   }
 
   // TODO
-  Future<void> downlaodBilibili(Info info) async {
-    // final progressStream = downloadVideoByIdWithCallback(
-    //   id: info.raw.videoId,
-    //   downloadPath: await findController.downloadPath(info),
-    //   proxyUrl: info.proxyUrl(),
-    // );
-
-    // info.setProgressStreamWithListen(progressStream, info);
-  }
+  Future<void> downlaodBilibili(Info info) async {}
 
   Future<void> startDownload(Info info) async {
     if (info.downloadState == DownloadState.downloading) {
@@ -118,7 +116,14 @@ class _FindPageState extends State<FindPage> {
       return;
     }
 
+    if (info.downloadState == DownloadState.downloaded) {
+      Get.snackbar("提 示".tr, "请勿重复下载".tr, snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
     info.downloadState = DownloadState.downloading;
+    Get.snackbar("提 示".tr, "${'开始下载'.tr} ${info.raw.title}".tr,
+        snackPosition: SnackPosition.BOTTOM);
 
     try {
       if (info.proxyType == ProxyType.youtube) {
@@ -164,27 +169,39 @@ class _FindPageState extends State<FindPage> {
       () => Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (info.downloadState != DownloadState.undownload)
-                Obx(
-                  () => Padding(
-                    padding: const EdgeInsets.only(
-                        right: CTheme.padding * 2, bottom: CTheme.padding),
-                    child: Text("${info.downloadRate.toStringAsFixed(0)}%"),
+          Text(
+            formattedTime(info.raw.lengthSeconds),
+            overflow: TextOverflow.ellipsis,
+          ),
+          if (info.downloadState == DownloadState.downloading ||
+              info.downloadState == DownloadState.downloaded)
+            Container(
+              margin:
+                  const EdgeInsets.symmetric(horizontal: CTheme.padding * 2),
+              child: InkWell(
+                hoverColor: Colors.transparent,
+                onTap: () => startDownload(info),
+                child: CircularPercentIndicator(
+                  radius: 15,
+                  lineWidth: 3,
+                  percent: info.downloadRate / 100,
+                  center: Text(
+                    info.downloadRate.toStringAsFixed(0),
+                    style: const TextStyle(fontSize: 10),
                   ),
+                  progressColor: info.downloadState == DownloadState.downloaded
+                      ? Colors.green
+                      : CTheme.secondaryBrand,
+                  backgroundColor: CTheme.primary,
                 ),
-              Text(
-                formattedTime(info.raw.lengthSeconds),
-                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
-          IconButton(
-            icon: Icon(downloadStateIcon(info.downloadState)),
-            onPressed: () => startDownload(info),
-          ),
+            ),
+          if (info.downloadState == DownloadState.undownload ||
+              info.downloadState == DownloadState.failed)
+            IconButton(
+              icon: Icon(downloadStateIcon(info.downloadState)),
+              onPressed: () => startDownload(info),
+            ),
         ],
       ),
     );
@@ -215,22 +232,26 @@ class _FindPageState extends State<FindPage> {
 
   Widget buildInfoList(BuildContext context) {
     return Obx(
-      () => Container(
-        color: CTheme.background,
-        child: ListView.builder(
-          itemCount: findController.infoList.length,
-          itemBuilder: (count, index) {
-            return buildListTile(context, index);
-          },
-        ),
+      () => ListView.builder(
+        itemCount: findController.infoList.length,
+        itemBuilder: (count, index) {
+          return buildListTile(context, index);
+        },
       ),
     );
   }
 
   Widget buildBody(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return findController.infoList.isNotEmpty
         ? buildInfoList(context)
-        : const NoData();
+        : (findController.isSearching
+            ? SpinKitFadingCircle(
+                color: CTheme.primary,
+                size: size.width * 0.2,
+              )
+            : const NoData());
   }
 
   @override
