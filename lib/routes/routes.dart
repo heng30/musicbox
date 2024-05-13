@@ -12,6 +12,7 @@ import "../pages/donate.dart";
 import "../pages/feedback.dart";
 import '../pages/setting/settings.dart';
 import '../pages/setting/proxy.dart';
+import '../pages/setting/find.dart';
 
 class AppPage {
   static final nofound = GetPage(
@@ -51,6 +52,10 @@ class AppPage {
         GetPage(
           name: "/proxy",
           page: () => const SettingProxyPage(),
+        ),
+        GetPage(
+          name: "/find",
+          page: () => const SettingFindPage(),
         ),
       ],
     ),

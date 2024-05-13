@@ -20,7 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
       child: ListView(
         children: [
-          const SizedBox(height: 25),
+          const SizedBox(height: CTheme.padding * 5),
           SettingSwitch(
             title: '主题切换'.tr,
             isOn: Get.find<ThemeController>().isDarkMode,
@@ -29,14 +29,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 : Icons.light_mode,
             onChanged: Get.find<ThemeController>().changeTheme,
           ),
-          const SizedBox(height: 25),
+          const SizedBox(height: CTheme.padding * 5),
           SettingSwitch(
             title: '语言切换'.tr,
             isOn: Get.find<LangController>().isZh,
             icon: Icons.translate,
             onChanged: Get.find<LangController>().changeLang,
           ),
-          const SizedBox(height: 25),
+          const SizedBox(height: CTheme.padding * 5),
+          SettingEntry(
+            title: '发现设置'.tr,
+            icon: Icons.explore,
+            onTap: () => Get.toNamed("/settings/find"),
+          ),
+          const SizedBox(height: CTheme.padding * 5),
           SettingEntry(
             title: '代理设置'.tr,
             icon: Icons.traffic,

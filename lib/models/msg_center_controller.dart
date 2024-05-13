@@ -41,13 +41,19 @@ class MsgCenterController extends GetxController {
       return;
     }
 
-    final item = findController.infoList.firstWhere((item) {
-      return item.raw.videoId == m["id"];
-    });
-    item.downloadState = DownloadState.failed;
+    try {
+      final item = findController.infoList.firstWhere((item) {
+        return item.raw.videoId == m["id"];
+      });
 
-    if (m.containsKey("msg")) {
-      Get.snackbar("下载失败".tr, "${m['msg']}\n${item.raw.title}");
+      item.downloadState = DownloadState.failed;
+
+      if (m.containsKey("msg")) {
+        Get.snackbar("下载失败".tr, "${m['msg']}\n${item.raw.title}",
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    } catch (e) {
+      log.d(e);
     }
   }
 }

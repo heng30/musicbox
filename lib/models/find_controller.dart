@@ -51,6 +51,24 @@ class Info {
   double get downloadRate => _downloadRate.value;
   set downloadRate(double v) => _downloadRate.value = v;
 
+  DateTime? startDownloadTime;
+  bool _isTimeout() {
+    if (startDownloadTime == null) {
+      return true;
+    }
+
+    if (downloadState != DownloadState.downloading) {
+      return true;
+    }
+
+    // timeout
+    if (downloadRate > 0) {
+      return DateTime.now().difference(startDownloadTime!).inSeconds > 600;
+    }
+
+    return DateTime.now().difference(startDownloadTime!).inSeconds > 60;
+  }
+
   Stream<ProgressData>? _progressStream;
   void setProgressStreamWithListen(Stream<ProgressData> stream, Info info) {
     _progressStream = stream;
@@ -67,9 +85,6 @@ class Info {
 
         if (!File(filepath).existsSync()) {
           info.downloadState = DownloadState.failed;
-          Get.snackbar("提 示".tr, "下载失败".tr,
-              snackPosition: SnackPosition.BOTTOM);
-
           return;
         }
 
@@ -81,8 +96,6 @@ class Info {
       },
       onError: (e) {
         info.downloadState = DownloadState.failed;
-        Get.snackbar("下载失败".tr, e.toString(),
-            snackPosition: SnackPosition.BOTTOM);
       },
     );
   }
@@ -136,9 +149,7 @@ class FindController extends GetxController {
   }
 
   void retainDownloadingInfo() {
-    final l = infoList
-        .where((info) => info.downloadState == DownloadState.downloading)
-        .toList();
+    final l = infoList.where((info) => !info._isTimeout()).toList();
 
     infoList.clear();
     infoList.addAll(l);

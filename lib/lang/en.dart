@@ -79,4 +79,6 @@ const Map<String, String> en = {
   "次数": "Count",
   "搜索Youtube失败": "Search Youtube failed",
   "搜索Bilibili失败": "Search Bilibili failed",
+  "正在搜索...": "It is searching...",
+  "发现设置": "Find",
 };

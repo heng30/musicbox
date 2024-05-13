@@ -70,7 +70,13 @@ class _FindPageState extends State<FindPage> {
   }
 
   void search(String text) async {
-    if (text.isEmpty) {
+    if (findController.isSearching) {
+      Get.snackbar("提 示".tr, "正在搜索...".tr, snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
+    if (text.trim().isEmpty) {
+      findController.retainDownloadingInfo();
       Get.snackbar("提 示".tr, "请输入内容".tr, snackPosition: SnackPosition.BOTTOM);
       return;
     }
@@ -127,6 +133,7 @@ class _FindPageState extends State<FindPage> {
       return;
     }
 
+    info.startDownloadTime = DateTime.now();
     info.downloadState = DownloadState.downloading;
     Get.snackbar("提 示".tr, "${'开始下载'.tr} ${info.raw.title}".tr,
         snackPosition: SnackPosition.BOTTOM);
@@ -138,9 +145,8 @@ class _FindPageState extends State<FindPage> {
         await downlaodBilibili(info);
       }
     } catch (e) {
+      // don't show the error msg here, because the error msg will show through msg center channel
       info.downloadState = DownloadState.failed;
-      Get.snackbar("下载失败".tr, e.toString(),
-          snackPosition: SnackPosition.BOTTOM);
     }
   }
 

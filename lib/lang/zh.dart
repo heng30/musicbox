@@ -79,4 +79,6 @@ const Map<String, String> zh = {
   "Count": "次数",
   "Search Youtube failed": "搜索Youtube失败",
   "Search Bilibili failed": "搜索Bilibili失败",
+  "It is searching...": "正在搜索...",
+  "Find": "发现设置",
 };
