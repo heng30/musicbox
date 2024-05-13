@@ -73,4 +73,10 @@ const Map<String, String> en = {
   "创建下载目录失败": "Create the download directory failed",
   "请勿重复下载": "It has been downloaded",
   "开始下载": "Start downloading",
+  "标题": "Title",
+  "作者": "Author",
+  "时长": "Time",
+  "次数": "Count",
+  "搜索Youtube失败": "Search Youtube failed",
+  "搜索Bilibili失败": "Search Bilibili failed",
 };

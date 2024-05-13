@@ -1,6 +1,8 @@
+import 'dart:math';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -11,7 +13,7 @@ import '../widgets/nodata.dart';
 import '../widgets/searchbar.dart';
 import '../models/find_controller.dart';
 import '../models/setting_controller.dart';
-import '../src/rust/api/youtube.dart';
+import '../src/rust/api/youtube.dart' as youtube;
 
 class FindPage extends StatefulWidget {
   const FindPage({super.key});
@@ -30,14 +32,14 @@ class _FindPageState extends State<FindPage> {
 
   Future<void> searchYoutube(String text) async {
     final proxyUrl = settingController.proxy.url(ProxyType.youtube);
-    final ids =
-        await fetchIds(keyword: text, maxIdCount: 10, proxyUrl: proxyUrl);
+    final ids = await youtube.fetchIds(
+        keyword: text, maxIdCount: 10, proxyUrl: proxyUrl);
 
     var tmpList = <Info>[];
 
     for (String id in ids) {
       try {
-        final vinfo = await videoInfoById(id: id, proxyUrl: proxyUrl);
+        final vinfo = await youtube.videoInfoById(id: id, proxyUrl: proxyUrl);
         final info = Info(
           raw: vinfo,
           extention: "mp4",
@@ -63,7 +65,9 @@ class _FindPageState extends State<FindPage> {
   }
 
   // TODO
-  Future<void> searchBilibili(String text) async {}
+  Future<void> searchBilibili(String text) async {
+    throw Exception("Not implement");
+  }
 
   void search(String text) async {
     if (text.isEmpty) {
@@ -78,18 +82,20 @@ class _FindPageState extends State<FindPage> {
     try {
       await searchYoutube(text);
     } catch (e) {
+      Get.snackbar("搜索Youtube失败".tr, e.toString(),
+          snackPosition: SnackPosition.BOTTOM);
       searchErrorCount++;
     }
 
     try {
       await searchBilibili(text);
     } catch (e) {
+      // Get.snackbar("搜索Bilibili失败".tr, e.toString(),
+      //     snackPosition: SnackPosition.BOTTOM);
       searchErrorCount++;
     }
 
-    if (searchErrorCount == 2) {
-      Get.snackbar("提 示".tr, "搜索失败".tr, snackPosition: SnackPosition.BOTTOM);
-    } else {
+    if (searchErrorCount != 2) {
       Get.snackbar("提 示".tr, "搜索完成".tr, snackPosition: SnackPosition.BOTTOM);
     }
 
@@ -97,7 +103,7 @@ class _FindPageState extends State<FindPage> {
   }
 
   Future<void> downlaodYoutube(Info info) async {
-    final progressStream = downloadVideoByIdWithCallback(
+    final progressStream = youtube.downloadVideoByIdWithCallback(
       id: info.raw.videoId,
       downloadPath: await findController.downloadPath(info),
       proxyUrl: info.proxyUrl(),
@@ -136,6 +142,125 @@ class _FindPageState extends State<FindPage> {
       Get.snackbar("下载失败".tr, e.toString(),
           snackPosition: SnackPosition.BOTTOM);
     }
+  }
+
+  void showDetailDialog(BuildContext context, Info info) {
+    final settingController = Get.find<SettingController>();
+    final labelWidth = settingController.isLangZh ? 50.0 : 80.0;
+
+    Get.dialog(
+      Dialog(
+        child: Container(
+          width: double.infinity,
+          height: min(350, MediaQuery.of(context).size.height * 0.8),
+          padding: const EdgeInsets.all(CTheme.margin * 4),
+          decoration: BoxDecoration(
+            color: CTheme.background,
+            borderRadius: BorderRadius.circular(CTheme.borderRadius * 2),
+          ),
+          child: ListView(
+            children: [
+              if (info.raw.title.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(
+                      bottom: CTheme.padding * 2, top: CTheme.padding * 2),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: labelWidth,
+                        child: Text("标题".tr,
+                            style: Theme.of(context).textTheme.titleMedium),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () async {
+                            late Uri url;
+                            if (info.proxyType == ProxyType.youtube) {
+                              url = Uri.parse(
+                                  youtube.watchUrl(id: info.raw.videoId));
+                            }
+
+                            try {
+                              await launchUrl(url);
+                            } catch (e) {
+                              Get.snackbar("提 示".tr, e.toString());
+                            }
+                          },
+                          child: Text(
+                            info.raw.title,
+                            style: TextStyle(
+                              color: CTheme.link,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              if (info.raw.author.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: CTheme.padding * 2),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: labelWidth,
+                        child: Text("作者".tr,
+                            style: Theme.of(context).textTheme.titleMedium),
+                      ),
+                      Expanded(
+                        child: Text(info.raw.author),
+                      ),
+                    ],
+                  ),
+                ),
+              if (info.raw.lengthSeconds > 0)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: CTheme.padding * 2),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: labelWidth,
+                        child: Text("时长".tr,
+                            style: Theme.of(context).textTheme.titleMedium),
+                      ),
+                      Expanded(
+                        child: Text(formattedTime(info.raw.lengthSeconds)),
+                      ),
+                    ],
+                  ),
+                ),
+              if (info.raw.viewCount > 0)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: CTheme.padding * 2),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: labelWidth,
+                        child: Text("次数".tr,
+                            style: Theme.of(context).textTheme.titleMedium),
+                      ),
+                      Expanded(
+                        child: Text(formattedNumber(info.raw.viewCount)),
+                      ),
+                    ],
+                  ),
+                ),
+              if (info.raw.shortDescription.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(CTheme.padding * 2),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(info.raw.shortDescription),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildTitle(BuildContext context) {
@@ -227,6 +352,7 @@ class _FindPageState extends State<FindPage> {
         width: 100,
         child: buildDownload(context, info),
       ),
+      onTap: () => showDetailDialog(context, info),
     );
   }
 

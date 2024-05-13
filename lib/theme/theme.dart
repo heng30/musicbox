@@ -35,6 +35,10 @@ class CTheme {
       ? Colors.green.shade800
       : Colors.green.shade300;
 
+  static Color get link => Get.find<ThemeController>().isDarkMode
+      ? Colors.blue.shade500
+      : Colors.blue.shade900;
+
   static double get blurRadius =>
       Get.find<ThemeController>().isDarkMode ? margin * 2 : margin * 3;
 

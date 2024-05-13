@@ -34,3 +34,17 @@ String formattedTime(int seconds) {
     return '$remainingSeconds';
   }
 }
+
+String formattedNumber(int num) {
+  String result = '';
+  String input = num.toString();
+
+  for (int i = input.length - 1, count = 0; i >= 0; i--) {
+    result = input[i] + result;
+    if (++count % 3 == 0 && i > 0) {
+      result = ",$result";
+    }
+  }
+
+  return result;
+}

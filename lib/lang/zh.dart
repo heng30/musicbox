@@ -72,5 +72,11 @@ const Map<String, String> zh = {
       "请赋予管理外部存储权限，否则无法保存下载文件",
   "Create the download directory failed": "创建下载目录失败",
   "It has been downloaded": "请勿重复下载",
-  "Start downloading": "开始下载"
+  "Start downloading": "开始下载",
+  "Title": "标题",
+  "Author": "作者",
+  "Time": "时长",
+  "Count": "次数",
+  "Search Youtube failed": "搜索Youtube失败",
+  "Search Bilibili failed": "搜索Bilibili失败",
 };

@@ -28,6 +28,14 @@ async fn client(proxy_url: Option<String>) -> Result<reqwest::Client> {
     Ok(client)
 }
 
+#[flutter_rust_bridge::frb(sync)]
+pub fn watch_url(id: String) -> String {
+    match Id::from_str(&id) {
+        Ok(v) => v.watch_url().to_string(),
+        _ => format!("https://www.youtube.com/watch?v={id}"),
+    }
+}
+
 pub async fn fetch_ids(
     keyword: String,
     max_id_count: usize,

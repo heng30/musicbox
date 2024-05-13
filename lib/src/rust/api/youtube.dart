@@ -7,6 +7,9 @@ import '../frb_generated.dart';
 import 'data.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+String watchUrl({required String id, dynamic hint}) =>
+    RustLib.instance.api.watchUrl(id: id, hint: hint);
+
 Future<List<String>> fetchIds(
         {required String keyword,
         required int maxIdCount,

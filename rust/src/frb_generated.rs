@@ -31,7 +31,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.0.0-dev.33";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 958966722;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 79249314;
 
 // Section: executor
 
@@ -915,6 +915,35 @@ fn wire_video_info_by_id_impl(
         },
     )
 }
+fn wire_watch_url_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "watch_url",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_id = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse((move || {
+                Result::<_, ()>::Ok(crate::api::youtube::watch_url(api_id))
+            })())
+        },
+    )
+}
 
 // Section: dart2rust
 
@@ -1171,14 +1200,14 @@ fn pde_ffi_dispatcher_primary_impl(
         15 => wire_msg_center_init_impl(port, ptr, rust_vec_len, data_len),
         16 => wire_send_impl(port, ptr, rust_vec_len, data_len),
         17 => wire_create_dir_all_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire_download_audio_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_download_audio_by_id_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_download_video_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire_download_video_by_id_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_download_video_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire_fetch_ids_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_video_info_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_video_info_by_id_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire_download_audio_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire_download_audio_by_id_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_download_video_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_download_video_by_id_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_download_video_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_fetch_ids_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_video_info_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_video_info_by_id_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1191,6 +1220,7 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
+        18 => wire_watch_url_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
