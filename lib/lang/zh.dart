@@ -81,4 +81,14 @@ const Map<String, String> zh = {
   "Search Bilibili failed": "搜索Bilibili失败",
   "It is searching...": "正在搜索...",
   "Find": "发现设置",
+  "Enabled Youtube searching": "已启用Youtube搜索",
+  "Disabled Youtube searching": "未启用Youtube搜索",
+  "Enabled Bilibili searching": "已启用Bilibili搜索",
+  "Disabled Bilibili searching": "未启用Bilibili搜索",
+  "Search setting": "搜索设置",
+  "Every searching count": "每次搜索数量",
+  "Time low boundary": "时间下限",
+  "Time up boundary": "时间上限",
+  "Not enable setting searching for Youtube or Bilibili":
+      "没有启用Youtube或Bilibili搜索",
 };

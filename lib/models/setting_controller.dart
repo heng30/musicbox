@@ -97,6 +97,45 @@ class Proxy implements TomlEncodableValue {
   }
 }
 
+class Find implements TomlEncodableValue {
+  int searchCount = 10;
+  int minSecondLength = 90;
+  int maxSecondLength = 600;
+
+  final _enableYoutubeSearch = true.obs;
+  bool get enableYoutubeSearch => _enableYoutubeSearch.value;
+  set enableYoutubeSearch(bool v) => _enableYoutubeSearch.value = v;
+
+  final _enableBilibiliSearch = false.obs;
+  bool get enableBilibiliSearch => _enableBilibiliSearch.value;
+  set enableBilibiliSearch(bool v) => _enableBilibiliSearch.value = v;
+
+  Find({
+    this.searchCount = 10,
+    this.minSecondLength = 90,
+    this.maxSecondLength = 600,
+  });
+
+  @override
+  dynamic toTomlValue() {
+    return {
+      'searchCount': searchCount,
+      'minSecondLength': minSecondLength,
+      'maxSecondLength': maxSecondLength,
+      'enableYoutubeSearch': enableYoutubeSearch,
+      'enableBilibiliSearch': enableBilibiliSearch,
+    };
+  }
+
+  void fromMap(Map<String, dynamic> m) {
+    searchCount = m['searchCount'] ?? 10;
+    minSecondLength = m['minSecondLength'] ?? 90;
+    maxSecondLength = m['maxSecondLength'] ?? 600;
+    enableYoutubeSearch = m['enableYoutubeSearch'] ?? true;
+    enableBilibiliSearch = m['enableBilibiliSearch'] ?? false;
+  }
+}
+
 class SettingController extends GetxController {
   bool isDarkMode = false;
   bool isLangZh = true;
@@ -105,6 +144,7 @@ class SettingController extends GetxController {
   String appid = const Uuid().v4();
 
   Proxy proxy = Proxy();
+  Find find = Find();
 
   late String configPath;
   late String dbPath;
@@ -143,6 +183,7 @@ class SettingController extends GetxController {
       isLangZh = conf['isLangZh'] ?? isLangZh;
       appid = conf['appid'] ?? const Uuid().v4();
       playbackSpeed = conf['playbackSpeed'] ?? 1.0;
+      find.fromMap(conf['find']);
       proxy.fromMap(conf['proxy']);
 
       log.d(conf.toString());
@@ -161,6 +202,7 @@ class SettingController extends GetxController {
       'isDarkMode': isDarkMode,
       'isLangZh': isLangZh,
       'playbackSpeed': playbackSpeed,
+      'find': find,
       'proxy': proxy,
     }).toString();
 

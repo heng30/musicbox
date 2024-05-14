@@ -33,7 +33,9 @@ class _FindPageState extends State<FindPage> {
   Future<void> searchYoutube(String text) async {
     final proxyUrl = settingController.proxy.url(ProxyType.youtube);
     final ids = await youtube.fetchIds(
-        keyword: text, maxIdCount: 10, proxyUrl: proxyUrl);
+        keyword: text,
+        maxIdCount: max(1, settingController.find.searchCount),
+        proxyUrl: proxyUrl);
 
     var tmpList = <Info>[];
 
@@ -48,7 +50,10 @@ class _FindPageState extends State<FindPage> {
         );
 
         // song duration too short or too long would be ignored
-        if (vinfo.lengthSeconds < 90 || vinfo.lengthSeconds > 600) {
+        if (vinfo.lengthSeconds <
+                max(1, settingController.find.minSecondLength) ||
+            vinfo.lengthSeconds >
+                max(5, settingController.find.maxSecondLength)) {
           tmpList.add(info);
         } else {
           findController.infoList.add(info);
@@ -70,6 +75,12 @@ class _FindPageState extends State<FindPage> {
   }
 
   void search(String text) async {
+    if (!settingController.find.enableYoutubeSearch &&
+        !settingController.find.enableBilibiliSearch) {
+      Get.snackbar("提 示".tr, "没有启用Youtube或Bilibili搜索".tr,
+          snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
     if (findController.isSearching) {
       Get.snackbar("提 示".tr, "正在搜索...".tr, snackPosition: SnackPosition.BOTTOM);
       return;
@@ -85,20 +96,24 @@ class _FindPageState extends State<FindPage> {
     findController.retainDownloadingInfo();
     findController.isSearching = true;
 
-    try {
-      await searchYoutube(text);
-    } catch (e) {
-      Get.snackbar("搜索Youtube失败".tr, e.toString(),
-          snackPosition: SnackPosition.BOTTOM);
-      searchErrorCount++;
+    if (settingController.find.enableYoutubeSearch) {
+      try {
+        await searchYoutube(text);
+      } catch (e) {
+        Get.snackbar("搜索Youtube失败".tr, e.toString(),
+            snackPosition: SnackPosition.BOTTOM);
+        searchErrorCount++;
+      }
     }
 
-    try {
-      await searchBilibili(text);
-    } catch (e) {
-      // Get.snackbar("搜索Bilibili失败".tr, e.toString(),
-      //     snackPosition: SnackPosition.BOTTOM);
-      searchErrorCount++;
+    if (settingController.find.enableBilibiliSearch) {
+      try {
+        await searchBilibili(text);
+      } catch (e) {
+        // Get.snackbar("搜索Bilibili失败".tr, e.toString(),
+        //     snackPosition: SnackPosition.BOTTOM);
+        searchErrorCount++;
+      }
     }
 
     if (searchErrorCount != 2) {

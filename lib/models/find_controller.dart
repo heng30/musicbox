@@ -53,11 +53,8 @@ class Info {
 
   DateTime? startDownloadTime;
   bool _isTimeout() {
-    if (startDownloadTime == null) {
-      return true;
-    }
-
-    if (downloadState != DownloadState.downloading) {
+    if (startDownloadTime == null ||
+        downloadState != DownloadState.downloading) {
       return true;
     }
 

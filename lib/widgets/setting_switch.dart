@@ -9,12 +9,16 @@ class SettingSwitch extends StatelessWidget {
     required this.isOn,
     required this.icon,
     required this.onChanged,
+    this.padding = const EdgeInsets.all(CTheme.padding * 4),
+    this.margin = const EdgeInsets.symmetric(horizontal: CTheme.margin * 5),
   });
 
   final String title;
   final bool isOn;
   final IconData icon;
   final ValueChanged<bool>? onChanged;
+  final EdgeInsets padding;
+  final EdgeInsets margin;
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +27,8 @@ class SettingSwitch extends StatelessWidget {
         borderRadius: BorderRadius.circular(CTheme.borderRadius),
         color: CTheme.secondary,
       ),
-      padding: const EdgeInsets.all(CTheme.padding * 4),
-      margin: const EdgeInsets.symmetric(horizontal: CTheme.margin * 5),
+      padding: padding,
+      margin: margin,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
