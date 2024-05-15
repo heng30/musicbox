@@ -35,23 +35,25 @@ class MsgCenterController extends GetxController {
     );
   }
 
-  void updateFindInfoListDownloadStatusToError(String data) {
+  void updateFindInfoListDownloadStatusToError(String data) async {
     final Map<String, dynamic> m = jsonDecode(data);
     if (!m.containsKey("id")) {
       return;
     }
 
     try {
-      final item = findController.infoList.firstWhere((item) {
+      final info = findController.infoList.firstWhere((item) {
         return item.raw.videoId == m["id"];
       });
 
-      item.downloadState = DownloadState.failed;
+      info.downloadState = DownloadState.failed;
 
       if (m.containsKey("msg")) {
-        Get.snackbar("下载失败".tr, "${m['msg']}\n${item.raw.title}",
+        Get.snackbar("下载失败".tr, "${m['msg']}\n${info.raw.title}",
             snackPosition: SnackPosition.BOTTOM);
       }
+
+      await info.removeDownloadFailedFile();
     } catch (e) {
       log.d(e);
     }

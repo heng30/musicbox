@@ -19,7 +19,7 @@ serde = { version = "1.0", features = ["serde_derive"] }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 env_logger = "0.10"
-reqwest = { version = "0.12", features = ["json", "socks"] }
+# reqwest = { version = "0.12", features = ["json", "socks"] }
 sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite"] }
 rustube = { git = "https://github.com/Heng30/rustube.git", features = [
   "default",
@@ -35,11 +35,11 @@ android_logger = "0.13"
 
 # mobile platform
 [target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
-reqwest = { version = "0.12", features = [
-  "native-tls-vendored",
-  "json",
-  "socks",
-] }
+# reqwest = { version = "0.12", features = [
+#   "native-tls-vendored",
+#   "json",
+#   "socks",
+# ] }
 rustube = { git = "https://github.com/Heng30/rustube.git", features = [
   "default",
   "native-tls-vendored",

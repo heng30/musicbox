@@ -233,6 +233,80 @@ pub async fn download_audio_by_id(
     Ok(())
 }
 
+pub async fn download_audio_by_id_with_callback(
+    sink: StreamSink<ProgressData>,
+    id: String,
+    download_path: String,
+    proxy_url: Option<String>,
+) -> Result<()> {
+    let (tx, mut rx) = mpsc::channel(1024);
+
+    // For logging in dart
+    msg_center::send(MsgItem {
+        ty: MsgType::PlainText,
+        data: format!("start downlaod youtube audio: {id}"),
+    })
+    .await;
+
+    tokio::spawn(async move {
+        match inner_download_audio_by_id_with_callback(id.clone(), download_path, proxy_url, tx)
+            .await
+        {
+            Err(e) => {
+                let de = DownloadError {
+                    id,
+                    msg: e.to_string(),
+                };
+
+                let mi = MsgItem {
+                    ty: MsgType::YoutubeDownloadError,
+                    data: serde_json::to_string(&de).unwrap_or("{}".to_string()),
+                };
+
+                msg_center::send(mi).await;
+                log::warn!("{e:?}");
+            }
+            _ => (),
+        }
+    });
+
+    while let Some(item) = rx.recv().await {
+        if let Err(e) = sink.add(ProgressData {
+            current_size: item.current_chunk as u64,
+            total_size: item.content_length,
+        }) {
+            log::warn!("sink add error: {e:?}");
+        }
+    }
+    Ok(())
+}
+
+async fn inner_download_audio_by_id_with_callback(
+    id: String,
+    download_path: String,
+    proxy_url: Option<String>,
+    tx: mpsc::Sender<CallbackArguments>,
+) -> Result<()> {
+    let id = Id::from_str(&id)?;
+    let client = client(proxy_url).await?;
+
+    let video = VideoFetcher::from_id_with_client(id.into_owned(), client)
+        .fetch()
+        .await?
+        .descramble()?;
+
+    let cb = Callback::new().connect_on_progress_sender(tx, true);
+    match video.best_audio() {
+        Some(stream) => stream.download_to_with_callback(download_path, cb).await?,
+        None => match video.worst_audio() {
+            None => anyhow::bail!("no audio"),
+            Some(stream) => stream.download_to(download_path).await?,
+        },
+    };
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -335,6 +409,36 @@ mod tests {
             Some(PROXY_URL.to_string()),
         )
         .await?;
+        assert_eq!(fs::try_exists(path).await?, true);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_inner_download_audio_by_id_with_callback() -> Result<()> {
+        let path = "/tmp/1-id-cb.webp";
+        _ = fs::remove_file(path).await;
+        let (tx, mut rx) = mpsc::channel(1024);
+
+        tokio::spawn(async move {
+            inner_download_audio_by_id_with_callback(
+                VIDEO_ID.to_string(),
+                path.to_string(),
+                Some(PROXY_URL.to_string()),
+                tx,
+            )
+            .await
+            .expect("inner_download_audio_by_id_with_callback error");
+        });
+
+        while let Some(item) = rx.recv().await {
+            println!(
+                "{}/{}",
+                item.current_chunk,
+                item.content_length.unwrap_or(0)
+            );
+        }
+
         assert_eq!(fs::try_exists(path).await?, true);
 
         Ok(())

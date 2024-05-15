@@ -110,6 +110,10 @@ class Find implements TomlEncodableValue {
   bool get enableBilibiliSearch => _enableBilibiliSearch.value;
   set enableBilibiliSearch(bool v) => _enableBilibiliSearch.value = v;
 
+  final _enableVideoToAudio = false.obs;
+  bool get enableVideoToAudio => _enableVideoToAudio.value;
+  set enableVideoToAudio(bool v) => _enableVideoToAudio.value = v;
+
   Find({
     this.searchCount = 10,
     this.minSecondLength = 90,
@@ -124,6 +128,7 @@ class Find implements TomlEncodableValue {
       'maxSecondLength': maxSecondLength,
       'enableYoutubeSearch': enableYoutubeSearch,
       'enableBilibiliSearch': enableBilibiliSearch,
+      'enableVideoToAudio': enableVideoToAudio,
     };
   }
 
@@ -133,6 +138,7 @@ class Find implements TomlEncodableValue {
     maxSecondLength = m['maxSecondLength'] ?? 600;
     enableYoutubeSearch = m['enableYoutubeSearch'] ?? true;
     enableBilibiliSearch = m['enableBilibiliSearch'] ?? false;
+    enableVideoToAudio = m['enableVideoToAudio'] ?? false;
   }
 }
 

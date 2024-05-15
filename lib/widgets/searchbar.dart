@@ -49,7 +49,7 @@ class CSearchBar extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: CTheme.primary,
+            color: CTheme.secondaryBrand,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(CTheme.borderRadius * 4),

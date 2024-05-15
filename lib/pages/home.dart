@@ -52,6 +52,7 @@ class _HomePageState extends State<HomePage> {
           itemBuilder: (count, index) {
             final song = playlistController.playlist[index];
             return ListTile(
+              contentPadding: const EdgeInsets.only(left: CTheme.padding * 2),
               title: Text(
                 song.songName,
                 overflow: TextOverflow.ellipsis,
@@ -92,6 +93,8 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: CTheme.padding),
           child: ListTile(
+            contentPadding: const EdgeInsets.only(
+                left: CTheme.padding * 2, right: CTheme.padding * 4),
             title: Text(
               song.songName,
               overflow: TextOverflow.ellipsis,

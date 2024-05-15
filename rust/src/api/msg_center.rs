@@ -18,7 +18,7 @@ pub async fn msg_center_init(sink: StreamSink<MsgItem>) {
 }
 
 pub async fn send(item: MsgItem) {
-    CHANNEL
+    _ = CHANNEL
         .lock()
         .await
         .clone()

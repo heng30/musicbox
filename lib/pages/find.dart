@@ -93,6 +93,7 @@ class _FindPageState extends State<FindPage> {
     }
 
     int searchErrorCount = 0;
+    int targetSearchErrorCount = 2;
     findController.retainDownloadingInfo();
     findController.isSearching = true;
 
@@ -104,6 +105,8 @@ class _FindPageState extends State<FindPage> {
             snackPosition: SnackPosition.BOTTOM);
         searchErrorCount++;
       }
+    } else {
+      targetSearchErrorCount--;
     }
 
     if (settingController.find.enableBilibiliSearch) {
@@ -114,9 +117,11 @@ class _FindPageState extends State<FindPage> {
         //     snackPosition: SnackPosition.BOTTOM);
         searchErrorCount++;
       }
+    } else {
+      targetSearchErrorCount++;
     }
 
-    if (searchErrorCount != 2) {
+    if (searchErrorCount != targetSearchErrorCount) {
       Get.snackbar("提 示".tr, "搜索完成".tr, snackPosition: SnackPosition.BOTTOM);
     }
 
@@ -136,6 +141,22 @@ class _FindPageState extends State<FindPage> {
   // TODO
   Future<void> downlaodBilibili(Info info) async {}
 
+  Future<void> innerDownload(Info info) async {
+    info.startDownloadTime = DateTime.now();
+    info.downloadState = DownloadState.downloading;
+
+    try {
+      if (info.proxyType == ProxyType.youtube) {
+        await downlaodYoutube(info);
+      } else if (info.proxyType == ProxyType.bilibili) {
+        await downlaodBilibili(info);
+      }
+    } catch (e) {
+      // don't show the error msg here, because the error msg will show through msg center channel
+      info.downloadState = DownloadState.failed;
+    }
+  }
+
   Future<void> startDownload(Info info) async {
     if (info.downloadState == DownloadState.downloading) {
       Get.snackbar("提 示".tr, "已经在下载，请耐心等待".tr,
@@ -148,21 +169,68 @@ class _FindPageState extends State<FindPage> {
       return;
     }
 
-    info.startDownloadTime = DateTime.now();
-    info.downloadState = DownloadState.downloading;
     Get.snackbar("提 示".tr, "${'开始下载'.tr} ${info.raw.title}".tr,
         snackPosition: SnackPosition.BOTTOM);
 
+    await innerDownload(info);
+  }
+
+  Future<void> downloadAgain(Info info) async {
+    Get.snackbar("提 示".tr, "${'重新下载'.tr} ${info.raw.title}".tr,
+        snackPosition: SnackPosition.BOTTOM);
+
     try {
-      if (info.proxyType == ProxyType.youtube) {
-        await downlaodYoutube(info);
-      } else if (info.proxyType == ProxyType.bilibili) {
-        await downlaodBilibili(info);
-      }
+      await info.removeDownloadFailedFile();
+      await innerDownload(info);
     } catch (e) {
-      // don't show the error msg here, because the error msg will show through msg center channel
-      info.downloadState = DownloadState.failed;
+      Get.snackbar("重新下载失败".tr, e.toString(),
+          snackPosition: SnackPosition.BOTTOM);
     }
+  }
+
+  Future<void> cancelDownload(Info info) async {
+    try {
+      info.cnacelProgressStreamSubscription();
+      await info.removeDownloadFailedFile();
+      info.downloadState = DownloadState.undownload;
+    } catch (e) {
+      log.d(e);
+    }
+  }
+
+  void showDownloadOptionsDialog(Info info) {
+    Get.dialog(
+      Dialog(
+        child: Container(
+          padding: const EdgeInsets.all(CTheme.padding * 4),
+          decoration: BoxDecoration(
+            color: CTheme.background,
+            borderRadius: BorderRadius.circular(CTheme.blurRadius),
+          ),
+          height: 100,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: () async {
+                  Get.back();
+                  await downloadAgain(info);
+                },
+                child: Text("重新下载".tr),
+              ),
+              const SizedBox(height: CTheme.margin * 5),
+              InkWell(
+                onTap: () async {
+                  Get.back();
+                  await cancelDownload(info);
+                },
+                child: Text("取消下载".tr),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void showDetailDialog(BuildContext context, Info info) {
@@ -326,7 +394,11 @@ class _FindPageState extends State<FindPage> {
                   const EdgeInsets.symmetric(horizontal: CTheme.padding * 2),
               child: InkWell(
                 hoverColor: Colors.transparent,
-                onTap: () => startDownload(info),
+                onTap: () {
+                  if (info.downloadState == DownloadState.downloading) {
+                    showDownloadOptionsDialog(info);
+                  }
+                },
                 child: CircularPercentIndicator(
                   radius: 15,
                   lineWidth: 3,

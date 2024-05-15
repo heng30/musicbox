@@ -18,6 +18,10 @@ bool isRustSqliteSupportPlatform() {
       Platform.isFuchsia;
 }
 
+bool isFFmpegKitSupportPlatform() {
+  return false;
+}
+
 String formattedTime(int seconds) {
   int hours = (seconds / 3600).truncate();
   int minutes = ((seconds % 3600) / 60).truncate();
@@ -47,4 +51,10 @@ String formattedNumber(int num) {
   }
 
   return result;
+}
+
+Future<void> ffmpegConvert(String input, String args, String output) async {
+  if (!isFFmpegKitSupportPlatform()) {
+    return;
+  }
 }

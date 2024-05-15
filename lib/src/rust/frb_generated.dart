@@ -59,7 +59,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.0.0-dev.33';
 
   @override
-  int get rustContentHash => 79249314;
+  int get rustContentHash => -199920716;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -112,6 +112,12 @@ abstract class RustLibApi extends BaseApi {
       dynamic hint});
 
   Future<void> downloadAudioById(
+      {required String id,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint});
+
+  Stream<ProgressData> downloadAudioByIdWithCallback(
       {required String id,
       required String downloadPath,
       String? proxyUrl,
@@ -644,6 +650,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kDownloadAudioByIdConstMeta => const TaskConstMeta(
         debugName: "download_audio_by_id",
         argNames: ["id", "downloadPath", "proxyUrl"],
+      );
+
+  @override
+  Stream<ProgressData> downloadAudioByIdWithCallback(
+      {required String id,
+      required String downloadPath,
+      String? proxyUrl,
+      dynamic hint}) {
+    final sink = RustStreamSink<ProgressData>();
+    unawaited(handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_StreamSink_progress_data_Sse(sink, serializer);
+        sse_encode_String(id, serializer);
+        sse_encode_String(downloadPath, serializer);
+        sse_encode_opt_String(proxyUrl, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 27, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kDownloadAudioByIdWithCallbackConstMeta,
+      argValues: [sink, id, downloadPath, proxyUrl],
+      apiImpl: this,
+      hint: hint,
+    )));
+    return sink.stream;
+  }
+
+  TaskConstMeta get kDownloadAudioByIdWithCallbackConstMeta =>
+      const TaskConstMeta(
+        debugName: "download_audio_by_id_with_callback",
+        argNames: ["sink", "id", "downloadPath", "proxyUrl"],
       );
 
   @override

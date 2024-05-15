@@ -31,7 +31,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.0.0-dev.33";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 79249314;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -199920716;
 
 // Section: executor
 
@@ -674,6 +674,53 @@ fn wire_download_audio_by_id_impl(
         },
     )
 }
+fn wire_download_audio_by_id_with_callback_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "download_audio_by_id_with_callback",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_sink = <StreamSink<
+                crate::api::data::ProgressData,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
+            let api_id = <String>::sse_decode(&mut deserializer);
+            let api_download_path = <String>::sse_decode(&mut deserializer);
+            let api_proxy_url = <Option<String>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse(
+                    (move || async move {
+                        crate::api::youtube::download_audio_by_id_with_callback(
+                            api_sink,
+                            api_id,
+                            api_download_path,
+                            api_proxy_url,
+                        )
+                        .await
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire_download_video_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1202,6 +1249,7 @@ fn pde_ffi_dispatcher_primary_impl(
         17 => wire_create_dir_all_impl(port, ptr, rust_vec_len, data_len),
         25 => wire_download_audio_impl(port, ptr, rust_vec_len, data_len),
         26 => wire_download_audio_by_id_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire_download_audio_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
         22 => wire_download_video_impl(port, ptr, rust_vec_len, data_len),
         23 => wire_download_video_by_id_impl(port, ptr, rust_vec_len, data_len),
         24 => wire_download_video_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),

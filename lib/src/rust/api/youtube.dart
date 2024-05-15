@@ -68,3 +68,11 @@ Future<void> downloadAudioById(
         dynamic hint}) =>
     RustLib.instance.api.downloadAudioById(
         id: id, downloadPath: downloadPath, proxyUrl: proxyUrl, hint: hint);
+
+Stream<ProgressData> downloadAudioByIdWithCallback(
+        {required String id,
+        required String downloadPath,
+        String? proxyUrl,
+        dynamic hint}) =>
+    RustLib.instance.api.downloadAudioByIdWithCallback(
+        id: id, downloadPath: downloadPath, proxyUrl: proxyUrl, hint: hint);

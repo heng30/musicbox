@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/util.dart';
 import '../../theme/theme.dart';
 import '../../widgets/setting_switch.dart';
 import '../../models/setting_controller.dart';
@@ -166,6 +167,24 @@ class _SettingFindPageState extends State<SettingFindPage> {
     );
   }
 
+  Widget buildOthers(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: CTheme.margin * 5, width: double.infinity),
+        if (isFFmpegKitSupportPlatform())
+          SettingSwitch(
+            margin: EdgeInsets.zero,
+            title: settingController.find.enableVideoToAudio
+                ? '已启用视频转音频'.tr
+                : '未启用视频转音频'.tr,
+            isOn: settingController.find.enableVideoToAudio,
+            icon: Icons.transform,
+            onChanged: (v) => settingController.find.enableVideoToAudio = v,
+          ),
+      ],
+    );
+  }
+
   Widget buildBody(BuildContext context) {
     final FocusScopeNode focusScopeNode = FocusScope.of(context);
     return Padding(
@@ -175,6 +194,7 @@ class _SettingFindPageState extends State<SettingFindPage> {
         child: ListView(
           children: [
             buildSearch(context, focusScopeNode),
+            buildOthers(context),
           ],
         ),
       ),

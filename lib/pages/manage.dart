@@ -45,9 +45,40 @@ class _ManagePageState extends State<ManagePage> {
     );
   }
 
+  void _clearPlaylistOneSongDialog(int index) {
+    Get.defaultDialog(
+      title: "提 示".tr,
+      middleText: '${"是否删除歌曲".tr}?',
+      confirm: ElevatedButton(
+        onPressed: () {
+          playlistController.remove(index);
+          Get.back();
+          Get.snackbar("提 示".tr, "已经删除歌曲".tr,
+              snackPosition: SnackPosition.BOTTOM);
+        },
+        child: Obx(
+          () => Text(
+            "删除歌曲".tr,
+            style: TextStyle(color: CTheme.inversePrimary),
+          ),
+        ),
+      ),
+      cancel: ElevatedButton(
+        onPressed: () => Get.back(),
+        child: Obx(
+          () => Text(
+            "取消".tr,
+            style: TextStyle(color: CTheme.inversePrimary),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildAnimationListTile(int index) {
     final song = playlistController.playlist[index];
     return ListTile(
+      contentPadding: const EdgeInsets.only(left: CTheme.padding * 2),
       title: Text(
         song.songName,
         overflow: TextOverflow.ellipsis,
@@ -62,7 +93,7 @@ class _ManagePageState extends State<ManagePage> {
       ),
       trailing: IconButton(
         icon: const Icon(Icons.delete_outline),
-        onPressed: () => playlistController.remove(index),
+        onPressed: () => _clearPlaylistOneSongDialog(index),
       ),
     );
   }
