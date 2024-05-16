@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -192,49 +193,55 @@ class FindController extends GetxController {
     infoList.addAll(l);
   }
 
-  Future<void> _makeDownloadDir() async {
-    if (Platform.isAndroid) {
-      Map<Permission, PermissionStatus> statuses = await [
-        Permission.storage,
-        Permission.manageExternalStorage,
-      ].request();
+  Future<void> createDownloadDir() async {
+    try {
+      if (Platform.isAndroid) {
+        final androidVersion = await DeviceInfoPlugin().androidInfo;
+        if (androidVersion.version.sdkInt >= 30) {
+          await Permission.manageExternalStorage.request();
+          if (!(await Permission.manageExternalStorage.isGranted)) {
+            Get.snackbar("提 示".tr, "请赋予管理外部存储权限，否则无法保存下载文件".tr,
+                snackPosition: SnackPosition.BOTTOM);
+            return;
+          }
+        } else {
+          await Permission.storage.request();
+          if (!(await Permission.storage.isGranted)) {
+            Get.snackbar("提 示".tr, "请赋予管理外部存储权限，否则无法保存下载文件".tr,
+                snackPosition: SnackPosition.BOTTOM);
+            return;
+          }
+        }
 
-      if (!statuses[Permission.manageExternalStorage]!.isGranted) {
-        Get.snackbar("提 示".tr, "请赋予管理外部存储权限，否则无法保存下载文件".tr,
-            snackPosition: SnackPosition.BOTTOM);
-        return;
+        final pname = (await PackageInfo.fromPlatform()).packageName;
+        final d = Directory("/storage/emulated/0/$pname");
+
+        if (!(await d.exists())) {
+          await d.create();
+        }
+
+        downloadDir = d.path;
+      } else {
+        final d = await getDownloadsDirectory() ??
+            await getApplicationCacheDirectory();
+
+        if (!(await d.exists())) {
+          await d.create();
+        }
+
+        downloadDir = d.path;
       }
 
-      final pname = (await PackageInfo.fromPlatform()).packageName;
-      final d = Directory("/storage/emulated/0/$pname");
-
-      if (!(await d.exists())) {
-        await d.create();
-      }
-
-      downloadDir = d.path;
-    } else {
-      final d =
-          await getDownloadsDirectory() ?? await getApplicationCacheDirectory();
-
-      if (!(await d.exists())) {
-        await d.create();
-      }
-
-      downloadDir = d.path;
+      log.d("download dir: $downloadDir");
+    } catch (e) {
+      Get.snackbar("创建下载目录失败".tr, e.toString(),
+          snackPosition: SnackPosition.BOTTOM);
     }
-
-    log.d("download dir: $downloadDir");
   }
 
   Future<String> downloadPath(Info info) async {
     if (downloadDir == null) {
-      try {
-        await _makeDownloadDir();
-      } catch (e) {
-        Get.snackbar("创建下载目录失败".tr, e.toString(),
-            snackPosition: SnackPosition.BOTTOM);
-      }
+      await createDownloadDir();
     }
 
     return "$downloadDir/${info.raw.title}_${info.raw.author}.${info.extention}";
@@ -242,7 +249,7 @@ class FindController extends GetxController {
 
   Future<bool> isInDownloadDir(String path) async {
     if (downloadDir == null) {
-      await _makeDownloadDir();
+      await createDownloadDir();
     }
 
     final pname = (await PackageInfo.fromPlatform()).packageName;

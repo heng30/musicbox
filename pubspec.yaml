@@ -51,6 +51,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
   flutter_spinkit: ^5.2.1
   cupertino_icons: ^1.0.6
+  device_info_plus: ^10.1.0
   percent_indicator: ^4.0.1
   package_info_plus: ^8.0.0
   permission_handler: ^11.3.1

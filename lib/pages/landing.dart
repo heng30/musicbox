@@ -52,7 +52,7 @@ class _LandingPageState extends State<LandingPage> {
     final size = MediaQuery.of(context).size;
     final maxSize = min(500.0, min(size.width * 0.6, size.height * 0.6));
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: CTheme.padding * 10),
+      padding: const EdgeInsets.symmetric(horizontal: CTheme.padding * 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -60,18 +60,18 @@ class _LandingPageState extends State<LandingPage> {
             image,
             width: maxSize,
           ),
-          SizedBox(height: CTheme.margin * 5),
+          const SizedBox(height: CTheme.margin * 5),
           Text(
             title,
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          SizedBox(height: CTheme.margin * 5),
+          const SizedBox(height: CTheme.margin * 5),
           Text(
             content,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          SizedBox(height: CTheme.margin * 10),
+          const SizedBox(height: CTheme.margin * 10),
           buildIndicator(context),
         ],
       ),
@@ -83,7 +83,7 @@ class _LandingPageState extends State<LandingPage> {
       duration: duration,
       height: 4,
       width: isActive ? 20 : 8,
-      margin: EdgeInsets.only(right: CTheme.margin * 1.5),
+      margin: const EdgeInsets.only(right: CTheme.margin * 1.5),
       decoration: BoxDecoration(
         color: CTheme.secondaryBrand,
         borderRadius: BorderRadius.circular(5),
@@ -190,12 +190,14 @@ class _LandingPageState extends State<LandingPage> {
           automaticallyImplyLeading: false,
           actions: [
             Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 top: CTheme.padding * 5,
                 right: CTheme.padding * 5,
               ),
               child: TextButton(
-                onPressed: () => Get.toNamed("/"),
+                onPressed: () {
+                  Get.toNamed("/");
+                },
                 child: Text("跳过".tr),
               ),
             ),

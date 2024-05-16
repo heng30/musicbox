@@ -512,6 +512,8 @@ class _FindPageState extends State<FindPage> {
 
   @override
   Widget build(BuildContext context) {
+    findController.createDownloadDir();
+
     return Obx(
       () => Scaffold(
         backgroundColor: CTheme.background,

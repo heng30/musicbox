@@ -217,6 +217,7 @@ class PlaylistController extends GetxController {
       allowMultiple: true,
       type: FileType.custom,
       allowedExtensions: ['mp3', 'mp4', 'wav', 'flac', 'ogg'],
+      initialDirectory: Get.find<FindController>().downloadDir,
     );
 
     var songs = <Song>[];
