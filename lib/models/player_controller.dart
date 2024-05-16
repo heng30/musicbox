@@ -205,18 +205,19 @@ class PlayerController extends GetxController {
     if (playModel == PlayModel.shuffle) {
       playlistController.currentSongIndex =
           Random().nextInt(playlistController.playlist.length);
-      return;
-    }
-
-    if (playlistController.isValidCurrentSongIndex) {
-      if (playlistController.currentSongIndex! <
-          playlistController.playlist.length - 1) {
-        playlistController.currentSongIndex =
-            playlistController.currentSongIndex! + 1;
-      } else {
-        playlistController.currentSongIndex = 0;
+    } else {
+      if (playlistController.isValidCurrentSongIndex) {
+        if (playlistController.currentSongIndex! <
+            playlistController.playlist.length - 1) {
+          playlistController.currentSongIndex =
+              playlistController.currentSongIndex! + 1;
+        } else {
+          playlistController.currentSongIndex = 0;
+        }
       }
     }
+
+    playlistController.updateSelectedSong();
   }
 
   void playPreviousSong() {
@@ -227,18 +228,18 @@ class PlayerController extends GetxController {
     if (playModel == PlayModel.shuffle) {
       playlistController.currentSongIndex =
           Random().nextInt(playlistController.playlist.length);
-      return;
-    }
-
-    if (playlistController.isValidCurrentSongIndex) {
-      if (playlistController.currentSongIndex! > 0) {
-        playlistController.currentSongIndex =
-            playlistController.currentSongIndex! - 1;
-      } else {
-        playlistController.currentSongIndex =
-            playlistController.playlist.length - 1;
+    } else {
+      if (playlistController.isValidCurrentSongIndex) {
+        if (playlistController.currentSongIndex! > 0) {
+          playlistController.currentSongIndex =
+              playlistController.currentSongIndex! - 1;
+        } else {
+          playlistController.currentSongIndex =
+              playlistController.playlist.length - 1;
+        }
       }
     }
+    playlistController.updateSelectedSong();
   }
 
   void listenToDuration() {

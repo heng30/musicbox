@@ -162,8 +162,7 @@ class _FindPageState extends State<FindPage> {
         await downlaodBilibili(info);
       }
     } catch (e) {
-      // don't show the error msg here, because the error msg will show through msg center channel
-      info.downloadState = DownloadState.failed;
+      log.d(e);
     }
   }
 
@@ -189,11 +188,7 @@ class _FindPageState extends State<FindPage> {
     Get.snackbar("提 示".tr, "${'重新下载'.tr} ${info.raw.title}".tr,
         snackPosition: SnackPosition.BOTTOM);
 
-    try {
-      await info.removeDownloadFailedFile();
-    } catch (e) {
-      log.d(e);
-    }
+    await cancelDownload(info);
 
     try {
       await innerDownload(info);
@@ -204,13 +199,9 @@ class _FindPageState extends State<FindPage> {
   }
 
   Future<void> cancelDownload(Info info) async {
-    try {
-      info.downloadState = DownloadState.undownload;
-      info.cnacelProgressStreamSubscription();
-      await info.removeDownloadFailedFile();
-    } catch (e) {
-      log.d(e);
-    }
+    info.downloadState = DownloadState.undownload;
+    info.cnacelProgressStreamSubscription();
+    await info.removeDownloadFailedFile();
   }
 
   void showDownloadOptionsDialog(BuildContext context, Info info) {
@@ -447,8 +438,7 @@ class _FindPageState extends State<FindPage> {
                 ),
               ),
             ),
-          if (info.downloadState == DownloadState.undownload ||
-              info.downloadState == DownloadState.failed)
+          if (info.downloadState == DownloadState.undownload)
             IconButton(
               icon: Icon(downloadStateIcon(info.downloadState)),
               onPressed: () => startDownload(info),

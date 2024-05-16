@@ -21,7 +21,6 @@ enum DownloadState {
   undownload,
   downloading,
   downloaded,
-  failed,
 }
 
 IconData downloadStateIcon(DownloadState state) {
@@ -32,8 +31,6 @@ IconData downloadStateIcon(DownloadState state) {
       return Icons.downloading;
     case DownloadState.downloaded:
       return Icons.download_done;
-    case DownloadState.failed:
-      return Icons.error_outline;
   }
 }
 
@@ -54,6 +51,8 @@ class Info {
   final RxDouble _downloadRate = 0.0.obs;
   double get downloadRate => _downloadRate.value;
   set downloadRate(double v) => _downloadRate.value = v;
+
+  final log = Logger();
 
   DateTime? startDownloadTime;
   bool _isUnlistInfo() {
@@ -103,7 +102,6 @@ class Info {
         final filepath = await findController.downloadPath(info);
 
         if (!(await File(filepath).exists())) {
-          info.downloadState = DownloadState.failed;
           return;
         }
 
@@ -123,7 +121,6 @@ class Info {
         }
       },
       onError: (e) async {
-        info.downloadState = DownloadState.failed;
         await removeDownloadFailedFile();
       },
     );
@@ -131,10 +128,14 @@ class Info {
 
   Future<void> removeDownloadFailedFile() async {
     final findController = Get.find<FindController>();
-    final filepath = await findController.downloadPath(this);
 
-    if (await File(filepath).exists()) {
-      await File(filepath).delete();
+    try {
+      final filepath = await findController.downloadPath(this);
+      if (await File(filepath).exists()) {
+        await File(filepath).delete();
+      }
+    } catch (e) {
+      log.d(e);
     }
   }
 

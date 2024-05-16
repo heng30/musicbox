@@ -46,8 +46,6 @@ class MsgCenterController extends GetxController {
         return item.raw.videoId == m["id"];
       });
 
-      info.downloadState = DownloadState.failed;
-
       if (m.containsKey("msg")) {
         Get.snackbar("下载失败".tr, "${m['msg']}\n${info.raw.title}",
             snackPosition: SnackPosition.BOTTOM);
