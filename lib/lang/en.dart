@@ -104,4 +104,5 @@ const Map<String, String> en = {
   "取消下载": "Cancel download",
   "重新下载失败": "Download again failed",
   "是否重新下载": "Download again or not",
+  "刷新完成": "Refresh finished",
 };

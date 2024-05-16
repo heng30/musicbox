@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import '../models/util.dart';
@@ -26,9 +27,18 @@ class _FindPageState extends State<FindPage> {
   final findController = Get.find<FindController>();
   final settingController = Get.find<SettingController>();
 
+  // no need to dispose
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: false);
+
   final FocusNode focusNodeSearch = FocusNode();
   final TextEditingController controllerSearch = TextEditingController();
   final log = Logger();
+
+  void onRefresh() async {
+    findController.retainDownloadingInfo();
+    refreshController.refreshCompleted();
+  }
 
   Future<void> searchYoutube(String text) async {
     final proxyUrl = settingController.proxy.url(ProxyType.youtube);
@@ -181,6 +191,11 @@ class _FindPageState extends State<FindPage> {
 
     try {
       await info.removeDownloadFailedFile();
+    } catch (e) {
+      log.d(e);
+    }
+
+    try {
       await innerDownload(info);
     } catch (e) {
       Get.snackbar("重新下载失败".tr, e.toString(),
@@ -190,41 +205,57 @@ class _FindPageState extends State<FindPage> {
 
   Future<void> cancelDownload(Info info) async {
     try {
+      info.downloadState = DownloadState.undownload;
       info.cnacelProgressStreamSubscription();
       await info.removeDownloadFailedFile();
-      info.downloadState = DownloadState.undownload;
     } catch (e) {
       log.d(e);
     }
   }
 
-  void showDownloadOptionsDialog(Info info) {
+  void showDownloadOptionsDialog(BuildContext context, Info info) {
     Get.dialog(
       Dialog(
         child: Container(
-          padding: const EdgeInsets.all(CTheme.padding * 4),
+          padding: const EdgeInsets.all(CTheme.padding * 2),
           decoration: BoxDecoration(
             color: CTheme.background,
             borderRadius: BorderRadius.circular(CTheme.blurRadius),
           ),
-          height: 100,
+          height: 116,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              InkWell(
-                onTap: () async {
-                  Get.back();
-                  await downloadAgain(info);
-                },
-                child: Text("重新下载".tr),
+              SizedBox(
+                height: 50,
+                child: InkWell(
+                  onTap: () async {
+                    Get.back();
+                    await downloadAgain(info);
+                  },
+                  child: Center(
+                    child: Text(
+                      "重新下载".tr,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                ),
               ),
-              const SizedBox(height: CTheme.margin * 5),
-              InkWell(
-                onTap: () async {
-                  Get.back();
-                  await cancelDownload(info);
-                },
-                child: Text("取消下载".tr),
+              SizedBox(
+                height: 50,
+                child: InkWell(
+                  onTap: () async {
+                    Get.back();
+                    await cancelDownload(info);
+                  },
+                  child: Center(
+                    child: Text(
+                      "取消下载".tr,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -396,7 +427,7 @@ class _FindPageState extends State<FindPage> {
                 hoverColor: Colors.transparent,
                 onTap: () {
                   if (info.downloadState == DownloadState.downloading) {
-                    showDownloadOptionsDialog(info);
+                    showDownloadOptionsDialog(context, info);
                   }
                 },
                 child: CircularPercentIndicator(
@@ -451,11 +482,17 @@ class _FindPageState extends State<FindPage> {
 
   Widget buildInfoList(BuildContext context) {
     return Obx(
-      () => ListView.builder(
-        itemCount: findController.infoList.length,
-        itemBuilder: (count, index) {
-          return buildListTile(context, index);
-        },
+      () => SmartRefresher(
+        enablePullDown: true,
+        header: WaterDropHeader(complete: Text("刷新完成".tr)),
+        controller: refreshController,
+        onRefresh: onRefresh,
+        child: ListView.builder(
+          itemCount: findController.infoList.length,
+          itemBuilder: (count, index) {
+            return buildListTile(context, index);
+          },
+        ),
       ),
     );
   }

@@ -132,7 +132,7 @@ class Info {
     final findController = Get.find<FindController>();
     final filepath = await findController.downloadPath(this);
 
-    if (!(await File(filepath).exists())) {
+    if (await File(filepath).exists()) {
       await File(filepath).delete();
     }
   }

@@ -170,7 +170,7 @@ class PlayerController extends GetxController {
     await settingController.save();
   }
 
-  final _volume = 0.5.obs;
+  final _volume = 0.8.obs;
   bool get isMute => _volume.value <= 0.001;
   double get volume => _volume.value;
 
