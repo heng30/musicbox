@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/theme.dart';
 import '../models/playlist_controller.dart';
@@ -21,8 +22,9 @@ class _ManagePageState extends State<ManagePage> {
       middleText: '${"是否删除全部歌曲".tr}?',
       confirm: ElevatedButton(
         onPressed: () {
-          playlistController.removeAll();
+          Get.closeAllSnackbars();
           Get.back();
+          playlistController.removeAll();
           Get.snackbar("提 示".tr, "已经删除全部歌曲".tr,
               snackPosition: SnackPosition.BOTTOM);
         },
@@ -51,8 +53,9 @@ class _ManagePageState extends State<ManagePage> {
       middleText: '${"是否删除歌曲".tr}?',
       confirm: ElevatedButton(
         onPressed: () {
-          playlistController.remove(index);
+          Get.closeAllSnackbars();
           Get.back();
+          playlistController.remove(index);
           Get.snackbar("提 示".tr, "已经删除歌曲".tr,
               snackPosition: SnackPosition.BOTTOM);
         },
@@ -75,7 +78,39 @@ class _ManagePageState extends State<ManagePage> {
     );
   }
 
-  Widget _buildAnimationListTile(int index) {
+  Widget _buildTrailing(BuildContext context, int index) {
+    final song = playlistController.playlist[index];
+    return Obx(
+      () => song.isSelected
+          ? ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 80),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SvgPicture.asset(
+                    CImages.lineVoice,
+                    width: CTheme.iconSize,
+                    height: CTheme.iconSize,
+                    colorFilter: ColorFilter.mode(
+                      CTheme.secondaryBrand,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () => _clearPlaylistOneSongDialog(index),
+                  ),
+                ],
+              ),
+            )
+          : IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: () => _clearPlaylistOneSongDialog(index),
+            ),
+    );
+  }
+
+  Widget _buildListTile(int index) {
     final song = playlistController.playlist[index];
     return ListTile(
       contentPadding: const EdgeInsets.only(left: CTheme.padding * 2),
@@ -91,10 +126,7 @@ class _ManagePageState extends State<ManagePage> {
         borderRadius: BorderRadius.circular(CTheme.borderRadius),
         child: Image.asset(song.albumArtImagePath),
       ),
-      trailing: IconButton(
-        icon: const Icon(Icons.delete_outline),
-        onPressed: () => _clearPlaylistOneSongDialog(index),
-      ),
+      trailing: _buildTrailing(context, index),
     );
   }
 
@@ -104,7 +136,7 @@ class _ManagePageState extends State<ManagePage> {
             () => ListView.builder(
               itemCount: playlistController.playlist.length,
               itemBuilder: (context, index) {
-                return _buildAnimationListTile(index);
+                return _buildListTile(index);
               },
             ),
           )

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'pages/home.dart';
@@ -28,6 +29,7 @@ class App extends StatelessWidget {
     return TooltipVisibility(
       visible: false,
       child: GetMaterialApp(
+        enableLog: !kReleaseMode,
         debugShowCheckedModeBanner: false,
 
         initialBinding: InitControllerBinding(),

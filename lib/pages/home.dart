@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/theme.dart';
 import '../widgets/nodata.dart';
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   void go2song(int index) async {
     await Get.toNamed("/song", arguments: {"currentSongIndex": index});
     playerTileController.playingSong = playlistController.playingSong();
+    playlistController.updateSelectedSong();
   }
 
   bool closeOnConfirmed() {
@@ -43,6 +45,49 @@ class _HomePageState extends State<HomePage> {
     return true;
   }
 
+  Widget buildTrailing(BuildContext context, int index) {
+    final song = playlistController.playlist[index];
+    return Obx(
+      () => song.isSelected
+          ? ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 80),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SvgPicture.asset(
+                    CImages.lineVoice,
+                    width: CTheme.iconSize,
+                    height: CTheme.iconSize,
+                    colorFilter: ColorFilter.mode(
+                      CTheme.secondaryBrand,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.favorite,
+                      color:
+                          song.isFavorite ? CTheme.favorite : CTheme.secondary,
+                    ),
+                    onPressed: () {
+                      playlistController.toggleFavorite(index);
+                    },
+                  ),
+                ],
+              ),
+            )
+          : IconButton(
+              icon: Icon(
+                Icons.favorite,
+                color: song.isFavorite ? CTheme.favorite : CTheme.secondary,
+              ),
+              onPressed: () {
+                playlistController.toggleFavorite(index);
+              },
+            ),
+    );
+  }
+
   Widget _buildBodyPlaylist(BuildContext context) {
     return Obx(
       () => Container(
@@ -53,6 +98,7 @@ class _HomePageState extends State<HomePage> {
             final song = playlistController.playlist[index];
             return ListTile(
               contentPadding: const EdgeInsets.only(left: CTheme.padding * 2),
+              onTap: () => go2song(index),
               title: Text(
                 song.songName,
                 overflow: TextOverflow.ellipsis,
@@ -65,18 +111,7 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(CTheme.borderRadius),
                 child: Image.asset(song.albumArtImagePath),
               ),
-              trailing: Obx(
-                () => IconButton(
-                  icon: Icon(
-                    Icons.favorite,
-                    color: song.isFavorite ? CTheme.favorite : CTheme.secondary,
-                  ),
-                  onPressed: () {
-                    playlistController.toggleFavorite(index);
-                  },
-                ),
-              ),
-              onTap: () => go2song(index),
+              trailing: buildTrailing(context, index),
             );
           },
         ),

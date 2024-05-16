@@ -35,6 +35,10 @@ class Song {
   bool get isFavorite => _isFavorite.value;
   set isFavorite(bool v) => _isFavorite.value = v;
 
+  final _isSelected = false.obs;
+  bool get isSelected => _isSelected.value;
+  set isSelected(bool v) => _isSelected.value = v;
+
   static const String noneAsset = "audio/none.mp3";
 
   Song.none({

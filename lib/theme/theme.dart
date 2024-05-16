@@ -63,6 +63,7 @@ class CIcons {
 class CImages {
   static const String wechatPay = "assets/images/wechat-pay.png";
   static const String metamaskPay = "assets/images/metamask-pay.png";
+  static const String lineVoice = "assets/images/line-voice.svg";
 
   static const String landingPlayer = "assets/images/landing-player.svg";
   static const String landingDownload = "assets/images/landing-download.svg";

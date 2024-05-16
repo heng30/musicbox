@@ -78,7 +78,7 @@ class _DonatePageState extends State<DonatePage> with TickerProviderStateMixin {
                           BlendMode.srcIn,
                         ),
                       ),
-                      SizedBox(width: CTheme.padding * 2),
+                      const SizedBox(width: CTheme.padding * 2),
                       Text(
                         "微信支付".tr,
                         style: Theme.of(context).textTheme.bodyMedium,
@@ -100,7 +100,7 @@ class _DonatePageState extends State<DonatePage> with TickerProviderStateMixin {
                           BlendMode.srcIn,
                         ),
                       ),
-                      SizedBox(width: CTheme.padding * 2),
+                      const SizedBox(width: CTheme.padding * 2),
                       Text(
                         "加密支付".tr,
                         style: Theme.of(context).textTheme.bodyMedium,

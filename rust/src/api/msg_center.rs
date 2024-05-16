@@ -1,4 +1,4 @@
-use super::data::MsgItem;
+use super::{data::MsgItem, SINK_CHANNEL_SIZE};
 use crate::frb_generated::StreamSink;
 use tokio::sync::{mpsc, Mutex};
 
@@ -7,7 +7,7 @@ lazy_static! {
 }
 
 pub async fn msg_center_init(sink: StreamSink<MsgItem>) {
-    let (tx, mut rx) = mpsc::channel(1024);
+    let (tx, mut rx) = mpsc::channel(SINK_CHANNEL_SIZE);
     *CHANNEL.lock().await = Some(tx);
 
     while let Some(item) = rx.recv().await {

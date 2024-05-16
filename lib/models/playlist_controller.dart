@@ -122,15 +122,30 @@ class PlaylistController extends GetxController {
         playlist[index].uuid, jsonEncode(playlist[index].toJson()));
   }
 
+  void updateSelectedSong() {
+    for (int i = 0; i < playlist.length; i++) {
+      if (i == currentSongIndex) {
+        playlist[i].isSelected = true;
+      } else {
+        playlist[i].isSelected = false;
+      }
+    }
+  }
+
   Future<void> _removeFileInDownloadDir(String path) async {
     final findController = Get.find<FindController>();
-    if (await findController.isInDownloadDir(path)) {
-      final file = File(path);
-      final realFile =
-          File("${findController.downloadDir!}/${basename(file.path)}");
 
-      await realFile.delete();
-      await file.delete();
+    try {
+      if (await findController.isInDownloadDir(path)) {
+        final file = File(path);
+        final realFile =
+            File("${findController.downloadDir!}/${basename(file.path)}");
+
+        await realFile.delete();
+        await file.delete();
+      }
+    } catch (e) {
+      log.d(e);
     }
   }
 
@@ -140,6 +155,8 @@ class PlaylistController extends GetxController {
       if (index < playlist.length) {
         if (currentSongIndex == index) {
           currentSongIndex = null;
+        } else if (isValidCurrentSongIndex && currentSongIndex! > index) {
+          _currentSongIndex!.value--;
         }
 
         final song = playlist[index];
@@ -156,11 +173,7 @@ class PlaylistController extends GetxController {
   // remove all songs from playlist
   void removeAll() async {
     for (Song song in playlist) {
-      try {
-        await _removeFileInDownloadDir(song.audioPath);
-      } catch (e) {
-        log.d(e);
-      }
+      await _removeFileInDownloadDir(song.audioPath);
     }
 
     playlist.value = [];

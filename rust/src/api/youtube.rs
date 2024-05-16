@@ -1,6 +1,7 @@
 use super::{
     data::{DownloadError, InfoData, MsgItem, MsgType, ProgressData},
     msg_center,
+    SINK_CHANNEL_SIZE,
 };
 use crate::frb_generated::StreamSink;
 use anyhow::Result;
@@ -9,6 +10,7 @@ use rustube::{
     fetcher, reqwest, tokio::sync::mpsc, url::Url, Callback, CallbackArguments, Id, VideoFetcher,
 };
 use std::collections::HashSet;
+
 
 async fn client(proxy_url: Option<String>) -> Result<reqwest::Client> {
     let client = match proxy_url {
@@ -132,7 +134,7 @@ pub async fn download_video_by_id_with_callback(
     download_path: String,
     proxy_url: Option<String>,
 ) -> Result<()> {
-    let (tx, mut rx) = mpsc::channel(1024);
+    let (tx, mut rx) = mpsc::channel(SINK_CHANNEL_SIZE);
 
     // For logging in dart
     msg_center::send(MsgItem {
@@ -169,6 +171,7 @@ pub async fn download_video_by_id_with_callback(
             total_size: item.content_length,
         }) {
             log::warn!("sink add error: {e:?}");
+            break;
         }
     }
     Ok(())
@@ -239,7 +242,7 @@ pub async fn download_audio_by_id_with_callback(
     download_path: String,
     proxy_url: Option<String>,
 ) -> Result<()> {
-    let (tx, mut rx) = mpsc::channel(1024);
+    let (tx, mut rx) = mpsc::channel(SINK_CHANNEL_SIZE);
 
     // For logging in dart
     msg_center::send(MsgItem {
@@ -276,6 +279,7 @@ pub async fn download_audio_by_id_with_callback(
             total_size: item.content_length,
         }) {
             log::warn!("sink add error: {e:?}");
+            break;
         }
     }
     Ok(())
@@ -360,7 +364,7 @@ mod tests {
     async fn test_inner_download_video_by_id_with_callback() -> Result<()> {
         let path = "/tmp/1-id-cb.mp4";
         _ = fs::remove_file(path).await;
-        let (tx, mut rx) = mpsc::channel(1024);
+        let (tx, mut rx) = mpsc::channel(SINK_CHANNEL_SIZE);
 
         tokio::spawn(async move {
             inner_download_video_by_id_with_callback(
@@ -418,7 +422,7 @@ mod tests {
     async fn test_inner_download_audio_by_id_with_callback() -> Result<()> {
         let path = "/tmp/1-id-cb.webp";
         _ = fs::remove_file(path).await;
-        let (tx, mut rx) = mpsc::channel(1024);
+        let (tx, mut rx) = mpsc::channel(SINK_CHANNEL_SIZE);
 
         tokio::spawn(async move {
             inner_download_audio_by_id_with_callback(

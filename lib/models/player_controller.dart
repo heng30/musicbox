@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import './song.dart';
@@ -19,6 +20,7 @@ class PlayerController extends GetxController {
   final _audioPlayer = AudioPlayer();
   final playlistController = Get.find<PlaylistController>();
   final settingController = Get.find<SettingController>();
+  final log = Logger();
 
   final _isPlaying = false.obs;
   bool get isPlaying => _isPlaying.value;
@@ -34,8 +36,9 @@ class PlayerController extends GetxController {
 
   PlayerController() {
     listenToDuration();
-    _speed.value = settingController.playbackSpeed;
+    listenEvent();
 
+    _speed.value = settingController.playbackSpeed;
     _audioPlayer.setPlaybackRate(settingController.playbackSpeed);
     _audioPlayer.setVolume(volume);
   }
@@ -255,6 +258,12 @@ class PlayerController extends GetxController {
         Get.find<PlayerTileController>().playingSong =
             playlistController.playingSong();
       }
+    });
+  }
+
+  void listenEvent() {
+    _audioPlayer.onPlayerStateChanged.listen((event) {
+      log.d(event);
     });
   }
 }

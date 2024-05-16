@@ -231,8 +231,6 @@ class FindController extends GetxController {
 
         downloadDir = d.path;
       }
-
-      log.d("download dir: $downloadDir");
     } catch (e) {
       Get.snackbar("创建下载目录失败".tr, e.toString(),
           snackPosition: SnackPosition.BOTTOM);

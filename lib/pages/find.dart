@@ -230,6 +230,7 @@ class _FindPageState extends State<FindPage> {
                 height: 50,
                 child: InkWell(
                   onTap: () async {
+                    Get.closeAllSnackbars();
                     Get.back();
                     await downloadAgain(info);
                   },
@@ -245,6 +246,7 @@ class _FindPageState extends State<FindPage> {
                 height: 50,
                 child: InkWell(
                   onTap: () async {
+                    Get.closeAllSnackbars();
                     Get.back();
                     await cancelDownload(info);
                   },
