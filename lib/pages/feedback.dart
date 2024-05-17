@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
@@ -19,9 +20,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
   final _currentTextCounts = 0.obs;
   final _feedbackUrl = "https://heng30.xyz/apisvr/musicbox/feedback";
 
+  static const int maxFeedbackLen = 2048;
+
   void _onTextChange(String text) {
-    if (text.length > 2048) {
-      Get.snackbar("提 示".tr, "输入长度超过2048个字, 多余的字会被丢弃".tr);
+    if (text.length > maxFeedbackLen) {
+      Get.snackbar("提 示".tr, "输入长度超过$maxFeedbackLen个字, 多余的字会被丢弃".tr);
     }
 
     _currentTextCounts.value = text.length;
@@ -29,8 +32,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   void _sendFeedback() async {
     Dio dio = Dio();
-    final feedback = _textController.text.trim();
     final settingController = Get.find<SettingController>();
+
+    var feedback = _textController.text.trim();
+    feedback = feedback.substring(0, min(maxFeedbackLen, feedback.length));
 
     if (feedback.isEmpty) {
       Get.snackbar("提 示".tr, "请输入反馈信息".tr);
@@ -38,7 +43,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     }
 
     Map<String, dynamic> data = {
-      "appid": settingController.appid ?? "",
+      "appid": settingController.appid,
       "type": "feedback",
       "data": feedback,
     };
@@ -72,7 +77,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   Widget _buildBody(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(CTheme.padding * 2),
+      padding: const EdgeInsets.all(CTheme.padding * 2),
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: Column(
@@ -85,12 +90,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(CTheme.padding * 5),
+              padding: const EdgeInsets.all(CTheme.padding * 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Obx(
-                    () => Text("${_currentTextCounts.value}/2048"),
+                    () => Text("${_currentTextCounts.value}/$maxFeedbackLen"),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -106,7 +111,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           style: TextStyle(color: CTheme.inversePrimary),
                         ),
                       ),
-                      SizedBox(width: CTheme.padding * 5),
+                      const SizedBox(width: CTheme.padding * 5),
                       ElevatedButton.icon(
                         onPressed: _sendFeedback,
                         icon: Icon(

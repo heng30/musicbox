@@ -40,3 +40,5 @@ generate-rust:
 generate-rust-watch:
 	flutter_rust_bridge_codegen generate --watch
 
+upgrade-dependencies-version:
+	flutter pub upgrade --major-versions

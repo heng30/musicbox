@@ -50,6 +50,10 @@ class _FindPageState extends State<FindPage> {
     var tmpList = <Info>[];
 
     for (String id in ids) {
+      if (!findController.isSearching) {
+        return;
+      }
+
       try {
         final vinfo = await youtube.videoInfoById(id: id, proxyUrl: proxyUrl);
         final info = Info(
@@ -395,8 +399,17 @@ class _FindPageState extends State<FindPage> {
         ),
         const SizedBox(width: CTheme.margin * 4),
         GestureDetector(
-          onTap: () => search(controllerSearch.text),
-          child: Text("搜索".tr, style: Theme.of(context).textTheme.bodyLarge),
+          onTap: () {
+            if (!findController.isSearching) {
+              search(controllerSearch.text);
+            } else {
+              findController.isSearching = false;
+            }
+          },
+          child: Obx(
+            () => Text(!findController.isSearching ? "搜索".tr : "停止".tr,
+                style: Theme.of(context).textTheme.bodyLarge),
+          ),
         ),
       ],
     );

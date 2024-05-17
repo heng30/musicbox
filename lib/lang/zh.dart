@@ -105,4 +105,5 @@ const Map<String, String> zh = {
   "Download again failed": "重新下载失败",
   "Download again or not": "是否重新下载",
   "Refresh finished": "刷新完成",
+  "Stop": "停止",
 };
