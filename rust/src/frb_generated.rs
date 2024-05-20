@@ -31,7 +31,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.0.0-dev.33";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -199920716;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 751331454;
 
 // Section: executor
 
@@ -39,6 +39,162 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire_bv_download_video_by_id_with_callback_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "bv_download_video_by_id_with_callback",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_sink = <StreamSink<
+                crate::api::data::ProgressData,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
+            let api_id = <String>::sse_decode(&mut deserializer);
+            let api_cid = <i64>::sse_decode(&mut deserializer);
+            let api_download_path = <String>::sse_decode(&mut deserializer);
+            let api_proxy_url = <Option<String>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse(
+                    (move || async move {
+                        crate::api::bilibili::bv_download_video_by_id_with_callback(
+                            api_sink,
+                            api_id,
+                            api_cid,
+                            api_download_path,
+                            api_proxy_url,
+                        )
+                        .await
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire_bv_fetch_ids_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "bv_fetch_ids",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_keyword = <String>::sse_decode(&mut deserializer);
+            let api_max_id_count = <usize>::sse_decode(&mut deserializer);
+            let api_proxy_url = <Option<String>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse(
+                    (move || async move {
+                        crate::api::bilibili::bv_fetch_ids(
+                            api_keyword,
+                            api_max_id_count,
+                            api_proxy_url,
+                        )
+                        .await
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire_bv_video_info_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "bv_video_info",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_bvid = <String>::sse_decode(&mut deserializer);
+            let api_proxy_url = <Option<String>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse(
+                    (move || async move {
+                        crate::api::bilibili::bv_video_info(api_bvid, api_proxy_url).await
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire_bv_watch_url_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "bv_watch_url",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_id = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse((move || {
+                Result::<_, ()>::Ok(crate::api::bilibili::bv_watch_url(api_id))
+            })())
+        },
+    )
+}
 fn wire_close_db_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1060,6 +1216,7 @@ impl SseDecode for crate::api::data::InfoData {
         let mut var_shortDescription = <String>::sse_decode(deserializer);
         let mut var_viewCount = <u64>::sse_decode(deserializer);
         let mut var_lengthSeconds = <u64>::sse_decode(deserializer);
+        let mut var_bvCid = <i64>::sse_decode(deserializer);
         return crate::api::data::InfoData {
             title: var_title,
             author: var_author,
@@ -1067,6 +1224,7 @@ impl SseDecode for crate::api::data::InfoData {
             short_description: var_shortDescription,
             view_count: var_viewCount,
             length_seconds: var_lengthSeconds,
+            bv_cid: var_bvCid,
         };
     }
 }
@@ -1230,32 +1388,35 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        3 => wire_close_db_impl(port, ptr, rust_vec_len, data_len),
-        1 => wire_create_db_impl(port, ptr, rust_vec_len, data_len),
-        4 => wire_create_table_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire_delete_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire_delete_all_impl(port, ptr, rust_vec_len, data_len),
-        2 => wire_delete_db_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire_drop_table_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire_insert_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire_row_count_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire_select_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire_select_all_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire_update_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire_init_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire_init_logger_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire_msg_center_init_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire_send_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire_create_dir_all_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_download_audio_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire_download_audio_by_id_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire_download_audio_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire_download_video_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_download_video_by_id_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire_download_video_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_fetch_ids_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_video_info_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_video_info_by_id_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire_bv_download_video_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
+        1 => wire_bv_fetch_ids_impl(port, ptr, rust_vec_len, data_len),
+        2 => wire_bv_video_info_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire_close_db_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire_create_db_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_create_table_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire_delete_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire_delete_all_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire_delete_db_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire_drop_table_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire_insert_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire_row_count_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire_select_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire_select_all_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire_update_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire_init_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire_init_logger_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_msg_center_init_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_send_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_create_dir_all_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire_download_audio_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire_download_audio_by_id_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire_download_audio_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire_download_video_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire_download_video_by_id_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire_download_video_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_fetch_ids_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_video_info_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire_video_info_by_id_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1268,7 +1429,8 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        18 => wire_watch_url_impl(ptr, rust_vec_len, data_len),
+        4 => wire_bv_watch_url_impl(ptr, rust_vec_len, data_len),
+        22 => wire_watch_url_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1285,6 +1447,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::data::InfoData {
             self.short_description.into_into_dart().into_dart(),
             self.view_count.into_into_dart().into_dart(),
             self.length_seconds.into_into_dart().into_dart(),
+            self.bv_cid.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -1410,6 +1573,7 @@ impl SseEncode for crate::api::data::InfoData {
         <String>::sse_encode(self.short_description, serializer);
         <u64>::sse_encode(self.view_count, serializer);
         <u64>::sse_encode(self.length_seconds, serializer);
+        <i64>::sse_encode(self.bv_cid, serializer);
     }
 }
 

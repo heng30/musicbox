@@ -112,12 +112,13 @@ class Info {
             await convertVideoToAudio(info);
           } catch (e) {
             Logger().d(e);
-            playlistController.add([await Song.fromInfo(info)]);
+            playlistController
+                .add([await Song.fromInfo(info)], isShowMsg: false);
           }
         } else {
           Get.snackbar("下载成功".tr, filepath,
               snackPosition: SnackPosition.BOTTOM);
-          playlistController.add([await Song.fromInfo(info)]);
+          playlistController.add([await Song.fromInfo(info)], isShowMsg: false);
         }
       },
       onError: (e) async {
@@ -178,6 +179,7 @@ class FindController extends GetxController {
             title: "title-$i",
             author: "author-$i",
             videoId: "vdMTIe5ihYg",
+            bvCid: 0,
             shortDescription: "shortDescription-$i",
             viewCount: 100,
             lengthSeconds: 320,

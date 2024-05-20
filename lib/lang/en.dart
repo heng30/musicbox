@@ -90,8 +90,8 @@ const Map<String, String> en = {
   "未启用Bilibili搜索": "Disabled Bilibili searching",
   "搜索设置": "Search setting",
   "每次搜索数量": "Every searching count",
-  "时间下限": "Time low boundary",
-  "时间上限": "Time up boundary",
+  "时间下限(秒)": "Time low boundary(Second)",
+  "时间上限(秒)": "Time up boundary(Second)",
   "没有启用Youtube或Bilibili搜索":
       "Not enable setting searching for Youtube or Bilibili",
   "已启用视频转音频": "Enabled convert video to audio",
@@ -106,4 +106,8 @@ const Map<String, String> en = {
   "是否重新下载": "Download again or not",
   "刷新完成": "Refresh finished",
   "停止": "Stop",
+  "请不要重复发送": "Please try it latter",
+  "正在发送...": "Sending...",
+  "文件已存在，是否覆盖": "File has existed, do you want to cover it",
+  "删除": "Delete",
 };

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -15,6 +16,7 @@ import '../widgets/searchbar.dart';
 import '../models/find_controller.dart';
 import '../models/setting_controller.dart';
 import '../src/rust/api/youtube.dart' as youtube;
+import '../src/rust/api/bilibili.dart' as bilibili;
 
 class FindPage extends StatefulWidget {
   const FindPage({super.key});
@@ -43,11 +45,10 @@ class _FindPageState extends State<FindPage> {
   Future<void> searchYoutube(String text) async {
     final proxyUrl = settingController.proxy.url(ProxyType.youtube);
     final ids = await youtube.fetchIds(
-        keyword: text,
-        maxIdCount: max(1, settingController.find.searchCount),
-        proxyUrl: proxyUrl);
-
-    var tmpList = <Info>[];
+      keyword: text,
+      maxIdCount: max(1, settingController.find.searchCount),
+      proxyUrl: proxyUrl,
+    );
 
     for (String id in ids) {
       if (!findController.isSearching) {
@@ -68,24 +69,51 @@ class _FindPageState extends State<FindPage> {
                 max(1, settingController.find.minSecondLength) ||
             vinfo.lengthSeconds >
                 max(5, settingController.find.maxSecondLength)) {
-          tmpList.add(info);
-        } else {
-          findController.infoList.add(info);
+          continue;
         }
-      } catch (e) {
-        Get.snackbar("提 示".tr, "获取音频信息失败".tr,
-            snackPosition: SnackPosition.BOTTOM);
-      }
-    }
 
-    if (findController.infoList.length < 5) {
-      findController.infoList.addAll(tmpList);
+        findController.infoList.add(info);
+      } catch (e) {
+        log.d(e);
+      }
     }
   }
 
-  // TODO
   Future<void> searchBilibili(String text) async {
-    throw Exception("Not implement");
+    final proxyUrl = settingController.proxy.url(ProxyType.bilibili);
+    final ids = await bilibili.bvFetchIds(
+      keyword: text,
+      maxIdCount: max(1, settingController.find.searchCount),
+      proxyUrl: proxyUrl,
+    );
+
+    for (String id in ids) {
+      if (!findController.isSearching) {
+        return;
+      }
+
+      try {
+        final vinfo = await bilibili.bvVideoInfo(bvid: id, proxyUrl: proxyUrl);
+        final info = Info(
+          raw: vinfo,
+          extention: "m4s",
+          proxyType: ProxyType.bilibili,
+          albumArtImagePath: Albums.bilibiliAsset,
+        );
+
+        // song duration too short or too long would be ignored
+        if (vinfo.lengthSeconds <
+                max(1, settingController.find.minSecondLength) ||
+            vinfo.lengthSeconds >
+                max(5, settingController.find.maxSecondLength)) {
+          continue;
+        }
+
+        findController.infoList.add(info);
+      } catch (e) {
+        log.d(e);
+      }
+    }
   }
 
   void search(String text) async {
@@ -95,6 +123,7 @@ class _FindPageState extends State<FindPage> {
           snackPosition: SnackPosition.BOTTOM);
       return;
     }
+
     if (findController.isSearching) {
       Get.snackbar("提 示".tr, "正在搜索...".tr, snackPosition: SnackPosition.BOTTOM);
       return;
@@ -111,6 +140,18 @@ class _FindPageState extends State<FindPage> {
     findController.retainDownloadingInfo();
     findController.isSearching = true;
 
+    if (settingController.find.enableBilibiliSearch) {
+      try {
+        await searchBilibili(text);
+      } catch (e) {
+        Get.snackbar("搜索Bilibili失败".tr, e.toString(),
+            snackPosition: SnackPosition.BOTTOM);
+        searchErrorCount++;
+      }
+    } else {
+      targetSearchErrorCount++;
+    }
+
     if (settingController.find.enableYoutubeSearch) {
       try {
         await searchYoutube(text);
@@ -121,18 +162,6 @@ class _FindPageState extends State<FindPage> {
       }
     } else {
       targetSearchErrorCount--;
-    }
-
-    if (settingController.find.enableBilibiliSearch) {
-      try {
-        await searchBilibili(text);
-      } catch (e) {
-        // Get.snackbar("搜索Bilibili失败".tr, e.toString(),
-        //     snackPosition: SnackPosition.BOTTOM);
-        searchErrorCount++;
-      }
-    } else {
-      targetSearchErrorCount++;
     }
 
     if (searchErrorCount != targetSearchErrorCount) {
@@ -152,8 +181,16 @@ class _FindPageState extends State<FindPage> {
     info.setProgressStreamWithListen(progressStream, info);
   }
 
-  // TODO
-  Future<void> downlaodBilibili(Info info) async {}
+  Future<void> downlaodBilibili(Info info) async {
+    final progressStream = bilibili.bvDownloadVideoByIdWithCallback(
+      id: info.raw.videoId,
+      cid: info.raw.bvCid,
+      downloadPath: await findController.downloadPath(info),
+      proxyUrl: info.proxyUrl(),
+    );
+
+    info.setProgressStreamWithListen(progressStream, info);
+  }
 
   Future<void> innerDownload(Info info) async {
     info.startDownloadTime = DateTime.now();
@@ -170,6 +207,35 @@ class _FindPageState extends State<FindPage> {
     }
   }
 
+  void showCoverExistFileDialog(Function onConfirm) {
+    Get.defaultDialog(
+      title: "提 示".tr,
+      middleText: '${"文件已存在，是否覆盖".tr}?',
+      confirm: ElevatedButton(
+        onPressed: () {
+          Get.closeAllSnackbars();
+          Get.back();
+          onConfirm();
+        },
+        child: Obx(
+          () => Text(
+            "确定".tr,
+            style: TextStyle(color: CTheme.inversePrimary),
+          ),
+        ),
+      ),
+      cancel: ElevatedButton(
+        onPressed: () => Get.back(),
+        child: Obx(
+          () => Text(
+            "取消".tr,
+            style: TextStyle(color: CTheme.inversePrimary),
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> startDownload(Info info) async {
     if (info.downloadState == DownloadState.downloading) {
       Get.snackbar("提 示".tr, "已经在下载，请耐心等待".tr,
@@ -182,10 +248,19 @@ class _FindPageState extends State<FindPage> {
       return;
     }
 
-    Get.snackbar("提 示".tr, "${'开始下载'.tr} ${info.raw.title}".tr,
-        snackPosition: SnackPosition.BOTTOM);
+    if (await File(await findController.downloadPath(info)).exists()) {
+      showCoverExistFileDialog(() async {
+        Get.snackbar("提 示".tr, "${'开始下载'.tr} ${info.raw.title}".tr,
+            snackPosition: SnackPosition.BOTTOM);
 
-    await innerDownload(info);
+        await innerDownload(info);
+      });
+    } else {
+      Get.snackbar("提 示".tr, "${'开始下载'.tr} ${info.raw.title}".tr,
+          snackPosition: SnackPosition.BOTTOM);
+
+      await innerDownload(info);
+    }
   }
 
   Future<void> downloadAgain(Info info) async {
@@ -295,6 +370,9 @@ class _FindPageState extends State<FindPage> {
                             if (info.proxyType == ProxyType.youtube) {
                               url = Uri.parse(
                                   youtube.watchUrl(id: info.raw.videoId));
+                            } else if (info.proxyType == ProxyType.bilibili) {
+                              url = Uri.parse(
+                                  bilibili.bvWatchUrl(id: info.raw.videoId));
                             }
 
                             try {
@@ -401,6 +479,7 @@ class _FindPageState extends State<FindPage> {
         GestureDetector(
           onTap: () {
             if (!findController.isSearching) {
+              focusNodeSearch.unfocus();
               search(controllerSearch.text);
             } else {
               findController.isSearching = false;

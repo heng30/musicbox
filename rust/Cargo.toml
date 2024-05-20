@@ -8,18 +8,21 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 log = "0.4"
+url = "2.5"
 anyhow = "1.0"
 regex = "1.10"
 chrono = "0.4"
 serde_json = "1.0"
 lazy_static = "1.4"
+tokio-stream = "0.1"
+serde_path_to_error = "0.1"
 flutter_rust_bridge = "=2.0.0-dev.33"
 tokio = { version = "1.37", features = ["full"] }
 serde = { version = "1.0", features = ["serde_derive"] }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 env_logger = "0.10"
-# reqwest = { version = "0.12", features = ["json", "socks"] }
+reqwest = { version = "0.12", features = ["json", "socks", "stream"] }
 sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite"] }
 rustube = { git = "https://github.com/Heng30/rustube.git", features = [
   "default",
@@ -35,11 +38,12 @@ android_logger = "0.13"
 
 # mobile platform
 [target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
-# reqwest = { version = "0.12", features = [
-#   "native-tls-vendored",
-#   "json",
-#   "socks",
-# ] }
+reqwest = { version = "0.12", features = [
+  "native-tls-vendored",
+  "json",
+  "socks",
+  "stream",
+] }
 rustube = { git = "https://github.com/Heng30/rustube.git", features = [
   "default",
   "native-tls-vendored",

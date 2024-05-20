@@ -106,7 +106,7 @@ class Find implements TomlEncodableValue {
   bool get enableYoutubeSearch => _enableYoutubeSearch.value;
   set enableYoutubeSearch(bool v) => _enableYoutubeSearch.value = v;
 
-  final _enableBilibiliSearch = false.obs;
+  final _enableBilibiliSearch = true.obs;
   bool get enableBilibiliSearch => _enableBilibiliSearch.value;
   set enableBilibiliSearch(bool v) => _enableBilibiliSearch.value = v;
 

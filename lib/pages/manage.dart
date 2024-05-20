@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/theme.dart';
-import '../models/playlist_controller.dart';
 import '../widgets/nodata.dart';
+import '../models/playlist_controller.dart';
 
 class ManagePage extends StatefulWidget {
   const ManagePage({super.key});
@@ -15,68 +15,6 @@ class ManagePage extends StatefulWidget {
 
 class _ManagePageState extends State<ManagePage> {
   final playlistController = Get.find<PlaylistController>();
-
-  void _clearPlaylistDialog() {
-    Get.defaultDialog(
-      title: "提 示".tr,
-      middleText: '${"是否删除全部歌曲".tr}?',
-      confirm: ElevatedButton(
-        onPressed: () {
-          Get.closeAllSnackbars();
-          Get.back();
-          playlistController.removeAll();
-          Get.snackbar("提 示".tr, "已经删除全部歌曲".tr,
-              snackPosition: SnackPosition.BOTTOM);
-        },
-        child: Obx(
-          () => Text(
-            "删除全部".tr,
-            style: TextStyle(color: CTheme.inversePrimary),
-          ),
-        ),
-      ),
-      cancel: ElevatedButton(
-        onPressed: () => Get.back(),
-        child: Obx(
-          () => Text(
-            "取消".tr,
-            style: TextStyle(color: CTheme.inversePrimary),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _clearPlaylistOneSongDialog(int index) {
-    Get.defaultDialog(
-      title: "提 示".tr,
-      middleText: '${"是否删除歌曲".tr}?',
-      confirm: ElevatedButton(
-        onPressed: () {
-          Get.closeAllSnackbars();
-          Get.back();
-          playlistController.remove(index);
-          Get.snackbar("提 示".tr, "已经删除歌曲".tr,
-              snackPosition: SnackPosition.BOTTOM);
-        },
-        child: Obx(
-          () => Text(
-            "删除歌曲".tr,
-            style: TextStyle(color: CTheme.inversePrimary),
-          ),
-        ),
-      ),
-      cancel: ElevatedButton(
-        onPressed: () => Get.back(),
-        child: Obx(
-          () => Text(
-            "取消".tr,
-            style: TextStyle(color: CTheme.inversePrimary),
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildTrailing(BuildContext context, int index) {
     final song = playlistController.playlist[index];
@@ -98,14 +36,16 @@ class _ManagePageState extends State<ManagePage> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete_outline),
-                    onPressed: () => _clearPlaylistOneSongDialog(index),
+                    onPressed: () =>
+                        playlistController.clearPlaylistOneSongDialog(index),
                   ),
                 ],
               ),
             )
           : IconButton(
               icon: const Icon(Icons.delete_outline),
-              onPressed: () => _clearPlaylistOneSongDialog(index),
+              onPressed: () =>
+                  playlistController.clearPlaylistOneSongDialog(index),
             ),
     );
   }
@@ -161,7 +101,7 @@ class _ManagePageState extends State<ManagePage> {
               icon: const Icon(Icons.add),
             ),
             IconButton(
-              onPressed: _clearPlaylistDialog,
+              onPressed: playlistController.clearPlaylistDialog,
               icon: const Icon(Icons.delete),
             ),
           ],

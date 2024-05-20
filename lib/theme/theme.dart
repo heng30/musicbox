@@ -7,8 +7,8 @@ class CTheme {
   static bool get isDarkMode => Get.find<ThemeController>().isDarkMode;
 
   static Color get background => Get.find<ThemeController>().isDarkMode
-      ? ThemeController.dark.colorScheme.background
-      : ThemeController.light.colorScheme.background;
+      ? ThemeController.dark.colorScheme.surface
+      : ThemeController.light.colorScheme.surface;
 
   static Color get primary => Get.find<ThemeController>().isDarkMode
       ? ThemeController.dark.colorScheme.primary

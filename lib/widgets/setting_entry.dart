@@ -8,10 +8,14 @@ class SettingEntry extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.onTap,
+    this.padding = const EdgeInsets.all(CTheme.padding * 4),
+    this.margin = const EdgeInsets.symmetric(horizontal: CTheme.margin * 5),
   });
 
   final String title;
   final IconData icon;
+  final EdgeInsets padding;
+  final EdgeInsets margin;
   final Function() onTap;
 
   @override
@@ -23,13 +27,13 @@ class SettingEntry extends StatelessWidget {
           borderRadius: BorderRadius.circular(CTheme.borderRadius),
           color: CTheme.secondary,
         ),
-        padding: EdgeInsets.all(CTheme.padding * 4),
-        margin: EdgeInsets.symmetric(horizontal: CTheme.margin * 5),
+        padding: padding,
+        margin: margin,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Icon(icon),
-            SizedBox(width: CTheme.padding * 2),
+            const SizedBox(width: CTheme.padding * 2),
             Expanded(
               child: Text(
                 title,

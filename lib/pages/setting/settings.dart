@@ -40,12 +40,16 @@ class _SettingsPageState extends State<SettingsPage> {
           SettingEntry(
             title: '发现设置'.tr,
             icon: Icons.explore,
+            padding: const EdgeInsets.symmetric(
+                horizontal: CTheme.padding * 4, vertical: CTheme.padding * 6),
             onTap: () => Get.toNamed("/settings/find"),
           ),
           const SizedBox(height: CTheme.padding * 5),
           SettingEntry(
             title: '代理设置'.tr,
             icon: Icons.traffic,
+            padding: const EdgeInsets.symmetric(
+                horizontal: CTheme.padding * 4, vertical: CTheme.padding * 6),
             onTap: () => Get.toNamed("/settings/proxy"),
           ),
         ],

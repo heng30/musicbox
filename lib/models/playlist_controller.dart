@@ -4,12 +4,14 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:audiotagger/audiotagger.dart';
 
 import './song.dart';
 import './albums.dart';
+import '../theme/theme.dart';
 import './player_controller.dart';
 import './db_controller.dart';
 import './find_controller.dart';
@@ -183,7 +185,7 @@ class PlaylistController extends GetxController {
   }
 
   // add songs to playlist
-  void add(List<Song> songs) async {
+  void add(List<Song> songs, {bool isShowMsg = true}) async {
     if (songs.isEmpty) return;
 
     List<Song> newSongs = [];
@@ -197,8 +199,10 @@ class PlaylistController extends GetxController {
     }
 
     if (newSongs.isNotEmpty) {
-      Get.snackbar("提 示".tr, '${"添加".tr} ${newSongs.length} ${"首歌曲".tr}',
-          snackPosition: SnackPosition.BOTTOM);
+      if (isShowMsg) {
+        Get.snackbar("提 示".tr, '${"添加".tr} ${newSongs.length} ${"首歌曲".tr}',
+            snackPosition: SnackPosition.BOTTOM);
+      }
       playlist.addAll(newSongs);
     } else {
       Get.snackbar("提 示".tr, "歌曲已经在播放列表".tr,
@@ -206,8 +210,6 @@ class PlaylistController extends GetxController {
     }
 
     for (var song in newSongs) {
-      // log.d(jsonEncode(song.toJson()));
-
       await dbController.insert(
           DbController.playlistTable, song.uuid, jsonEncode(song.toJson()));
     }
@@ -229,7 +231,7 @@ class PlaylistController extends GetxController {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
-      allowedExtensions: ['mp3', 'mp4', 'wav', 'flac', 'ogg'],
+      allowedExtensions: ['mp3', 'mp4', 'm4s', 'wav', 'flac', 'ogg'],
       initialDirectory: Get.find<FindController>().downloadDir,
     );
 
@@ -270,5 +272,67 @@ class PlaylistController extends GetxController {
     }
 
     return songs;
+  }
+
+  void clearPlaylistDialog() {
+    Get.defaultDialog(
+      title: "提 示".tr,
+      middleText: '${"是否删除全部歌曲".tr}?',
+      confirm: ElevatedButton(
+        onPressed: () {
+          Get.closeAllSnackbars();
+          Get.back();
+          removeAll();
+          Get.snackbar("提 示".tr, "已经删除全部歌曲".tr,
+              snackPosition: SnackPosition.BOTTOM);
+        },
+        child: Obx(
+          () => Text(
+            "删除全部".tr,
+            style: TextStyle(color: CTheme.inversePrimary),
+          ),
+        ),
+      ),
+      cancel: ElevatedButton(
+        onPressed: () => Get.back(),
+        child: Obx(
+          () => Text(
+            "取消".tr,
+            style: TextStyle(color: CTheme.inversePrimary),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void clearPlaylistOneSongDialog(int index) {
+    Get.defaultDialog(
+      title: "提 示".tr,
+      middleText: '${"是否删除歌曲".tr}?',
+      confirm: ElevatedButton(
+        onPressed: () {
+          Get.closeAllSnackbars();
+          Get.back();
+          remove(index);
+          Get.snackbar("提 示".tr, "已经删除歌曲".tr,
+              snackPosition: SnackPosition.BOTTOM);
+        },
+        child: Obx(
+          () => Text(
+            "删除歌曲".tr,
+            style: TextStyle(color: CTheme.inversePrimary),
+          ),
+        ),
+      ),
+      cancel: ElevatedButton(
+        onPressed: () => Get.back(),
+        child: Obx(
+          () => Text(
+            "取消".tr,
+            style: TextStyle(color: CTheme.inversePrimary),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -57,20 +57,22 @@ class _SongPageState extends State<SongPage> {
             topRight: Radius.circular(CTheme.borderRadius),
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [2.0, 1.75, 1.5, 1.25, 1.0, 0.75, 0.5]
-              .map(
-                (item) => SizedBox(
-                  height: 50,
-                  width: double.infinity,
-                  child: ListTile(
-                    title: Text(item.toString(), textAlign: TextAlign.center),
-                    onTap: () => updateSpeed(item),
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: ListView(
+            children: [2.0, 1.75, 1.5, 1.25, 1.0, 0.75, 0.5]
+                .map(
+                  (item) => SizedBox(
+                    height: 50,
+                    width: double.infinity,
+                    child: ListTile(
+                      title: Text(item.toString(), textAlign: TextAlign.center),
+                      onTap: () => updateSpeed(item),
+                    ),
                   ),
-                ),
-              )
-              .toList(),
+                )
+                .toList(),
+          ),
         ),
       ),
     );

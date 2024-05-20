@@ -12,7 +12,7 @@ use rustube::{
 use std::collections::HashSet;
 
 
-async fn client(proxy_url: Option<String>) -> Result<reqwest::Client> {
+fn client(proxy_url: Option<String>) -> Result<reqwest::Client> {
     let client = match proxy_url {
         Some(url) => {
             let cookie_jar = fetcher::recommended_cookies();
@@ -43,7 +43,7 @@ pub async fn fetch_ids(
     max_id_count: usize,
     proxy_url: Option<String>,
 ) -> Result<Vec<String>> {
-    let client = client(proxy_url).await?;
+    let client = client(proxy_url)?;
     let mut url = Url::parse("https://www.youtube.com/results")?;
     url.query_pairs_mut().append_pair("search_query", &keyword);
     let url = url.to_string();
@@ -73,7 +73,7 @@ pub async fn video_info(url: String, proxy_url: Option<String>) -> Result<InfoDa
 
 pub async fn video_info_by_id(id: String, proxy_url: Option<String>) -> Result<InfoData> {
     let id = Id::from_str(&id)?;
-    let client = client(proxy_url).await?;
+    let client = client(proxy_url)?;
 
     let descrambler = VideoFetcher::from_id_with_client(id.into_owned(), client)
         .fetch()
@@ -92,6 +92,7 @@ pub async fn video_info_by_id(id: String, proxy_url: Option<String>) -> Result<I
             .to_string(),
         view_count: raw_info.player_response.video_details.view_count,
         length_seconds: raw_info.player_response.video_details.length_seconds,
+        ..Default::default()
     })
 }
 
@@ -110,7 +111,7 @@ pub async fn download_video_by_id(
     proxy_url: Option<String>,
 ) -> Result<()> {
     let id = Id::from_str(&id)?;
-    let client = client(proxy_url).await?;
+    let client = client(proxy_url)?;
 
     let video = VideoFetcher::from_id_with_client(id.into_owned(), client)
         .fetch()
@@ -184,7 +185,7 @@ async fn inner_download_video_by_id_with_callback(
     tx: mpsc::Sender<CallbackArguments>,
 ) -> Result<()> {
     let id = Id::from_str(&id)?;
-    let client = client(proxy_url).await?;
+    let client = client(proxy_url)?;
 
     let video = VideoFetcher::from_id_with_client(id.into_owned(), client)
         .fetch()
@@ -218,7 +219,7 @@ pub async fn download_audio_by_id(
     proxy_url: Option<String>,
 ) -> Result<()> {
     let id = Id::from_str(&id)?;
-    let client = client(proxy_url).await?;
+    let client = client(proxy_url)?;
 
     let video = VideoFetcher::from_id_with_client(id.into_owned(), client)
         .fetch()
@@ -292,7 +293,7 @@ async fn inner_download_audio_by_id_with_callback(
     tx: mpsc::Sender<CallbackArguments>,
 ) -> Result<()> {
     let id = Id::from_str(&id)?;
-    let client = client(proxy_url).await?;
+    let client = client(proxy_url)?;
 
     let video = VideoFetcher::from_id_with_client(id.into_owned(), client)
         .fetch()

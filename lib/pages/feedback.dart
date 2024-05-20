@@ -17,8 +17,10 @@ class FeedbackPage extends StatefulWidget {
 
 class _FeedbackPageState extends State<FeedbackPage> {
   final _textController = TextEditingController();
+  final _textFocusNode = FocusNode();
   final _currentTextCounts = 0.obs;
   final _feedbackUrl = "https://heng30.xyz/apisvr/musicbox/feedback";
+  bool _isSending = false;
 
   static const int maxFeedbackLen = 2048;
 
@@ -41,6 +43,17 @@ class _FeedbackPageState extends State<FeedbackPage> {
       Get.snackbar("提 示".tr, "请输入反馈信息".tr);
       return;
     }
+
+    _textFocusNode.unfocus();
+
+    if (_isSending) {
+      Get.snackbar("提 示".tr, "请不要重复发送".tr);
+      return;
+    }
+
+    Get.snackbar("提 示".tr, "正在发送...".tr);
+
+    _isSending = true;
 
     Map<String, dynamic> data = {
       "appid": settingController.appid,
@@ -66,6 +79,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
     } catch (e) {
       Get.snackbar("发送失败".tr, e.toString());
       Logger().d(e.toString());
+    } finally {
+      _isSending = false;
     }
   }
 
@@ -85,6 +100,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             Expanded(
               child: TextEdit(
                 controller: _textController,
+                focusNode: _textFocusNode,
                 hintText: "请输入内容".tr,
                 onChanged: _onTextChange,
               ),

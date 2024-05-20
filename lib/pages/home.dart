@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../theme/theme.dart';
 import '../widgets/nodata.dart';
@@ -96,22 +97,37 @@ class _HomePageState extends State<HomePage> {
           itemCount: playlistController.playlist.length,
           itemBuilder: (count, index) {
             final song = playlistController.playlist[index];
-            return ListTile(
-              contentPadding: const EdgeInsets.only(left: CTheme.padding * 2),
-              onTap: () => go2song(index),
-              title: Text(
-                song.songName,
-                overflow: TextOverflow.ellipsis,
+            return Slidable(
+              endActionPane: ActionPane(
+                motion: const ScrollMotion(),
+                children: [
+                  SlidableAction(
+                    backgroundColor: CTheme.secondary,
+                    foregroundColor: Colors.red,
+                    icon: Icons.delete_outline,
+                    label: '删除'.tr,
+                    onPressed: (_) =>
+                        playlistController.clearPlaylistOneSongDialog(index),
+                  ),
+                ],
               ),
-              subtitle: Text(
-                song.artistName,
-                overflow: TextOverflow.ellipsis,
+              child: ListTile(
+                contentPadding: const EdgeInsets.only(left: CTheme.padding * 2),
+                onTap: () => go2song(index),
+                title: Text(
+                  song.songName,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(
+                  song.artistName,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(CTheme.borderRadius),
+                  child: Image.asset(song.albumArtImagePath),
+                ),
+                trailing: buildTrailing(context, index),
               ),
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(CTheme.borderRadius),
-                child: Image.asset(song.albumArtImagePath),
-              ),
-              trailing: buildTrailing(context, index),
             );
           },
         ),

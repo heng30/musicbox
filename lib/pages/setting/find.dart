@@ -103,7 +103,7 @@ class _SettingFindPageState extends State<SettingFindPage> {
           onSubmitted: (_) =>
               focusScopeNode.requestFocus(maxSecondLengthFocusNode),
           decoration: InputDecoration(
-            labelText: "时间下限".tr,
+            labelText: "时间下限(秒)".tr,
             hintText: "90",
             suffixIcon: IconButton(
               onPressed: () => minSecondLengthController.clear(),
@@ -126,7 +126,7 @@ class _SettingFindPageState extends State<SettingFindPage> {
           focusNode: maxSecondLengthFocusNode,
           onSubmitted: (_) => focusScopeNode.requestFocus(searchCountFocusNode),
           decoration: InputDecoration(
-            labelText: "时间上限".tr,
+            labelText: "时间上限(秒)".tr,
             hintText: "600",
             suffixIcon: IconButton(
               onPressed: () => maxSecondLengthController.clear(),

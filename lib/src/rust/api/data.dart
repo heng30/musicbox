@@ -15,6 +15,7 @@ class InfoData {
   final String shortDescription;
   final int viewCount;
   final int lengthSeconds;
+  final int bvCid;
 
   const InfoData({
     required this.title,
@@ -23,6 +24,7 @@ class InfoData {
     required this.shortDescription,
     required this.viewCount,
     required this.lengthSeconds,
+    required this.bvCid,
   });
 
   @override
@@ -32,7 +34,8 @@ class InfoData {
       videoId.hashCode ^
       shortDescription.hashCode ^
       viewCount.hashCode ^
-      lengthSeconds.hashCode;
+      lengthSeconds.hashCode ^
+      bvCid.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -44,7 +47,8 @@ class InfoData {
           videoId == other.videoId &&
           shortDescription == other.shortDescription &&
           viewCount == other.viewCount &&
-          lengthSeconds == other.lengthSeconds;
+          lengthSeconds == other.lengthSeconds &&
+          bvCid == other.bvCid;
 }
 
 class MsgItem {

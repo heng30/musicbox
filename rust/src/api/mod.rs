@@ -3,6 +3,7 @@ pub mod db;
 pub mod data;
 pub mod util;
 pub mod youtube;
+pub mod bilibili;
 pub mod msg_center;
 
 const SINK_CHANNEL_SIZE: usize = 4096;
