@@ -111,4 +111,5 @@ const Map<String, String> en = {
   "文件已存在，是否覆盖": "File has existed, do you want to cover it",
   "删除": "Delete",
   "没有歌词": "No found lyric",
+  "没有搜索到歌词": "can not find lyric",
 };

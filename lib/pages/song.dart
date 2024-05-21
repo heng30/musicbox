@@ -114,22 +114,34 @@ class _SongPageState extends State<SongPage> {
           songLyricController.isShow = !songLyricController.isShow;
           songLyricController.updateController();
         },
-        child: Padding(
-          padding: const EdgeInsets.all(CTheme.padding * 5),
-          child: Center(
-            child: songLyricController.lyric.isNotEmpty
-                ? LyricWidget(
-                    enableDrag: false,
-                    lyrics: LyricUtil.formatLyric(songLyricController.lyric),
-                    size: Size(double.infinity, innerHeight),
-                    controller: songLyricController.controller,
-                    currLyricStyle: TextStyle(color: CTheme.secondaryBrand),
-                  )
-                : SizedBox(
-                    height: innerHeight,
-                    child: NoData(text: "没有歌词".tr),
-                  ),
-          ),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(CTheme.padding * 5),
+              child: Center(
+                child: songLyricController.lyric.isNotEmpty
+                    ? LyricWidget(
+                        enableDrag: false,
+                        lyrics:
+                            LyricUtil.formatLyric(songLyricController.lyric),
+                        size: Size(double.infinity, innerHeight),
+                        controller: songLyricController.controller,
+                        currLyricStyle: TextStyle(color: CTheme.secondaryBrand),
+                      )
+                    : SizedBox(
+                        height: innerHeight,
+                        child: NoData(text: "没有歌词".tr),
+                      ),
+              ),
+            ),
+            Positioned(
+              right: 0,
+              child: IconButton(
+                onPressed: () => Get.toNamed("/lyric"),
+                icon: const Icon(Icons.search),
+              ),
+            )
+          ],
         ),
       );
     }

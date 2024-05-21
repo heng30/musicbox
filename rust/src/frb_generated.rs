@@ -31,7 +31,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.0.0-dev.33";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 751331454;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 91440692;
 
 // Section: executor
 
@@ -635,6 +635,104 @@ fn wire_init_logger_impl(
             move |context| {
                 transform_result_sse(
                     (move || Result::<_, ()>::Ok(crate::api::log::init_logger()))(),
+                )
+            }
+        },
+    )
+}
+fn wire_get_lyric_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_lyric",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_token = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse(
+                    (move || async move { crate::api::lyric::get_lyric(api_token).await })().await,
+                )
+            }
+        },
+    )
+}
+fn wire_save_lyric_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "save_lyric",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_text = <String>::sse_decode(&mut deserializer);
+            let api_path = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse((move || async move {
+                         crate::api::lyric::save_lyric(api_text, api_path).await
+                    })().await)
+            }
+        },
+    )
+}
+fn wire_search_lyric_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "search_lyric",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_keyword = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse(
+                    (move || async move { crate::api::lyric::search_lyric(api_keyword).await })()
+                        .await,
                 )
             }
         },
@@ -1279,6 +1377,20 @@ impl SseDecode for Vec<(String, String)> {
     }
 }
 
+impl SseDecode for Vec<crate::api::lyric::SearchLyricItem> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::lyric::SearchLyricItem>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for crate::api::data::MsgItem {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1346,6 +1458,20 @@ impl SseDecode for (String, String) {
     }
 }
 
+impl SseDecode for crate::api::lyric::SearchLyricItem {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_authors = <String>::sse_decode(deserializer);
+        let mut var_token = <String>::sse_decode(deserializer);
+        return crate::api::lyric::SearchLyricItem {
+            name: var_name,
+            authors: var_authors,
+            token: var_token,
+        };
+    }
+}
+
 impl SseDecode for u64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1405,18 +1531,21 @@ fn pde_ffi_dispatcher_primary_impl(
         10 => wire_update_impl(port, ptr, rust_vec_len, data_len),
         17 => wire_init_impl(port, ptr, rust_vec_len, data_len),
         18 => wire_init_logger_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_msg_center_init_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_send_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_create_dir_all_impl(port, ptr, rust_vec_len, data_len),
-        29 => wire_download_audio_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire_download_audio_by_id_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire_download_audio_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire_download_video_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire_download_video_by_id_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire_download_video_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_fetch_ids_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire_video_info_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_video_info_by_id_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_get_lyric_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_save_lyric_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_search_lyric_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_msg_center_init_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_send_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_create_dir_all_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire_download_audio_impl(port, ptr, rust_vec_len, data_len),
+        33 => wire_download_audio_by_id_impl(port, ptr, rust_vec_len, data_len),
+        34 => wire_download_audio_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire_download_video_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire_download_video_by_id_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire_download_video_by_id_with_callback_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire_fetch_ids_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire_video_info_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire_video_info_by_id_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1430,7 +1559,7 @@ fn pde_ffi_dispatcher_sync_impl(
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
         4 => wire_bv_watch_url_impl(ptr, rust_vec_len, data_len),
-        22 => wire_watch_url_impl(ptr, rust_vec_len, data_len),
+        25 => wire_watch_url_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1507,6 +1636,28 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::data::ProgressData>
     for crate::api::data::ProgressData
 {
     fn into_into_dart(self) -> crate::api::data::ProgressData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::lyric::SearchLyricItem {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.name.into_into_dart().into_dart(),
+            self.authors.into_into_dart().into_dart(),
+            self.token.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::lyric::SearchLyricItem
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::lyric::SearchLyricItem>
+    for crate::api::lyric::SearchLyricItem
+{
+    fn into_into_dart(self) -> crate::api::lyric::SearchLyricItem {
         self
     }
 }
@@ -1617,6 +1768,16 @@ impl SseEncode for Vec<(String, String)> {
     }
 }
 
+impl SseEncode for Vec<crate::api::lyric::SearchLyricItem> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::lyric::SearchLyricItem>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for crate::api::data::MsgItem {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1674,6 +1835,15 @@ impl SseEncode for (String, String) {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.0, serializer);
         <String>::sse_encode(self.1, serializer);
+    }
+}
+
+impl SseEncode for crate::api::lyric::SearchLyricItem {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.name, serializer);
+        <String>::sse_encode(self.authors, serializer);
+        <String>::sse_encode(self.token, serializer);
     }
 }
 

@@ -2,6 +2,7 @@ pub mod log;
 pub mod db;
 pub mod data;
 pub mod util;
+pub mod lyric;
 pub mod youtube;
 pub mod bilibili;
 pub mod msg_center;

@@ -7,6 +7,7 @@ import 'api/bilibili.dart';
 import 'api/data.dart';
 import 'api/db.dart';
 import 'api/log.dart';
+import 'api/lyric.dart';
 import 'api/msg_center.dart';
 import 'api/util.dart';
 import 'api/youtube.dart';
@@ -68,6 +69,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
 
   @protected
+  List<SearchLyricItem> dco_decode_list_search_lyric_item(dynamic raw);
+
+  @protected
   MsgItem dco_decode_msg_item(dynamic raw);
 
   @protected
@@ -84,6 +88,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   (String, String) dco_decode_record_string_string(dynamic raw);
+
+  @protected
+  SearchLyricItem dco_decode_search_lyric_item(dynamic raw);
 
   @protected
   int dco_decode_u_64(dynamic raw);
@@ -145,6 +152,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<SearchLyricItem> sse_decode_list_search_lyric_item(
+      SseDeserializer deserializer);
+
+  @protected
   MsgItem sse_decode_msg_item(SseDeserializer deserializer);
 
   @protected
@@ -162,6 +173,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   (String, String) sse_decode_record_string_string(
       SseDeserializer deserializer);
+
+  @protected
+  SearchLyricItem sse_decode_search_lyric_item(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_64(SseDeserializer deserializer);
@@ -228,6 +242,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<(String, String)> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_search_lyric_item(
+      List<SearchLyricItem> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_msg_item(MsgItem self, SseSerializer serializer);
 
   @protected
@@ -245,6 +263,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_record_string_string(
       (String, String) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_search_lyric_item(
+      SearchLyricItem self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_64(int self, SseSerializer serializer);
