@@ -1,11 +1,15 @@
+import 'dart:math';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:mmoo_lyric/lyric_util.dart';
+import 'package:mmoo_lyric/lyric_widget.dart';
 
 import '../theme/theme.dart';
 import '../theme/controller.dart';
 import '../widgets/neubox.dart';
 import '../widgets/vslider.dart';
 import '../widgets/track_shape.dart';
+import '../models/lyric_controller.dart';
 import '../models/player_controller.dart';
 import '../models/playlist_controller.dart';
 
@@ -25,6 +29,7 @@ class _SongPageState extends State<SongPage> {
 
   final playlistController = Get.find<PlaylistController>();
   final playerController = Get.find<PlayerController>();
+  final songLyricController = Get.find<SongLyricController>();
   final currentSongIndex = Get.arguments["currentSongIndex"];
 
   @override
@@ -82,15 +87,43 @@ class _SongPageState extends State<SongPage> {
     final orientation = MediaQuery.of(context).orientation;
 
     Widget buildAlbumImage(BuildContext context) {
-      return Obx(() {
-        final song =
-            playlistController.playlist[playlistController.currentSongIndex!];
+      final song =
+          playlistController.playlist[playlistController.currentSongIndex!];
 
-        return Image.asset(
-          song.albumArtImagePath,
-          fit: BoxFit.cover,
-        );
-      });
+      return GestureDetector(
+          child: SizedBox(
+            width: double.infinity,
+            child: Image.asset(
+              song.albumArtImagePath,
+              fit: BoxFit.cover,
+            ),
+          ),
+          onTap: () {
+            songLyricController.isShow = !songLyricController.isShow;
+            songLyricController.updateController();
+          });
+    }
+
+    Widget buildLyric(BuildContext context) {
+      songLyricController.updateController();
+      return GestureDetector(
+        onTap: () {
+          songLyricController.isShow = !songLyricController.isShow;
+          songLyricController.updateController();
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(CTheme.padding * 5),
+          child: Center(
+            child: LyricWidget(
+              enableDrag: false,
+              lyrics: LyricUtil.formatLyric(songLyricController.lyric),
+              size: Size(double.infinity, min(450, Get.height * 0.8)),
+              controller: songLyricController.controller,
+              currLyricStyle: TextStyle(color: CTheme.secondaryBrand),
+            ),
+          ),
+        ),
+      );
     }
 
     return NeuBox(
@@ -99,7 +132,14 @@ class _SongPageState extends State<SongPage> {
           if (orientation == Orientation.portrait)
             ClipRRect(
               borderRadius: BorderRadius.circular(CTheme.borderRadius),
-              child: buildAlbumImage(context),
+              child: Obx(
+                () => Stack(
+                  children: [
+                    if (!songLyricController.isShow) buildAlbumImage(context),
+                    if (songLyricController.isShow) buildLyric(context),
+                  ],
+                ),
+              ),
             ),
           if (orientation == Orientation.landscape)
             Expanded(
@@ -107,7 +147,15 @@ class _SongPageState extends State<SongPage> {
                 width: double.infinity,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(CTheme.borderRadius),
-                  child: buildAlbumImage(context),
+                  child: Obx(
+                    () => Stack(
+                      children: [
+                        if (!songLyricController.isShow)
+                          buildAlbumImage(context),
+                        if (songLyricController.isShow) buildLyric(context),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -340,7 +388,7 @@ class _SongPageState extends State<SongPage> {
           title: Text("歌 曲".tr),
           actions: [
             IconButton(
-              onPressed: () => Get.find<ThemeController>().toggleTheme(),
+              onPressed: Get.find<ThemeController>().toggleTheme,
               icon: Icon(
                 Get.find<ThemeController>().isDarkMode
                     ? Icons.dark_mode

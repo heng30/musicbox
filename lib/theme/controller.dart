@@ -45,7 +45,7 @@ class ThemeController extends GetxController {
     await settingController.save();
   }
 
-  void toggleTheme() async {
+  Future<void> toggleTheme() async {
     isDarkMode = !isDarkMode;
     Get.changeTheme(isDarkMode ? ThemeData.dark() : ThemeData.light());
 

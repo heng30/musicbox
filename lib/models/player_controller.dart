@@ -9,6 +9,7 @@ import './playlist_controller.dart';
 import './audio_session_controller.dart';
 import './setting_controller.dart';
 import '../models/player_tile_controller.dart';
+import "../models/lyric_controller.dart";
 
 enum PlayModel {
   loop,
@@ -36,7 +37,6 @@ class PlayerController extends GetxController {
 
   PlayerController() {
     listenToDuration();
-    listenEvent();
 
     _speed.value = settingController.playbackSpeed;
     _audioPlayer.setPlaybackRate(settingController.playbackSpeed);
@@ -202,6 +202,8 @@ class PlayerController extends GetxController {
       return;
     }
 
+    Get.find<SongLyricController>().updateController();
+
     if (playModel == PlayModel.shuffle) {
       playlistController.currentSongIndex =
           Random().nextInt(playlistController.playlist.length);
@@ -224,6 +226,8 @@ class PlayerController extends GetxController {
     if (playlistController.playlist.isEmpty) {
       return;
     }
+
+    Get.find<SongLyricController>().updateController();
 
     if (playModel == PlayModel.shuffle) {
       playlistController.currentSongIndex =
@@ -249,9 +253,12 @@ class PlayerController extends GetxController {
 
     _audioPlayer.onPositionChanged.listen((newPosition) {
       currentDuration = newPosition;
+      Get.find<SongLyricController>().controller.progress = newPosition;
     });
 
     _audioPlayer.onPlayerComplete.listen((event) {
+      Get.find<SongLyricController>().updateController();
+
       if (playModel == PlayModel.single) {
         play();
       } else {
@@ -259,12 +266,6 @@ class PlayerController extends GetxController {
         Get.find<PlayerTileController>().playingSong =
             playlistController.playingSong();
       }
-    });
-  }
-
-  void listenEvent() {
-    _audioPlayer.onPlayerStateChanged.listen((event) {
-      log.d(event);
     });
   }
 }

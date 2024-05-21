@@ -41,6 +41,7 @@ dependencies:
   toml: ^0.15.0
   logger: ^2.3.0
   sqflite: ^2.3.3+1
+  mmoo_lyric: ^1.0.0
   audiotagger: ^2.2.1
   file_picker: ^8.0.3
   url_launcher: ^6.2.6

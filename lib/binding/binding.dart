@@ -10,6 +10,7 @@ import '../models/audio_session_controller.dart';
 import '../models/setting_controller.dart';
 import '../models/db_controller.dart';
 import '../models/find_controller.dart';
+import '../models/lyric_controller.dart';
 import '../models/msg_center_controller.dart';
 
 class InitControllerBinding extends Bindings {
@@ -38,6 +39,7 @@ Future<void> initGlobalController() async {
 
   Get.put(PlayerController());
   Get.put(PlayerTileController());
+  Get.put(SongLyricController());
   Get.put(FindController());
   Get.put(MsgCenterController());
   Get.put(AboutController());
