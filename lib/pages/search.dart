@@ -29,6 +29,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void search(String text) {
+    _focusNodeSearch.unfocus();
     var items = playlistController.searchByKeyword(text.trim());
 
     if (items.isEmpty) {
@@ -64,7 +65,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return playlistController.playlist.isNotEmpty
+    return songs.isNotEmpty
         ? Obx(
             () => Container(
               color: CTheme.background,
@@ -98,7 +99,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
           )
-        : const NoData();
+        : NoData();
   }
 
   @override

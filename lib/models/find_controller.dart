@@ -217,19 +217,21 @@ class FindController extends GetxController {
         }
 
         final pname = (await PackageInfo.fromPlatform()).packageName;
-        final d = Directory("/storage/emulated/0/$pname");
+        final d = Directory("/storage/emulated/0/$pname/music");
 
         if (!(await d.exists())) {
-          await d.create();
+          await d.create(recursive: true);
         }
 
         downloadDir = d.path;
       } else {
-        final d = await getDownloadsDirectory() ??
+        final tmpDir = await getDownloadsDirectory() ??
             await getApplicationCacheDirectory();
 
+        final d = Directory("${tmpDir.path}/music");
+
         if (!(await d.exists())) {
-          await d.create();
+          await d.create(recursive: true);
         }
 
         downloadDir = d.path;

@@ -117,6 +117,7 @@ class _FindPageState extends State<FindPage> {
   }
 
   void search(String text) async {
+    focusNodeSearch.unfocus();
     if (!settingController.find.enableYoutubeSearch &&
         !settingController.find.enableBilibiliSearch) {
       Get.snackbar("提 示".tr, "没有启用Youtube或Bilibili搜索".tr,
@@ -479,7 +480,6 @@ class _FindPageState extends State<FindPage> {
         GestureDetector(
           onTap: () {
             if (!findController.isSearching) {
-              focusNodeSearch.unfocus();
               search(controllerSearch.text);
             } else {
               findController.isSearching = false;
@@ -591,7 +591,7 @@ class _FindPageState extends State<FindPage> {
                 color: CTheme.primary,
                 size: size.width * 0.2,
               )
-            : const NoData());
+            : NoData());
   }
 
   @override

@@ -13,7 +13,7 @@ class SongLyricController extends GetxController {
   bool get isShow => _isShow.value;
   set isShow(bool v) => _isShow.value = v;
 
-  final _lyric = testSongLyric.obs;
+  final _lyric = "".obs; //testSongLyric.obs;
   String get lyric => _lyric.value;
   set lyric(String v) => _lyric.value = v;
 

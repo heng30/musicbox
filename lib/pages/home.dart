@@ -181,7 +181,7 @@ class _HomePageState extends State<HomePage> {
         Expanded(
           child: playlistController.playlist.isNotEmpty
               ? _buildBodyPlaylist(context)
-              : const NoData(),
+              : NoData(),
         ),
         _buildBottomPlayer(context),
       ],

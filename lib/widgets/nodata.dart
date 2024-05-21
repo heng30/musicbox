@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import '../theme/theme.dart';
 
 class NoData extends StatelessWidget {
-  const NoData({super.key});
+  NoData({super.key, String? text}) : text = text ?? "没有数据".tr;
+
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +31,9 @@ class NoData extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: CTheme.padding * 2),
+                const SizedBox(height: CTheme.padding * 2),
                 Text(
-                  "没有数据".tr,
+                  text,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],

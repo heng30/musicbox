@@ -110,4 +110,5 @@ const Map<String, String> zh = {
   "Sending...": "正在发送...",
   "File has existed, do you want to cover it": "文件已存在，是否覆盖",
   "Delete": "删除",
+  "No found lyric": "没有歌词",
 };

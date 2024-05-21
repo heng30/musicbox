@@ -6,6 +6,7 @@ import 'package:mmoo_lyric/lyric_widget.dart';
 
 import '../theme/theme.dart';
 import '../theme/controller.dart';
+import '../widgets/nodata.dart';
 import '../widgets/neubox.dart';
 import '../widgets/vslider.dart';
 import '../widgets/track_shape.dart';
@@ -106,6 +107,8 @@ class _SongPageState extends State<SongPage> {
 
     Widget buildLyric(BuildContext context) {
       songLyricController.updateController();
+      final innerHeight = min(450.0, Get.height * 0.8);
+
       return GestureDetector(
         onTap: () {
           songLyricController.isShow = !songLyricController.isShow;
@@ -114,13 +117,18 @@ class _SongPageState extends State<SongPage> {
         child: Padding(
           padding: const EdgeInsets.all(CTheme.padding * 5),
           child: Center(
-            child: LyricWidget(
-              enableDrag: false,
-              lyrics: LyricUtil.formatLyric(songLyricController.lyric),
-              size: Size(double.infinity, min(450, Get.height * 0.8)),
-              controller: songLyricController.controller,
-              currLyricStyle: TextStyle(color: CTheme.secondaryBrand),
-            ),
+            child: songLyricController.lyric.isNotEmpty
+                ? LyricWidget(
+                    enableDrag: false,
+                    lyrics: LyricUtil.formatLyric(songLyricController.lyric),
+                    size: Size(double.infinity, innerHeight),
+                    controller: songLyricController.controller,
+                    currLyricStyle: TextStyle(color: CTheme.secondaryBrand),
+                  )
+                : SizedBox(
+                    height: innerHeight,
+                    child: NoData(text: "没有歌词".tr),
+                  ),
           ),
         ),
       );

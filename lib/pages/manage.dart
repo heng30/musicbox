@@ -80,7 +80,7 @@ class _ManagePageState extends State<ManagePage> {
               },
             ),
           )
-        : const NoData());
+        : NoData());
   }
 
   @override

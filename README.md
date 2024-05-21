@@ -9,3 +9,4 @@ It's a music player for Android platform. It's a Flutter project and under devel
 - [freepik.com](https://www.freepik.com/)
 - [flutter-action](https://github.com/marketplace/actions/flutter-action)
 - [supported-formats](https://developer.android.com/media/platform/supported-formats)
+- [music_api](https://github.com/yhsj0919/music_api)
