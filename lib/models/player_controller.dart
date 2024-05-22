@@ -81,6 +81,22 @@ class PlayerController extends GetxController {
     return src;
   }
 
+  Future<void> setLyric(int index) async {
+    final songLyricController = Get.find<SongLyricController>();
+    final song = playlistController.playlist[index];
+
+    try {
+      final path =
+          await songLyricController.getDownloadsDirectoryWithoutCreate();
+      final f = File("$path/${song.songName}.lrc");
+
+      song.lyric = await f.readAsString();
+      songLyricController.updateControllerWithForceUpdateLyricWidget();
+    } catch (e) {
+      log.d(e);
+    }
+  }
+
   Future<void> setSrc(int index) async {
     final src = await genSrc(index);
     _audioPlayer.setSource(src);
@@ -202,7 +218,8 @@ class PlayerController extends GetxController {
       return;
     }
 
-    Get.find<SongLyricController>().updateController();
+    Get.find<SongLyricController>()
+        .updateControllerWithForceUpdateLyricWidget();
 
     if (playModel == PlayModel.shuffle) {
       playlistController.currentSongIndex =
@@ -227,7 +244,8 @@ class PlayerController extends GetxController {
       return;
     }
 
-    Get.find<SongLyricController>().updateController();
+    Get.find<SongLyricController>()
+        .updateControllerWithForceUpdateLyricWidget();
 
     if (playModel == PlayModel.shuffle) {
       playlistController.currentSongIndex =
@@ -257,9 +275,9 @@ class PlayerController extends GetxController {
     });
 
     _audioPlayer.onPlayerComplete.listen((event) {
-      Get.find<SongLyricController>().updateController();
-
       if (playModel == PlayModel.single) {
+        Get.find<SongLyricController>()
+            .updateControllerWithForceUpdateLyricWidget();
         play();
       } else {
         playNextSong();

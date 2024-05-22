@@ -1,17 +1,30 @@
+import 'dart:io';
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mmoo_lyric/lyric_controller.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
+import '../models/util.dart';
 import '../src/rust/api/lyric.dart';
+import '../models/playlist_controller.dart';
 
 class LyricListItem {
   final SearchLyricItem raw;
+
   final Rx<String> _lyric;
   String get lyric => _lyric.value;
   set lyric(String v) => _lyric.value = v;
 
-  LyricListItem({required this.raw, required String lyric})
-      : _lyric = lyric.obs;
+  final RxBool _isDownloading;
+  bool get isDownloading => _isDownloading.value;
+  set isDownloading(bool v) => _isDownloading.value = v;
+
+  LyricListItem(
+      {required this.raw, required String lyric, bool isDownloading = false})
+      : _lyric = lyric.obs,
+        _isDownloading = isDownloading.obs;
 }
 
 class SongLyricController extends GetxController {
@@ -25,9 +38,11 @@ class SongLyricController extends GetxController {
   bool get isShow => _isShow.value;
   set isShow(bool v) => _isShow.value = v;
 
-  final _lyric = "".obs; //testSongLyric.obs;
-  String get lyric => _lyric.value;
-  set lyric(String v) => _lyric.value = v;
+  final _isForceUpdateLyricWidget = false.obs;
+  bool get isForceUpdateLyricWidget => _isForceUpdateLyricWidget.value;
+  set isForceUpdateLyricWidget(bool v) => _isForceUpdateLyricWidget.value = v;
+
+  String? downloadDir;
 
   SongLyricController() {
     if (!kReleaseMode) {
@@ -53,6 +68,77 @@ class SongLyricController extends GetxController {
   void updateController() {
     controller.dispose();
     controller = LyricController();
+  }
+
+  void updateControllerWithForceUpdateLyricWidget() async {
+    if (isShow) {
+      updateController();
+      isForceUpdateLyricWidget = true;
+      isShow = false;
+      await Future.delayed(const Duration(milliseconds: 10));
+      isShow = true;
+      isForceUpdateLyricWidget = false;
+    }
+  }
+
+  Future<String> downloadPath() async {
+    if (downloadDir == null) {
+      await createDownloadDir();
+    }
+
+    final playlistController = Get.find<PlaylistController>();
+    final name = playlistController
+        .playlist[playlistController.currentSongIndex!].songName;
+
+    if (downloadDir == null || name.isEmpty) {
+      return "";
+    }
+
+    return "$downloadDir/$name.lrc";
+  }
+
+  Future<String> getDownloadsDirectoryWithoutCreate() async {
+    if (Platform.isAndroid) {
+      final pname = (await PackageInfo.fromPlatform()).packageName;
+      return "/storage/emulated/0/$pname/lyric";
+    } else {
+      final tmpDir =
+          await getDownloadsDirectory() ?? await getApplicationCacheDirectory();
+      return "${tmpDir.path}/lyric";
+    }
+  }
+
+  Future<void> createDownloadDir() async {
+    try {
+      if (Platform.isAndroid) {
+        if (!(await getPermission())) {
+          return;
+        }
+
+        final pname = (await PackageInfo.fromPlatform()).packageName;
+        final d = Directory("/storage/emulated/0/$pname/lyric");
+
+        if (!(await d.exists())) {
+          await d.create(recursive: true);
+        }
+
+        downloadDir = d.path;
+      } else {
+        final tmpDir = await getDownloadsDirectory() ??
+            await getApplicationCacheDirectory();
+
+        final d = Directory("${tmpDir.path}/lyric");
+
+        if (!(await d.exists())) {
+          await d.create(recursive: true);
+        }
+
+        downloadDir = d.path;
+      }
+    } catch (e) {
+      Get.snackbar("创建下载目录失败".tr, e.toString(),
+          snackPosition: SnackPosition.BOTTOM);
+    }
   }
 }
 

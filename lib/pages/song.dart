@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:mmoo_lyric/lyric_util.dart';
 import 'package:mmoo_lyric/lyric_widget.dart';
 
 import '../theme/theme.dart';
@@ -88,16 +87,25 @@ class _SongPageState extends State<SongPage> {
     final orientation = MediaQuery.of(context).orientation;
 
     Widget buildAlbumImage(BuildContext context) {
+      final innerHeight = min(400.0, Get.height * 0.6);
       final song =
           playlistController.playlist[playlistController.currentSongIndex!];
 
       return GestureDetector(
           child: SizedBox(
             width: double.infinity,
-            child: Image.asset(
-              song.albumArtImagePath,
-              fit: BoxFit.cover,
-            ),
+            child: !songLyricController.isForceUpdateLyricWidget
+                ? Image.asset(
+                    song.albumArtImagePath,
+                    fit: BoxFit.cover,
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(CTheme.padding * 5),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: innerHeight,
+                    ),
+                  ),
           ),
           onTap: () {
             songLyricController.isShow = !songLyricController.isShow;
@@ -107,7 +115,10 @@ class _SongPageState extends State<SongPage> {
 
     Widget buildLyric(BuildContext context) {
       songLyricController.updateController();
-      final innerHeight = min(450.0, Get.height * 0.8);
+      final innerHeight = min(400.0, Get.height * 0.6);
+      final song =
+          playlistController.playlist[playlistController.currentSongIndex!];
+      song.updateLyrics();
 
       return GestureDetector(
         onTap: () {
@@ -119,25 +130,45 @@ class _SongPageState extends State<SongPage> {
             Padding(
               padding: const EdgeInsets.all(CTheme.padding * 5),
               child: Center(
-                child: songLyricController.lyric.isNotEmpty
+                child: song.lyrics.isNotEmpty
                     ? LyricWidget(
                         enableDrag: false,
-                        lyrics:
-                            LyricUtil.formatLyric(songLyricController.lyric),
+                        lyrics: song.lyrics,
                         size: Size(double.infinity, innerHeight),
                         controller: songLyricController.controller,
-                        currLyricStyle: TextStyle(color: CTheme.secondaryBrand),
+                        currLyricStyle: TextStyle(
+                            color: CTheme.secondaryBrand,
+                            fontSize:
+                                Get.textTheme.titleMedium?.fontSize ?? 16),
                       )
                     : SizedBox(
                         height: innerHeight,
-                        child: NoData(text: "没有歌词".tr),
+                        child: NoData(
+                          text: "没有歌词".tr,
+                          size: orientation == Orientation.portrait
+                              ? null
+                              : Get.height * 0.2,
+                        ),
                       ),
               ),
             ),
             Positioned(
               right: 0,
               child: IconButton(
-                onPressed: () => Get.toNamed("/lyric"),
+                onPressed: () async {
+                  final downloadPath = await songLyricController.downloadPath();
+
+                  if (downloadPath.isEmpty) {
+                    Get.snackbar("提 示".tr, "下载目录为空",
+                        snackPosition: SnackPosition.BOTTOM);
+                    return;
+                  }
+
+                  Get.toNamed("/lyric", arguments: {
+                    "downloadPath": downloadPath,
+                    "currentSongIndex": playlistController.currentSongIndex!
+                  });
+                },
                 icon: const Icon(Icons.search),
               ),
             )
@@ -408,7 +439,9 @@ class _SongPageState extends State<SongPage> {
           title: Text("歌 曲".tr),
           actions: [
             IconButton(
-              onPressed: Get.find<ThemeController>().toggleTheme,
+              onPressed: () {
+                Get.find<ThemeController>().toggleTheme();
+              },
               icon: Icon(
                 Get.find<ThemeController>().isDarkMode
                     ? Icons.dark_mode

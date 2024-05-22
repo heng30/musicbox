@@ -1,5 +1,8 @@
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
+import 'package:logger/logger.dart';
+import 'package:mmoo_lyric/lyric.dart';
+import 'package:mmoo_lyric/lyric_util.dart';
 
 import './albums.dart';
 import '../models/find_controller.dart';
@@ -31,6 +34,8 @@ class Song {
   String audioPath;
   AudioLocation audioLocation;
 
+  final log = Logger();
+
   final RxBool _isFavorite;
   bool get isFavorite => _isFavorite.value;
   set isFavorite(bool v) => _isFavorite.value = v;
@@ -38,6 +43,23 @@ class Song {
   final _isSelected = false.obs;
   bool get isSelected => _isSelected.value;
   set isSelected(bool v) => _isSelected.value = v;
+
+  final _lyric = "".obs;
+  String get lyric => _lyric.value;
+  set lyric(String v) {
+    _lyric.value = v;
+    updateLyrics();
+  }
+
+  final lyrics = <Lyric>[].obs;
+  void updateLyrics() {
+    lyrics.clear();
+    try {
+      lyrics.addAll(LyricUtil.formatLyric(lyric));
+    } catch (e) {
+      log.d("parse lyric error: $e");
+    }
+  }
 
   static const String noneAsset = "audio/none.mp3";
 

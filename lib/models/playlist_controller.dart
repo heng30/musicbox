@@ -23,7 +23,7 @@ class PlaylistController extends GetxController {
 
   Future<void> init() async {
     if (!kReleaseMode) {
-      fakePlaylist();
+      // fakePlaylist();
     }
 
     await initFromDB();
@@ -105,6 +105,7 @@ class PlaylistController extends GetxController {
         _currentSongIndex!.value = index;
       }
 
+      playerController.setLyric(index);
       playerController.play();
     }
   }
@@ -114,6 +115,7 @@ class PlaylistController extends GetxController {
 
     final playerController = Get.find<PlayerController>();
     playerController.setSrc(index);
+    playerController.setLyric(index);
   }
 
   // toggle favorite song by index

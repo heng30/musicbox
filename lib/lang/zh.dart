@@ -112,4 +112,5 @@ const Map<String, String> zh = {
   "Delete": "删除",
   "No found lyric": "没有歌词",
   "can not find lyric": "没有搜索到歌词",
+  "Download directory is empty": "下载目录为空",
 };

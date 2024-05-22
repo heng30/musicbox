@@ -5,13 +5,24 @@ import 'package:flutter/material.dart';
 import '../theme/theme.dart';
 
 class NoData extends StatelessWidget {
-  NoData({super.key, String? text}) : text = text ?? "没有数据".tr;
+  NoData({super.key, String? text, double? size})
+      : text = text ?? "没有数据".tr,
+        size = size ?? 300.0;
 
   final String text;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final appsize = MediaQuery.of(context).size;
+
+    final innerSize = min(
+        appsize.height * 0.4,
+        min(
+          size,
+          appsize.width * 0.4,
+        ));
+
     return Obx(
       () => Container(
         color: CTheme.background,
@@ -23,13 +34,7 @@ class NoData extends StatelessWidget {
               children: [
                 Icon(
                   IconFonts.nodata,
-                  size: min(
-                    size.height * 0.4,
-                    min(
-                      300.0,
-                      size.width * 0.4,
-                    ),
-                  ),
+                  size: innerSize,
                 ),
                 const SizedBox(height: CTheme.padding * 2),
                 Text(

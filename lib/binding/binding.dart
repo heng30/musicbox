@@ -32,6 +32,7 @@ Future<void> initGlobalController() async {
 
   Get.put(LangController());
   Get.put(AudioSessionController());
+  Get.put(SongLyricController());
 
   final playlistController = PlaylistController();
   await playlistController.init();
@@ -39,7 +40,6 @@ Future<void> initGlobalController() async {
 
   Get.put(PlayerController());
   Get.put(PlayerTileController());
-  Get.put(SongLyricController());
   Get.put(FindController());
   Get.put(MsgCenterController());
   Get.put(AboutController());

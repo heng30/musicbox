@@ -587,8 +587,8 @@ class _FindPageState extends State<FindPage> {
     return findController.infoList.isNotEmpty
         ? buildInfoList(context)
         : (findController.isSearching
-            ? SpinKitFadingCircle(
-                color: CTheme.primary,
+            ? SpinKitWave(
+                color: CTheme.secondaryBrand,
                 size: size.width * 0.2,
               )
             : NoData());

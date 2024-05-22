@@ -128,13 +128,13 @@ fn extract_lyrics(html_content: &str) -> String {
         .filter(|c| *c != '\n')
         .collect::<String>();
 
-    if lyirc.is_empty() {
-        return lyric;
+    if lyric.is_empty() || lyric.trim() == "No lyrics" {
+        return "".to_string();
     }
 
     format!("[00:00]{lyric}")
         .replace("[", "\n[")
-        .replace("]", "] ")
+        .replace("]", ".500] ")
         .trim_start()
         .to_string()
 }
@@ -153,6 +153,7 @@ pub async fn get_lyric(token: String) -> Result<String> {
 pub async fn save_lyric(text: String, path: String) -> Result<()> {
     let mut file = fs::File::create(&path).await?;
     file.write(text.as_bytes()).await?;
+    file.flush().await?;
 
     Ok(())
 }
