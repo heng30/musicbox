@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../theme/theme.dart';
@@ -55,14 +55,9 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  SvgPicture.asset(
-                    CImages.lineVoice,
-                    width: CTheme.iconSize,
-                    height: CTheme.iconSize,
-                    colorFilter: ColorFilter.mode(
-                      CTheme.secondaryBrand,
-                      BlendMode.srcIn,
-                    ),
+                  SpinKitWave(
+                    color: CTheme.secondaryBrand,
+                    size: CTheme.iconSize * 0.6,
                   ),
                   IconButton(
                     icon: Icon(

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../theme/theme.dart';
 import '../widgets/nodata.dart';
@@ -25,14 +25,9 @@ class _ManagePageState extends State<ManagePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  SvgPicture.asset(
-                    CImages.lineVoice,
-                    width: CTheme.iconSize,
-                    height: CTheme.iconSize,
-                    colorFilter: ColorFilter.mode(
-                      CTheme.secondaryBrand,
-                      BlendMode.srcIn,
-                    ),
+                  SpinKitWave(
+                    color: CTheme.secondaryBrand,
+                    size: CTheme.iconSize * 0.6,
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete_outline),

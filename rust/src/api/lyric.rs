@@ -2,6 +2,7 @@ use anyhow::Result;
 use scraper::{Html, Selector};
 use tokio::{fs, io::AsyncWriteExt};
 use url::Url;
+use regex::Regex;
 
 const LYRIC_BASE_URL: &str = "https://www.musicenc.com";
 
@@ -105,6 +106,7 @@ fn extract_lyrics(html_content: &str) -> String {
     let content_selector = Selector::parse(".content").unwrap();
 
     let mut extracted_text = String::new();
+    let re = Regex::new(r"\[\d{2}:\d{2}.\d{3}\]").unwrap();
 
     if let Some(content_element) = fragment.select(&content_selector).next() {
         for (index, child) in content_element.children().into_iter().enumerate() {
@@ -119,6 +121,12 @@ fn extract_lyrics(html_content: &str) -> String {
                 .map(|item| item.text.to_string())
                 .collect::<String>();
 
+            let text = if re.is_match(&text) {
+                text.replace("]", "] ")
+            } else {
+                text.replace("]", ".500] ")
+            };
+
             extracted_text.push_str(&text);
         }
     }
@@ -132,9 +140,8 @@ fn extract_lyrics(html_content: &str) -> String {
         return "".to_string();
     }
 
-    format!("[00:00]{lyric}")
+    format!("[00:00.000]{lyric}")
         .replace("[", "\n[")
-        .replace("]", ".500] ")
         .trim_start()
         .to_string()
 }

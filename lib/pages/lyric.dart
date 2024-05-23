@@ -8,7 +8,6 @@ import '../widgets/searchbar.dart';
 import '../widgets/nodata.dart';
 import '../models/lyric_controller.dart';
 import '../models/player_controller.dart';
-import '../models/playlist_controller.dart';
 import '../src/rust/api/lyric.dart';
 
 class LyricPage extends StatefulWidget {
