@@ -87,7 +87,7 @@ class _SongPageState extends State<SongPage> {
     final orientation = MediaQuery.of(context).orientation;
 
     Widget buildAlbumImage(BuildContext context) {
-      final innerHeight = min(400.0, Get.height * 0.6);
+      final innerHeight = min(450.0, Get.height * 0.6);
       final song =
           playlistController.playlist[playlistController.currentSongIndex!];
 

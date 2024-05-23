@@ -11,32 +11,32 @@
     <img src="./screenshot/10.png" width="100"/>
 </div>
 
-[中文文档](./README.zh-CN.md)
+[English Document](./README.md)
 
-#### Introduction
-It's a music player designed for Android platform. However, you can build it for Linux that is my development environment. If you want to build a Macos, ios or Windows version, you can try it without guarantee it will work. It's based on `Flutter` and `Rust`.
+#### 简介
+这是一个专门为安卓开发的音乐播放器。不过你也可以编译到Linux平台。如果你想编译到Macos, ios 和 Windows 平台，可以尝试以下，但不保证能够编译成功。最后，这是一个基于Flutter 和 Rust的软件。
 
-#### Features
-- [x] play local music
-- [x] manage music playlist
-- [x] search and download youtube(video) and bilibili(audio) music
-- [x] search, preview and download lyric
-- [x] setting: light/dark theme, Chinese/English language, http/socks5 proxy for downloading music
+#### 功能
+- [x] 播放本地音乐
+- [x] 管理播放列表
+- [x] 搜索和下载youtube的视频和bilibili音频文件
+- [x] 搜索，预览和下载歌词
+- [x] 设置：白天/黑暗主题切换，中英文语言切换，支持http和socks5代理下载音乐
 
-#### How to build?
-- Install `Rust` and `Cargo`
-- Install `Flutter` and `FVM`(optional)
-- Install Android `sdk`, `ndk`, `jdk`, and set environment variables
-- Run `make` to build a release version android APK
-- Run `make run` to run it on desktop platform
-- Refer to [Makefile](./Makefile) for more information
+#### 如何构建？
+- 安装 `Rust` 和 `Cargo`
+- 安装 `Flutter` 和 `FVM`(可选)
+- 安装 Android `sdk`, `ndk`, `jdk`和设置环境变量
+- 运行 `make` 去构建安卓发布版本
+- 运行 `make run` 运行桌面版本程序
+- 参考 [Makefile](./Makefile) 了解更多信息
 
-#### Development Environment
+#### 开发环境
 - Linux: 6.7.2-arch1-2 #1 SMP PREEMPT_DYNAMIC Wed, 31 Jan 2024 09:22:15 +0000 x86_64 GNU/Linux
 - Flutter version: 3.22.0
 - Rust version: 1.77.1
 
-#### Reference
+#### 参考
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 - [svg to png](https://cloudconvert.com/svg-to-png)

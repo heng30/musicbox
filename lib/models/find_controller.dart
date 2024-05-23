@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import "../models/util.dart";
 import "../models/song.dart";
@@ -224,8 +222,12 @@ class FindController extends GetxController {
         downloadDir = d.path;
       }
     } catch (e) {
-      Get.snackbar("创建下载目录失败".tr, e.toString(),
-          snackPosition: SnackPosition.BOTTOM);
+      if (Get.find<SettingController>().isFirstLaunch) {
+        log.d("Create music download directory failed. $e");
+      } else {
+        Get.snackbar("创建下载目录失败".tr, e.toString(),
+            snackPosition: SnackPosition.BOTTOM);
+      }
     }
   }
 

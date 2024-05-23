@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mmoo_lyric/lyric_controller.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,6 +9,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../models/util.dart';
 import '../src/rust/api/lyric.dart';
+import "../models/setting_controller.dart";
 import '../models/playlist_controller.dart';
 
 class LyricListItem {
@@ -29,6 +31,7 @@ class LyricListItem {
 
 class SongLyricController extends GetxController {
   final lyricList = <LyricListItem>[].obs;
+  final log = Logger();
 
   final Rx<LyricController> _controller = LyricController().obs;
   LyricController get controller => _controller.value;
@@ -136,8 +139,12 @@ class SongLyricController extends GetxController {
         downloadDir = d.path;
       }
     } catch (e) {
-      Get.snackbar("创建下载目录失败".tr, e.toString(),
-          snackPosition: SnackPosition.BOTTOM);
+      if (Get.find<SettingController>().isFirstLaunch) {
+        log.d("Create lyric download directory failed. $e");
+      } else {
+        Get.snackbar("创建下载目录失败".tr, e.toString(),
+            snackPosition: SnackPosition.BOTTOM);
+      }
     }
   }
 }

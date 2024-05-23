@@ -13,6 +13,7 @@ class PlayerTileController extends GetxController {
     if (playlistController.playlist.isNotEmpty) {
       playingSong = playlistController.playlist[0];
       playlistController.setCurrentSongIndexWithoutPlay(0);
+      playlistController.playlist[0].isSelected = true;
     }
   }
 }

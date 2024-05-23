@@ -2,6 +2,9 @@
 
 run-evn= RUST_LOG=debug,sqlx=off,reqwest=off
 
+all:
+	fvm flutter build apk
+
 gen-icons:
 	fvm flutter pub run flutter_launcher_icons
 

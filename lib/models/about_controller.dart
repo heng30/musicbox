@@ -14,7 +14,7 @@ class AboutController extends GetxController {
 
   final String logo = CIcons.favicon;
   final String detail =
-      "Based on Flutter. Copyright 2022-2030. All rights reserved. The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.";
+      "It's a music player. Based on Flutter and Rust. Copyright 2022-2030. All rights reserved. The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.";
 
   PackageInfo get packageInfo => _packageInfo.value;
 

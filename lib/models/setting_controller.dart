@@ -102,7 +102,7 @@ class Find implements TomlEncodableValue {
   int minSecondLength = 90;
   int maxSecondLength = 600;
 
-  final _enableYoutubeSearch = true.obs;
+  final _enableYoutubeSearch = false.obs;
   bool get enableYoutubeSearch => _enableYoutubeSearch.value;
   set enableYoutubeSearch(bool v) => _enableYoutubeSearch.value = v;
 
@@ -136,8 +136,8 @@ class Find implements TomlEncodableValue {
     searchCount = m['searchCount'] ?? 10;
     minSecondLength = m['minSecondLength'] ?? 90;
     maxSecondLength = m['maxSecondLength'] ?? 600;
-    enableYoutubeSearch = m['enableYoutubeSearch'] ?? true;
-    enableBilibiliSearch = m['enableBilibiliSearch'] ?? false;
+    enableYoutubeSearch = m['enableYoutubeSearch'] ?? false;
+    enableBilibiliSearch = m['enableBilibiliSearch'] ?? true;
     enableVideoToAudio = m['enableVideoToAudio'] ?? false;
   }
 }
