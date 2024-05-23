@@ -232,8 +232,9 @@ class PlaylistController extends GetxController {
   static Future<List<Song>> loadLocal() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
-      type: FileType.custom,
-      allowedExtensions: ['mp3', 'mp4', 'm4s', 'wav', 'flac', 'ogg'],
+      type: FileType.any,
+      // type: FileType.custom,
+      // allowedExtensions: ['mp3', 'mp4', 'm4s', 'wav', 'flac', 'ogg'],
       initialDirectory: Get.find<FindController>().downloadDir,
     );
 
