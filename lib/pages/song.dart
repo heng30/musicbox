@@ -112,7 +112,7 @@ class _SongPageState extends State<SongPage> {
                       text: "没有歌词".tr,
                       size: orientation == Orientation.portrait
                           ? null
-                          : Get.height * 0.2,
+                          : Get.height * 0.4,
                     ),
                   )
             : const SizedBox(
@@ -154,6 +154,7 @@ class _SongPageState extends State<SongPage> {
                 borderRadius: BorderRadius.circular(CTheme.borderRadius),
                 child: GestureDetector(
                   child: SizedBox(
+                    width: double.infinity,
                     child: Image.asset(
                       song.albumArtImagePath,
                       fit: BoxFit.cover,
@@ -229,6 +230,7 @@ class _SongPageState extends State<SongPage> {
                 showVSliderDialog(
                   context,
                   initValue: playerController.volume * 100,
+                  height: min(300, Get.height * 0.6),
                   onChanged: (value) {
                     playerController.setVolumn(value / 100.0);
                   },
@@ -354,7 +356,10 @@ class _SongPageState extends State<SongPage> {
 
   Widget buildLandscapeLayout(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(CTheme.padding * 5),
+      padding: const EdgeInsets.symmetric(
+        vertical: CTheme.padding * 4,
+        horizontal: CTheme.padding * 5,
+      ),
       child: Obx(
         () => Row(
           children: [

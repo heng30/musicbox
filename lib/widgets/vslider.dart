@@ -58,14 +58,19 @@ void showVSliderDialog(
   required initValue,
   required Function(double) onChanged,
 }) {
+  final size = MediaQuery.of(context).size;
+  final orientation = MediaQuery.of(context).orientation;
+
   showDialog(
     context: context,
     barrierColor: Colors.transparent,
     builder: (BuildContext context) {
-      final windowSize = MediaQuery.of(context).size;
       return Dialog(
         insetPadding: EdgeInsets.symmetric(
-            horizontal: (windowSize.width - width - CTheme.margin * 2) / 2),
+          horizontal: orientation == Orientation.portrait
+              ? (size.width - width) / 2
+              : (size.width - width - CTheme.margin * 8) / 2,
+        ),
         child: SizedBox(
           height: height,
           child: VSlider(
