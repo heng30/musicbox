@@ -83,11 +83,11 @@ class _SongPageState extends State<SongPage> {
     );
   }
 
-  Widget buildAlbum(BuildContext context) {
+  Widget buildAlbumAndLyric(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
+    final innerHeight = Get.height * 0.5;
 
     Widget buildAlbumImage(BuildContext context) {
-      final innerHeight = min(450.0, Get.height * 0.6);
       final song =
           playlistController.playlist[playlistController.currentSongIndex!];
 
@@ -115,7 +115,6 @@ class _SongPageState extends State<SongPage> {
 
     Widget buildLyric(BuildContext context) {
       songLyricController.updateController();
-      final innerHeight = min(400.0, Get.height * 0.6);
       final song =
           playlistController.playlist[playlistController.currentSongIndex!];
       song.updateLyrics();
@@ -384,7 +383,7 @@ class _SongPageState extends State<SongPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildAlbum(context),
+            buildAlbumAndLyric(context),
             buildCtrl(context),
           ],
         ),
@@ -399,7 +398,7 @@ class _SongPageState extends State<SongPage> {
         children: [
           Expanded(
             flex: 1,
-            child: buildAlbum(context),
+            child: buildAlbumAndLyric(context),
           ),
           const SizedBox(width: CTheme.padding * 5),
           Expanded(
