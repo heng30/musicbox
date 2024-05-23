@@ -83,98 +83,50 @@ class _SongPageState extends State<SongPage> {
     );
   }
 
-  Widget buildAlbumAndLyric(BuildContext context) {
+  Widget buildLyric(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
-    final innerHeight = Get.height * 0.5;
+    final song =
+        playlistController.playlist[playlistController.currentSongIndex!];
+    song.updateLyrics();
 
-    Widget buildAlbumImage(BuildContext context) {
-      final song =
-          playlistController.playlist[playlistController.currentSongIndex!];
-
-      return GestureDetector(
-          child: SizedBox(
-            width: double.infinity,
-            child: !songLyricController.isForceUpdateLyricWidget
-                ? Image.asset(
-                    song.albumArtImagePath,
-                    fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        songLyricController.isShow = !songLyricController.isShow;
+        songLyricController.updateController();
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(CTheme.padding * 5),
+        child: !songLyricController.isForceUpdateLyricWidget
+            ? song.lyrics.isNotEmpty
+                ? LyricWidget(
+                    enableDrag: false,
+                    lyrics: song.lyrics,
+                    size: const Size(double.infinity, double.infinity),
+                    controller: songLyricController.controller,
+                    currLyricStyle: TextStyle(
+                        color: CTheme.secondaryBrand,
+                        fontSize: Get.textTheme.titleMedium?.fontSize ?? 16),
                   )
-                : Padding(
-                    padding: const EdgeInsets.all(CTheme.padding * 5),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: innerHeight,
+                : Center(
+                    child: NoData(
+                      text: "没有歌词".tr,
+                      size: orientation == Orientation.portrait
+                          ? null
+                          : Get.height * 0.2,
                     ),
-                  ),
-          ),
-          onTap: () {
-            songLyricController.isShow = !songLyricController.isShow;
-            songLyricController.updateController();
-          });
-    }
-
-    Widget buildLyric(BuildContext context) {
-      songLyricController.updateController();
-      final song =
-          playlistController.playlist[playlistController.currentSongIndex!];
-      song.updateLyrics();
-
-      return GestureDetector(
-        onTap: () {
-          songLyricController.isShow = !songLyricController.isShow;
-          songLyricController.updateController();
-        },
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(CTheme.padding * 5),
-              child: Center(
-                child: song.lyrics.isNotEmpty
-                    ? LyricWidget(
-                        enableDrag: false,
-                        lyrics: song.lyrics,
-                        size: Size(double.infinity, innerHeight),
-                        controller: songLyricController.controller,
-                        currLyricStyle: TextStyle(
-                            color: CTheme.secondaryBrand,
-                            fontSize:
-                                Get.textTheme.titleMedium?.fontSize ?? 16),
-                      )
-                    : SizedBox(
-                        height: innerHeight,
-                        child: NoData(
-                          text: "没有歌词".tr,
-                          size: orientation == Orientation.portrait
-                              ? null
-                              : Get.height * 0.2,
-                        ),
-                      ),
+                  )
+            : const SizedBox(
+                width: double.infinity,
+                height: double.infinity,
               ),
-            ),
-            Positioned(
-              right: 0,
-              child: IconButton(
-                onPressed: () async {
-                  final downloadPath = await songLyricController.downloadPath();
+      ),
+    );
+  }
 
-                  if (downloadPath.isEmpty) {
-                    Get.snackbar("提 示".tr, "下载目录为空",
-                        snackPosition: SnackPosition.BOTTOM);
-                    return;
-                  }
-
-                  Get.toNamed("/lyric", arguments: {
-                    "downloadPath": downloadPath,
-                    "currentSongIndex": playlistController.currentSongIndex!
-                  });
-                },
-                icon: const Icon(Icons.search),
-              ),
-            )
-          ],
-        ),
-      );
-    }
+  Widget buildAlbum(BuildContext context) {
+    final orientation = MediaQuery.of(context).orientation;
+    final song =
+        playlistController.playlist[playlistController.currentSongIndex!];
 
     return NeuBox(
       child: Column(
@@ -182,60 +134,60 @@ class _SongPageState extends State<SongPage> {
           if (orientation == Orientation.portrait)
             ClipRRect(
               borderRadius: BorderRadius.circular(CTheme.borderRadius),
-              child: Obx(
-                () => Stack(
-                  children: [
-                    if (!songLyricController.isShow) buildAlbumImage(context),
-                    if (songLyricController.isShow) buildLyric(context),
-                  ],
+              child: GestureDetector(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Image.asset(
+                    song.albumArtImagePath,
+                    fit: BoxFit.cover,
+                  ),
                 ),
+                onTap: () {
+                  songLyricController.isShow = !songLyricController.isShow;
+                  songLyricController.updateController();
+                },
               ),
             ),
           if (orientation == Orientation.landscape)
             Expanded(
-              child: SizedBox(
-                width: double.infinity,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(CTheme.borderRadius),
-                  child: Obx(
-                    () => Stack(
-                      children: [
-                        if (!songLyricController.isShow)
-                          buildAlbumImage(context),
-                        if (songLyricController.isShow) buildLyric(context),
-                      ],
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(CTheme.borderRadius),
+                child: GestureDetector(
+                  child: SizedBox(
+                    child: Image.asset(
+                      song.albumArtImagePath,
+                      fit: BoxFit.cover,
                     ),
                   ),
+                  onTap: () {
+                    songLyricController.isShow = !songLyricController.isShow;
+                    songLyricController.updateController();
+                  },
                 ),
               ),
             ),
           Obx(
-            () {
-              final song = playlistController
-                  .playlist[playlistController.currentSongIndex!];
-
-              return ListTile(
-                contentPadding: const EdgeInsets.all(0),
-                title: Text(
-                  song.songName,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                subtitle: Text(
-                  song.artistName,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.favorite),
-                  color: song.isFavorite ? CTheme.favorite : CTheme.secondary,
-                  onPressed: () {
-                    Get.find<PlaylistController>()
-                        .toggleFavorite(playlistController.currentSongIndex);
-                  },
-                ),
-              );
-            },
+            () => ListTile(
+              contentPadding: const EdgeInsets.all(0),
+              title: Text(
+                song.songName,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              subtitle: Text(
+                song.artistName,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.favorite),
+                color: song.isFavorite ? CTheme.favorite : CTheme.secondary,
+                onPressed: () {
+                  Get.find<PlaylistController>()
+                      .toggleFavorite(playlistController.currentSongIndex);
+                },
+              ),
+            ),
           ),
         ],
       ),
@@ -316,7 +268,7 @@ class _SongPageState extends State<SongPage> {
           value: playerController.currentDuration.inSeconds.toDouble(),
           activeColor: CTheme.aduioProcessBar,
           inactiveColor: CTheme.secondary,
-          onChanged: (value) {},
+          onChanged: (_) {},
           onChangeEnd: (value) {
             playerController.seek(Duration(seconds: value.toInt()));
           },
@@ -379,13 +331,22 @@ class _SongPageState extends State<SongPage> {
   Widget buildPortraitLayout(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: CTheme.padding * 5),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            buildAlbumAndLyric(context),
-            buildCtrl(context),
-          ],
+        padding: const EdgeInsets.all(CTheme.padding * 5),
+        child: Obx(
+          () => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (!songLyricController.isForceUpdateLyricWidget &&
+                  !songLyricController.isShow)
+                buildAlbum(context),
+              if (songLyricController.isForceUpdateLyricWidget ||
+                  songLyricController.isShow)
+                Expanded(
+                  child: buildLyric(context),
+                ),
+              buildCtrl(context),
+            ],
+          ),
         ),
       ),
     );
@@ -394,23 +355,33 @@ class _SongPageState extends State<SongPage> {
   Widget buildLandscapeLayout(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(CTheme.padding * 5),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: buildAlbumAndLyric(context),
-          ),
-          const SizedBox(width: CTheme.padding * 5),
-          Expanded(
-            flex: 1,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildCtrl(context),
-              ],
+      child: Obx(
+        () => Row(
+          children: [
+            if (!songLyricController.isForceUpdateLyricWidget &&
+                !songLyricController.isShow)
+              Expanded(
+                flex: 1,
+                child: buildAlbum(context),
+              ),
+            if (songLyricController.isForceUpdateLyricWidget ||
+                songLyricController.isShow)
+              Expanded(
+                flex: 1,
+                child: buildLyric(context),
+              ),
+            const SizedBox(width: CTheme.padding * 5),
+            Expanded(
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  buildCtrl(context),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -437,6 +408,24 @@ class _SongPageState extends State<SongPage> {
           backgroundColor: CTheme.background,
           title: Text("歌 曲".tr),
           actions: [
+            if (songLyricController.isShow)
+              IconButton(
+                onPressed: () async {
+                  final downloadPath = await songLyricController.downloadPath();
+
+                  if (downloadPath.isEmpty) {
+                    Get.snackbar("提 示".tr, "下载目录为空",
+                        snackPosition: SnackPosition.BOTTOM);
+                    return;
+                  }
+
+                  Get.toNamed("/lyric", arguments: {
+                    "downloadPath": downloadPath,
+                    "currentSongIndex": playlistController.currentSongIndex!
+                  });
+                },
+                icon: const Icon(Icons.search),
+              ),
             IconButton(
               onPressed: () {
                 Get.find<ThemeController>().toggleTheme();
