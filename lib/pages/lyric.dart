@@ -8,6 +8,7 @@ import '../widgets/searchbar.dart';
 import '../widgets/nodata.dart';
 import '../models/lyric_controller.dart';
 import '../models/player_controller.dart';
+import '../models/playlist_controller.dart';
 import '../src/rust/api/lyric.dart';
 
 class LyricPage extends StatefulWidget {
@@ -18,14 +19,21 @@ class LyricPage extends StatefulWidget {
 }
 
 class _LyricPageState extends State<LyricPage> {
-  final TextEditingController _controllerSearch = TextEditingController();
-  final FocusNode _focusNodeSearch = FocusNode();
+  final TextEditingController controllerSearch = TextEditingController();
+  final FocusNode focusNodeSearch = FocusNode();
   final lyricController = Get.find<SongLyricController>();
   final playerController = Get.find<PlayerController>();
+  final playlistController = Get.find<PlaylistController>();
   final isSearching = false.obs;
 
   final downloadPath = Get.arguments["downloadPath"] as String;
   final currentSongIndex = Get.arguments["currentSongIndex"] as int;
+
+  @override
+  void initState() {
+    super.initState();
+    controllerSearch.text = playlistController.playingSong().songName;
+  }
 
   Future<void> search(String text) async {
     lyricController.lyricList.clear();
@@ -35,7 +43,7 @@ class _LyricPageState extends State<LyricPage> {
       return;
     }
 
-    _focusNodeSearch.unfocus();
+    focusNodeSearch.unfocus();
 
     isSearching.value = true;
     var items = await searchLyric(keyword: text.trim());
@@ -168,8 +176,8 @@ class _LyricPageState extends State<LyricPage> {
                 const BoxConstraints(maxHeight: CTheme.searchBarHeight),
             child: CSearchBar(
               height: CTheme.searchBarHeight,
-              controller: _controllerSearch,
-              focusNode: _focusNodeSearch,
+              controller: controllerSearch,
+              focusNode: focusNodeSearch,
               autofocus: lyricController.lyricList.isEmpty,
               hintText: "请输入关键字".tr,
               onSubmitted: (value) => search(value),
@@ -178,7 +186,7 @@ class _LyricPageState extends State<LyricPage> {
         ),
         const SizedBox(width: CTheme.margin * 4),
         GestureDetector(
-          onTap: () => search(_controllerSearch.text),
+          onTap: () => search(controllerSearch.text),
           child: Text("搜索".tr, style: Theme.of(context).textTheme.bodyLarge),
         ),
       ],
