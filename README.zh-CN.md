@@ -12,6 +12,7 @@
 </div>
 
 [English Document](./README.md)
+[演示视频](https://www.bilibili.com/video/BV1rT421U76C/?vd_source=da23da82658adda9cbdfd045a9e6daf7#reply1704805075)
 
 #### 简介
 这是一个专门为安卓开发的音乐播放器。不过你也可以编译到Linux平台。如果你想编译到Macos, ios 和 Windows 平台，可以尝试以下，但不保证能够编译成功。最后，这是一个基于Flutter 和 Rust的软件。

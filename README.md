@@ -12,6 +12,7 @@
 </div>
 
 [中文文档](./README.zh-CN.md)
+[Demo Video](https://www.bilibili.com/video/BV1rT421U76C/?vd_source=da23da82658adda9cbdfd045a9e6daf7#reply1704805075)
 
 #### Introduction
 It's a music player designed for Android platform. However, you can build it for Linux that is my development environment. If you want to build a Macos, ios or Windows version, you can try it without guarantee it will work. It's based on `Flutter` and `Rust`.
