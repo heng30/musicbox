@@ -2,6 +2,7 @@
 
 run-evn=RUST_LOG=debug,sqlx=off,reqwest=off
 version=`git describe --tags --abbrev=0`
+android-build-flag=--release --obfuscate --split-debug-info=./debug-info
 
 all:
 	fvm flutter build apk
@@ -25,22 +26,22 @@ build-apk: build-apk-all build-apk-arm build-apk-arm64 build-apk-x64
 
 build-apk-all: make-release-dir
 	- rm build/release/musicbox-${version}.apk
-	fvm flutter build apk
+	fvm flutter build apk ${android-build-flag}
 	cp build/app/outputs/flutter-apk/app-release.apk build/release/musicbox-${version}.apk
 
 build-apk-arm: make-release-dir
 	- rm build/release/musicbox-arm-${version}.apk
-	fvm flutter build apk --release --target-platform=android-arm
+	fvm flutter build apk ${android-build-flag} --target-platform=android-arm
 	cp build/app/outputs/flutter-apk/app-release.apk build/release/musicbox-arm-${version}.apk
 
 build-apk-arm64: make-release-dir
 	- rm build/release/musicbox-arm64-${version}.apk
-	fvm flutter build apk --release --target-platform=android-arm64
+	fvm flutter build apk ${android-build-flag} --target-platform=android-arm64
 	cp build/app/outputs/flutter-apk/app-release.apk build/release/musicbox-arm64-${version}.apk
 
 build-apk-x64: make-release-dir
 	- rm build/release/musicbox-x64-${version}.apk
-	fvm flutter build apk --release --target-platform=android-x64
+	fvm flutter build apk ${android-build-flag} --target-platform=android-x64
 	cp build/app/outputs/flutter-apk/app-release.apk build/release/musicbox-x64-${version}.apk
 
 make-release-dir:
