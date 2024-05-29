@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mmoo_lyric/lyric_controller.dart';
@@ -90,8 +91,8 @@ class SongLyricController extends GetxController {
     }
 
     final playlistController = Get.find<PlaylistController>();
-    final name = playlistController
-        .playlist[playlistController.currentSongIndex!].songName;
+    final name = basenameWithoutExtension(playlistController
+        .playlist[playlistController.currentSongIndex!].audioPath);
 
     if (downloadDir == null || name.isEmpty) {
       return "";

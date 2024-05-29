@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 import 'package:logger/logger.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -84,11 +85,13 @@ class PlayerController extends GetxController {
   Future<void> setLyric(int index) async {
     final songLyricController = Get.find<SongLyricController>();
     final song = playlistController.playlist[index];
+    final name =
+        basenameWithoutExtension(playlistController.playlist[index].audioPath);
 
     try {
       final path =
           await songLyricController.getDownloadsDirectoryWithoutCreate();
-      final f = File("$path/${song.songName}.lrc");
+      final f = File("$path/$name.lrc");
 
       song.lyric = await f.readAsString();
       songLyricController.updateControllerWithForceUpdateLyricWidget();

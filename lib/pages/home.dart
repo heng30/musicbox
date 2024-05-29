@@ -98,6 +98,14 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   SlidableAction(
                     backgroundColor: CTheme.secondary,
+                    foregroundColor: CTheme.secondaryBrand,
+                    icon: Icons.edit_rounded,
+                    label: '编辑'.tr,
+                    onPressed: (_) =>
+                        playlistController.renameSongDialog(index),
+                  ),
+                  SlidableAction(
+                    backgroundColor: CTheme.secondary,
                     foregroundColor: Colors.red,
                     icon: Icons.delete_outline,
                     label: '删除'.tr,

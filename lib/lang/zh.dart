@@ -113,4 +113,8 @@ const Map<String, String> zh = {
   "No found lyric": "没有歌词",
   "can not find lyric": "没有搜索到歌词",
   "Download directory is empty": "下载目录为空",
+  "Edit": "编辑",
+  "Rename": "重命名",
+  "New name": "新名称",
+  "Rename successful": "重命名成功",
 };

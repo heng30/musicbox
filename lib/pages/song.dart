@@ -102,10 +102,12 @@ class _SongPageState extends State<SongPage> {
                     enableDrag: false,
                     lyrics: song.lyrics,
                     size: const Size(double.infinity, double.infinity),
+                    lyricMaxWidth: Get.width - CTheme.margin * 4,
                     controller: songLyricController.controller,
                     currLyricStyle: TextStyle(
-                        color: CTheme.secondaryBrand,
-                        fontSize: Get.textTheme.titleMedium?.fontSize ?? 16),
+                      color: CTheme.secondaryBrand,
+                      fontSize: Get.textTheme.titleMedium?.fontSize ?? 16,
+                    ),
                   )
                 : Center(
                     child: NoData(
@@ -411,7 +413,13 @@ class _SongPageState extends State<SongPage> {
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: CTheme.background,
-          title: Text("歌 曲".tr),
+          title: Obx(
+            () => Text(
+              playlistController
+                  .playlist[playlistController.currentSongIndex!].songName,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           actions: [
             if (songLyricController.isShow)
               IconButton(

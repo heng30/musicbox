@@ -21,9 +21,20 @@ class PlaylistController extends GetxController {
   final dbController = Get.find<DbController>();
   final log = Logger();
 
+  final TextEditingController _renameController = TextEditingController();
+  final FocusNode _renameFocusNode = FocusNode();
+
+  @override
+  void onClose() {
+    _renameController.dispose();
+    _renameFocusNode.dispose();
+
+    super.onClose();
+  }
+
   Future<void> init() async {
     if (!kReleaseMode) {
-      // fakePlaylist();
+      fakePlaylist();
     }
 
     await initFromDB();
@@ -174,6 +185,18 @@ class PlaylistController extends GetxController {
     }
   }
 
+  void renameSong(int index) async {
+    final name = _renameController.text.trim();
+    if (name.isEmpty) return;
+
+    final song = playlist[index].copy();
+    song.songName = name;
+    playlist[index] = song;
+
+    await dbController.updateData(DbController.playlistTable,
+        playlist[index].uuid, jsonEncode(song.toJson()));
+  }
+
   // remove all songs from playlist
   void removeAll() async {
     for (Song song in playlist) {
@@ -303,6 +326,52 @@ class PlaylistController extends GetxController {
             "取消".tr,
             style: TextStyle(color: CTheme.inversePrimary),
           ),
+        ),
+      ),
+    );
+  }
+
+  void renameSongDialog(int index) {
+    _renameController.text = playlist[index].songName;
+
+    Get.defaultDialog(
+      title: "重命名".tr,
+      content: TextField(
+        controller: _renameController,
+        focusNode: _renameFocusNode,
+        onSubmitted: (_) => renameSong(index),
+        decoration: InputDecoration(
+          hintText: "新名称",
+          suffixIcon: IconButton(
+            onPressed: () => _renameController.clear(),
+            icon: Icon(
+              Icons.clear,
+              size: CTheme.iconSize * 0.8,
+              color: CTheme.primary,
+            ),
+          ),
+          border: const OutlineInputBorder(),
+        ),
+        keyboardType: TextInputType.number,
+      ),
+      confirm: ElevatedButton(
+        onPressed: () {
+          Get.closeAllSnackbars();
+          Get.back();
+          renameSong(index);
+          Get.snackbar("提 示".tr, "重命名成功".tr,
+              snackPosition: SnackPosition.BOTTOM);
+        },
+        child: Text(
+          "确定".tr,
+          style: TextStyle(color: CTheme.inversePrimary),
+        ),
+      ),
+      cancel: ElevatedButton(
+        onPressed: () => Get.back(),
+        child: Text(
+          "取消".tr,
+          style: TextStyle(color: CTheme.inversePrimary),
         ),
       ),
     );

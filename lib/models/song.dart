@@ -78,9 +78,26 @@ class Song {
     required this.albumArtImagePath,
     required this.audioPath,
     this.audioLocation = AudioLocation.local,
+    String? uuid,
     bool isFavorite = false,
   })  : _isFavorite = isFavorite.obs,
-        uuid = const Uuid().v4();
+        uuid = uuid ?? const Uuid().v4();
+
+  Song copy() {
+    final song = Song(
+      uuid: uuid,
+      songName: songName,
+      artistName: artistName,
+      albumArtImagePath: albumArtImagePath,
+      audioPath: audioPath,
+      audioLocation: audioLocation,
+      isFavorite: isFavorite,
+    );
+    song.lyric = lyric;
+    song.isSelected = isSelected;
+
+    return song;
+  }
 
   static Future<Song> fromInfo(Info info) async {
     final findController = Get.find<FindController>();

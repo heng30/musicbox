@@ -113,4 +113,8 @@ const Map<String, String> en = {
   "没有歌词": "No found lyric",
   "没有搜索到歌词": "can not find lyric",
   "下载目录为空": "Download directory is empty",
+  "编辑": "Edit",
+  "重命名": "Rename",
+  "新名称": "New name",
+  "重命名成功": "Rename successful",
 };
