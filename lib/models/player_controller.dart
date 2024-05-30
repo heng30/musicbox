@@ -11,6 +11,7 @@ import './audio_session_controller.dart';
 import './setting_controller.dart';
 import '../models/player_tile_controller.dart';
 import "../models/lyric_controller.dart";
+import "../models/find_controller.dart";
 
 enum PlayModel {
   loop,
@@ -71,7 +72,22 @@ class PlayerController extends GetxController {
     if (song.audioLocation == AudioLocation.asset) {
       src = AssetSource(song.audioPath);
     } else if (song.audioLocation == AudioLocation.local) {
-      src = DeviceFileSource(song.audioPath);
+      log.d(song.audioPath);
+      if (await File(song.audioPath).exists()) {
+        src = DeviceFileSource(song.audioPath);
+      } else {
+        // on android, file picker would return the cache file path,
+        // so after recovering the database, the `audioPath` is not correct.
+        final findController = Get.find<FindController>();
+        final name = basename(song.audioPath);
+        final downloadDir =
+            await findController.getDownloadsDirectoryWithoutCreate();
+        final maybeDownloadFile = File("$downloadDir/$name");
+        // log.d(maybeDownloadFile.path);
+        if (await maybeDownloadFile.exists()) {
+          src = DeviceFileSource(maybeDownloadFile.path);
+        }
+      }
     } else if (song.audioLocation == AudioLocation.memory) {
       final file = File(song.audioPath);
       src = BytesSource(await file.readAsBytes());

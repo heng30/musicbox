@@ -194,6 +194,23 @@ class FindController extends GetxController {
     infoList.addAll(l);
   }
 
+  Future<String> getDownloadsDirectoryWithoutCreate() async {
+    try {
+      if (Platform.isAndroid) {
+        final pname = (await PackageInfo.fromPlatform()).packageName;
+        return "/storage/emulated/0/$pname/music";
+      } else {
+        final tmpDir = await getDownloadsDirectory() ??
+            await getApplicationCacheDirectory();
+
+        return "${tmpDir.path}/music";
+      }
+    } catch (e) {
+      log.d(e.toString());
+      return "";
+    }
+  }
+
   Future<void> createDownloadDir() async {
     try {
       if (Platform.isAndroid) {
