@@ -163,7 +163,11 @@ class Song {
   }
 
   Future<void> updateLyricTimeOffset(LyricUpdateType updateType) async {
-    final dbController = Get.find<DbController>();
+    if (lyrics.isEmpty) {
+      Get.snackbar("提 示".tr, "没有歌词，无法进行调整".tr,
+          snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
 
     if (updateType == LyricUpdateType.forward) {
       lyricTimeOffset += 200;
@@ -189,6 +193,7 @@ class Song {
     lyrics.addAll(tmpLyrics);
 
     try {
+      final dbController = Get.find<DbController>();
       await dbController.updateData(
         DbController.playlistTable,
         uuid,

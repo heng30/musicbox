@@ -12,6 +12,7 @@ import '../models/db_controller.dart';
 import '../models/find_controller.dart';
 import '../models/lyric_controller.dart';
 import '../models/msg_center_controller.dart';
+import '../models/backup_recover_controller.dart';
 
 class InitControllerBinding extends Bindings {
   @override
@@ -41,6 +42,7 @@ Future<void> initGlobalController() async {
   Get.put(PlayerController());
   Get.put(PlayerTileController());
   Get.put(FindController());
+  Get.put(BackupREcoverController());
   Get.put(MsgCenterController());
   Get.put(AboutController());
 }

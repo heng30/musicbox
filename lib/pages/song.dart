@@ -33,6 +33,9 @@ class _SongPageState extends State<SongPage> {
   final songLyricController = Get.find<SongLyricController>();
   final currentSongIndex = Get.arguments["currentSongIndex"];
 
+  final isShowAdjustLyricSpeedOverlay = false.obs;
+  bool isInitShowAdjustLyricSpeedOverlay = false;
+
   @override
   void initState() {
     super.initState();
@@ -84,6 +87,63 @@ class _SongPageState extends State<SongPage> {
     );
   }
 
+  void showAdjustLyricSpeedOverlay(BuildContext context, Song song) {
+    OverlayState overlayState = Overlay.of(context);
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 50,
+        left: (Get.width - 200) / 2,
+        child: Obx(
+          () => Container(
+            width: (isShowAdjustLyricSpeedOverlay.value &&
+                    songLyricController.isShow)
+                ? 200
+                : 0,
+            decoration: BoxDecoration(
+              color: CTheme.secondary,
+              borderRadius: BorderRadius.circular(CTheme.borderRadius * 4),
+            ),
+            child: Center(
+              child: buildAdjustLyricSpeed(context, song),
+            ),
+          ),
+        ),
+      ),
+    );
+    overlayState.insert(overlayEntry);
+  }
+
+  Widget buildAdjustLyricSpeed(BuildContext context, Song song) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          onPressed: () async {
+            await song.updateLyricTimeOffset(LyricUpdateType.forward);
+            songLyricController.updateControllerWithForceUpdateLyricWidget();
+          },
+          icon: const Icon(Icons.fast_rewind),
+        ),
+        const SizedBox(width: CTheme.padding * 5),
+        IconButton(
+          onPressed: () async {
+            await song.updateLyricTimeOffset(LyricUpdateType.reset);
+            songLyricController.updateControllerWithForceUpdateLyricWidget();
+          },
+          icon: const Icon(Icons.restore),
+        ),
+        const SizedBox(width: CTheme.padding * 5),
+        IconButton(
+          onPressed: () async {
+            await song.updateLyricTimeOffset(LyricUpdateType.backword);
+            songLyricController.updateControllerWithForceUpdateLyricWidget();
+          },
+          icon: const Icon(Icons.fast_forward),
+        ),
+      ],
+    );
+  }
+
   Widget buildLyric(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
     final song =
@@ -98,58 +158,16 @@ class _SongPageState extends State<SongPage> {
       },
       child: !songLyricController.isForceUpdateLyricWidget
           ? song.lyrics.isNotEmpty
-              ? Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: () async {
-                            await song
-                                .updateLyricTimeOffset(LyricUpdateType.forward);
-                            songLyricController
-                                .updateControllerWithForceUpdateLyricWidget();
-                          },
-                          icon: const Icon(
-                              Icons.keyboard_double_arrow_left_rounded),
-                        ),
-                        const SizedBox(width: CTheme.padding * 5),
-                        IconButton(
-                          onPressed: () async {
-                            await song
-                                .updateLyricTimeOffset(LyricUpdateType.reset);
-                            songLyricController
-                                .updateControllerWithForceUpdateLyricWidget();
-                          },
-                          icon: const Icon(Icons.restore),
-                        ),
-                        const SizedBox(width: CTheme.padding * 5),
-                        IconButton(
-                          onPressed: () async {
-                            await song.updateLyricTimeOffset(
-                                LyricUpdateType.backword);
-                            songLyricController
-                                .updateControllerWithForceUpdateLyricWidget();
-                          },
-                          icon: const Icon(
-                              Icons.keyboard_double_arrow_right_rounded),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: LyricWidget(
-                        enableDrag: false,
-                        lyrics: song.lyrics,
-                        size: const Size(double.infinity, double.infinity),
-                        lyricMaxWidth: Get.width - CTheme.margin * 6,
-                        controller: songLyricController.controller,
-                        currLyricStyle: TextStyle(
-                          color: CTheme.secondaryBrand,
-                          fontSize: Get.textTheme.titleMedium?.fontSize ?? 16,
-                        ),
-                      ),
-                    ),
-                  ],
+              ? LyricWidget(
+                  enableDrag: false,
+                  lyrics: song.lyrics,
+                  size: const Size(double.infinity, double.infinity),
+                  lyricMaxWidth: Get.width - CTheme.margin * 6,
+                  controller: songLyricController.controller,
+                  currLyricStyle: TextStyle(
+                    color: CTheme.secondaryBrand,
+                    fontSize: Get.textTheme.titleMedium?.fontSize ?? 16,
+                  ),
                 )
               : Center(
                   child: NoData(
@@ -382,7 +400,8 @@ class _SongPageState extends State<SongPage> {
             if (!songLyricController.isForceUpdateLyricWidget &&
                 !songLyricController.isShow)
               Padding(
-                padding: const EdgeInsets.all(CTheme.padding * 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: CTheme.padding * 5),
                 child: buildAlbum(context),
               ),
             if (songLyricController.isForceUpdateLyricWidget ||
@@ -453,52 +472,84 @@ class _SongPageState extends State<SongPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Scaffold(
-        backgroundColor: CTheme.background,
-        appBar: AppBar(
-          centerTitle: true,
+    return PopScope(
+      canPop: false,
+      child: Obx(
+        () => Scaffold(
           backgroundColor: CTheme.background,
-          title: Obx(
-            () => Text(
-              playlistController
-                  .playlist[playlistController.currentSongIndex!].songName,
-              overflow: TextOverflow.ellipsis,
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: CTheme.background,
+            title: Obx(
+              () => Text(
+                playlistController
+                    .playlist[playlistController.currentSongIndex!].songName,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: Get.textTheme.titleMedium?.fontSize ?? 16,
+                ),
+              ),
             ),
+            actions: [
+              if (songLyricController.isShow)
+                IconButton(
+                  onPressed: () async {
+                    final downloadPath =
+                        await songLyricController.downloadPath();
+
+                    if (downloadPath.isEmpty) {
+                      Get.snackbar("提 示".tr, "下载目录为空",
+                          snackPosition: SnackPosition.BOTTOM);
+                      return;
+                    }
+
+                    Get.toNamed("/lyric", arguments: {
+                      "downloadPath": downloadPath,
+                      "currentSongIndex": playlistController.currentSongIndex!
+                    });
+                  },
+                  icon: const Icon(Icons.search),
+                ),
+              if (songLyricController.isShow)
+                IconButton(
+                  onPressed: () {
+                    isShowAdjustLyricSpeedOverlay.value =
+                        !isShowAdjustLyricSpeedOverlay.value;
+
+                    // print(isShowAdjustLyricSpeedOverlay);
+
+                    if (!isInitShowAdjustLyricSpeedOverlay) {
+                      isInitShowAdjustLyricSpeedOverlay = true;
+                      showAdjustLyricSpeedOverlay(
+                        context,
+                        playlistController
+                            .playlist[playlistController.currentSongIndex!],
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.adjust_rounded),
+                ),
+              if (!songLyricController.isShow)
+                IconButton(
+                  onPressed: () {
+                    Get.find<ThemeController>().toggleTheme();
+                  },
+                  icon: Icon(
+                    Get.find<ThemeController>().isDarkMode
+                        ? Icons.dark_mode
+                        : Icons.light_mode,
+                  ),
+                ),
+            ],
           ),
-          actions: [
-            if (songLyricController.isShow)
-              IconButton(
-                onPressed: () async {
-                  final downloadPath = await songLyricController.downloadPath();
-
-                  if (downloadPath.isEmpty) {
-                    Get.snackbar("提 示".tr, "下载目录为空",
-                        snackPosition: SnackPosition.BOTTOM);
-                    return;
-                  }
-
-                  Get.toNamed("/lyric", arguments: {
-                    "downloadPath": downloadPath,
-                    "currentSongIndex": playlistController.currentSongIndex!
-                  });
-                },
-                icon: const Icon(Icons.search),
-              ),
-            IconButton(
-              onPressed: () {
-                Get.find<ThemeController>().toggleTheme();
-              },
-              icon: Icon(
-                Get.find<ThemeController>().isDarkMode
-                    ? Icons.dark_mode
-                    : Icons.light_mode,
-              ),
-            ),
-          ],
+          body: _buildBody(context),
         ),
-        body: _buildBody(context),
       ),
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        isShowAdjustLyricSpeedOverlay.value = false;
+        Get.back();
+      },
     );
   }
 }

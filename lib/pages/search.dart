@@ -26,6 +26,7 @@ class _SearchPageState extends State<SearchPage> {
   void go2song(int index) async {
     await Get.offAndToNamed("/song", arguments: {"currentSongIndex": index});
     playerTileController.playingSong = playlistController.playingSong();
+    playlistController.updateSelectedSong();
   }
 
   void search(String text) {

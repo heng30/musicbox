@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../theme/theme.dart';
 import '../models/player_tile_controller.dart';
 import '../models/playlist_controller.dart';
+import '../models/backup_recover_controller.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -13,6 +14,7 @@ class HomeDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final playlistController = Get.find<PlaylistController>();
     final playerTileController = Get.find<PlayerTileController>();
+    final backup_recover_controller = Get.find<BackupREcoverController>();
 
     Widget buildHeader(BuildContext context) {
       return DrawerHeader(
@@ -36,15 +38,6 @@ class HomeDrawer extends StatelessWidget {
               title: Text("主 页".tr),
               leading: const Icon(Icons.home),
               onTap: () => Get.back(),
-            ),
-            ListTile(
-              title: Text(
-                "搜 索".tr,
-              ),
-              leading: const Icon(
-                Icons.search,
-              ),
-              onTap: () => Get.offAndToNamed('/search'),
             ),
             ListTile(
               title: Text(
@@ -85,6 +78,24 @@ class HomeDrawer extends StatelessWidget {
                 Icons.info,
               ),
               onTap: () => Get.offAndToNamed('/about'),
+            ),
+            ListTile(
+              title: Text(
+                "备 份".tr,
+              ),
+              leading: const Icon(
+                Icons.backup,
+              ),
+              onTap: () => backup_recover_controller.showBackupDialog(),
+            ),
+            ListTile(
+              title: Text(
+                "恢 复".tr,
+              ),
+              leading: const Icon(
+                Icons.restore,
+              ),
+              onTap: () => backup_recover_controller.showRecoverDialog(),
             ),
           ],
         ),
@@ -128,7 +139,7 @@ class HomeDrawer extends StatelessWidget {
 
     return Drawer(
       child: Padding(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
             left: CTheme.padding * 5, right: CTheme.padding * 5),
         child: Column(
           children: [
@@ -137,7 +148,7 @@ class HomeDrawer extends StatelessWidget {
               child: buildBody(context),
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: CTheme.padding * 5),
+              padding: const EdgeInsets.only(bottom: CTheme.padding * 5),
               child: buildFooter(context),
             ),
           ],
