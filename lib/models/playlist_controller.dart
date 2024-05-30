@@ -106,6 +106,7 @@ class PlaylistController extends GetxController {
 
   set currentSongIndex(int? index) {
     final playerController = Get.find<PlayerController>();
+
     if (index == null) {
       _currentSongIndex = null;
       playerController.stop();
@@ -352,7 +353,6 @@ class PlaylistController extends GetxController {
           ),
           border: const OutlineInputBorder(),
         ),
-        keyboardType: TextInputType.number,
       ),
       confirm: ElevatedButton(
         onPressed: () {

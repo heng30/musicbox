@@ -85,6 +85,42 @@ class SongLyricController extends GetxController {
     }
   }
 
+  void forceUpdateLyricWidget() async {
+    if (isShow) {
+      isForceUpdateLyricWidget = true;
+      isShow = false;
+      await Future.delayed(const Duration(milliseconds: 10));
+      isShow = true;
+      isForceUpdateLyricWidget = false;
+    }
+  }
+
+  Future<void> migrateLyric() async {
+    if (downloadDir == null) {
+      await createDownloadDir();
+    }
+
+    final playlistController = Get.find<PlaylistController>();
+    final newName = basenameWithoutExtension(playlistController
+        .playlist[playlistController.currentSongIndex!].audioPath);
+    final oldName = newName.split("_");
+
+    if (oldName.isNotEmpty) {
+      final oldPath = "$downloadDir/${oldName[0]}.lrc";
+      final newPath = "$downloadDir/$newName.lrc";
+      final file = File(oldPath);
+
+      try {
+        if (await file.exists()) {
+          log.d("$oldPath -> $newPath");
+          await file.rename(newPath);
+        }
+      } catch (e) {
+        log.d("rename error: $e");
+      }
+    }
+  }
+
   Future<String> downloadPath() async {
     if (downloadDir == null) {
       await createDownloadDir();

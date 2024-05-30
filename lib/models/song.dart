@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:logger/logger.dart';
@@ -5,6 +6,7 @@ import 'package:mmoo_lyric/lyric.dart';
 import 'package:mmoo_lyric/lyric_util.dart';
 
 import './albums.dart';
+import './db_controller.dart';
 import '../models/find_controller.dart';
 
 enum AudioLocation {
@@ -12,6 +14,12 @@ enum AudioLocation {
   local,
   remote,
   memory,
+}
+
+enum LyricUpdateType {
+  forward,
+  backword,
+  reset,
 }
 
 AudioLocation audioLocationFromStr(String v) {
@@ -27,11 +35,14 @@ AudioLocation audioLocationFromStr(String v) {
 }
 
 class Song {
+  static const String noneAsset = "audio/none.mp3";
+
   String uuid;
   String songName;
   String artistName;
   String albumArtImagePath;
   String audioPath;
+  int lyricTimeOffset;
   AudioLocation audioLocation;
 
   final log = Logger();
@@ -55,17 +66,34 @@ class Song {
   void updateLyrics() {
     lyrics.clear();
     try {
-      lyrics.addAll(LyricUtil.formatLyric(lyric));
+      final items = LyricUtil.formatLyric(lyric);
+      if (lyricTimeOffset != 0) {
+        final tmpLyrics = items.map(
+          (item) {
+            final startTime =
+                item.startTime! + Duration(milliseconds: lyricTimeOffset);
+            final endTime =
+                item.endTime! + Duration(milliseconds: lyricTimeOffset);
+
+            item.startTime = startTime;
+            item.endTime = endTime;
+            return item;
+          },
+        ).toList();
+
+        lyrics.addAll(tmpLyrics);
+      } else {
+        lyrics.addAll(items);
+      }
     } catch (e) {
       log.d("parse lyric error: $e");
     }
   }
 
-  static const String noneAsset = "audio/none.mp3";
-
   Song.none({
     this.uuid = "uuid-none",
     this.songName = "None",
+    this.lyricTimeOffset = 0,
     this.artistName = "",
     this.albumArtImagePath = Albums.noneAsset,
     this.audioPath = noneAsset,
@@ -78,6 +106,7 @@ class Song {
     required this.albumArtImagePath,
     required this.audioPath,
     this.audioLocation = AudioLocation.local,
+    this.lyricTimeOffset = 0,
     String? uuid,
     bool isFavorite = false,
   })  : _isFavorite = isFavorite.obs,
@@ -92,6 +121,7 @@ class Song {
       audioPath: audioPath,
       audioLocation: audioLocation,
       isFavorite: isFavorite,
+      lyricTimeOffset: lyricTimeOffset,
     );
     song.lyric = lyric;
     song.isSelected = isSelected;
@@ -116,6 +146,7 @@ class Song {
         albumArtImagePath = Albums.random(),
         audioPath = json['audioPath'],
         audioLocation = audioLocationFromStr(json['audioLocation']),
+        lyricTimeOffset = (json['lyricTimeOffset'] ?? 0) as int,
         _isFavorite = (json['isFavorite'] as bool).obs;
 
   Map<String, dynamic> toJson() {
@@ -126,7 +157,45 @@ class Song {
       'audioPath': audioPath,
       'audioLocation': audioLocation.toString(),
       'isFavorite': isFavorite,
+      'lyricTimeOffset': lyricTimeOffset,
     };
     return data;
+  }
+
+  Future<void> updateLyricTimeOffset(LyricUpdateType updateType) async {
+    final dbController = Get.find<DbController>();
+
+    if (updateType == LyricUpdateType.forward) {
+      lyricTimeOffset += 200;
+    } else if (updateType == LyricUpdateType.backword) {
+      lyricTimeOffset -= 200;
+    } else {
+      lyricTimeOffset = 0;
+    }
+
+    final tmpLyrics = lyrics.map(
+      (item) {
+        final startTime =
+            item.startTime! + Duration(milliseconds: lyricTimeOffset);
+        final endTime = item.endTime! + Duration(milliseconds: lyricTimeOffset);
+
+        item.startTime = startTime;
+        item.endTime = endTime;
+        return item;
+      },
+    ).toList();
+
+    lyrics.clear();
+    lyrics.addAll(tmpLyrics);
+
+    try {
+      await dbController.updateData(
+        DbController.playlistTable,
+        uuid,
+        jsonEncode(toJson()),
+      );
+    } catch (e) {
+      log.d(e);
+    }
   }
 }

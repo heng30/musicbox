@@ -10,6 +10,7 @@ import '../components/home_drawer.dart';
 import '../models/player_controller.dart';
 import '../models/playlist_controller.dart';
 import '../models/player_tile_controller.dart';
+import '../models/lyric_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,8 +24,10 @@ class _HomePageState extends State<HomePage> {
   final playlistController = Get.find<PlaylistController>();
   final playerController = Get.find<PlayerController>();
   final playerTileController = Get.find<PlayerTileController>();
+  final songLyricController = Get.find<SongLyricController>();
 
   void go2song(int index) async {
+    songLyricController.updateController();
     await Get.toNamed("/song", arguments: {"currentSongIndex": index});
     playerTileController.playingSong = playlistController.playingSong();
     playlistController.updateSelectedSong();
@@ -100,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                     backgroundColor: CTheme.secondary,
                     foregroundColor: CTheme.secondaryBrand,
                     icon: Icons.edit_rounded,
-                    label: '编辑'.tr,
+                    label: '重命名'.tr,
                     onPressed: (_) =>
                         playlistController.renameSongDialog(index),
                   ),

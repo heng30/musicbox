@@ -89,6 +89,8 @@ class PlayerController extends GetxController {
         basenameWithoutExtension(playlistController.playlist[index].audioPath);
 
     try {
+      await songLyricController.migrateLyric();
+
       final path =
           await songLyricController.getDownloadsDirectoryWithoutCreate();
       final f = File("$path/$name.lrc");

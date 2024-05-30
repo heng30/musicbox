@@ -9,6 +9,7 @@ import '../widgets/nodata.dart';
 import '../widgets/neubox.dart';
 import '../widgets/vslider.dart';
 import '../widgets/track_shape.dart';
+import '../models/song.dart';
 import '../models/lyric_controller.dart';
 import '../models/player_controller.dart';
 import '../models/playlist_controller.dart';
@@ -87,6 +88,7 @@ class _SongPageState extends State<SongPage> {
     final orientation = MediaQuery.of(context).orientation;
     final song =
         playlistController.playlist[playlistController.currentSongIndex!];
+
     song.updateLyrics();
 
     return GestureDetector(
@@ -94,34 +96,73 @@ class _SongPageState extends State<SongPage> {
         songLyricController.isShow = !songLyricController.isShow;
         songLyricController.updateController();
       },
-      child: Padding(
-        padding: const EdgeInsets.all(CTheme.padding * 5),
-        child: !songLyricController.isForceUpdateLyricWidget
-            ? song.lyrics.isNotEmpty
-                ? LyricWidget(
-                    enableDrag: false,
-                    lyrics: song.lyrics,
-                    size: const Size(double.infinity, double.infinity),
-                    lyricMaxWidth: Get.width - CTheme.margin * 4,
-                    controller: songLyricController.controller,
-                    currLyricStyle: TextStyle(
-                      color: CTheme.secondaryBrand,
-                      fontSize: Get.textTheme.titleMedium?.fontSize ?? 16,
+      child: !songLyricController.isForceUpdateLyricWidget
+          ? song.lyrics.isNotEmpty
+              ? Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            await song
+                                .updateLyricTimeOffset(LyricUpdateType.forward);
+                            songLyricController
+                                .updateControllerWithForceUpdateLyricWidget();
+                          },
+                          icon: const Icon(
+                              Icons.keyboard_double_arrow_left_rounded),
+                        ),
+                        const SizedBox(width: CTheme.padding * 5),
+                        IconButton(
+                          onPressed: () async {
+                            await song
+                                .updateLyricTimeOffset(LyricUpdateType.reset);
+                            songLyricController
+                                .updateControllerWithForceUpdateLyricWidget();
+                          },
+                          icon: const Icon(Icons.restore),
+                        ),
+                        const SizedBox(width: CTheme.padding * 5),
+                        IconButton(
+                          onPressed: () async {
+                            await song.updateLyricTimeOffset(
+                                LyricUpdateType.backword);
+                            songLyricController
+                                .updateControllerWithForceUpdateLyricWidget();
+                          },
+                          icon: const Icon(
+                              Icons.keyboard_double_arrow_right_rounded),
+                        ),
+                      ],
                     ),
-                  )
-                : Center(
-                    child: NoData(
-                      text: "没有歌词".tr,
-                      size: orientation == Orientation.portrait
-                          ? null
-                          : Get.height * 0.4,
+                    Expanded(
+                      child: LyricWidget(
+                        enableDrag: false,
+                        lyrics: song.lyrics,
+                        size: const Size(double.infinity, double.infinity),
+                        lyricMaxWidth: Get.width - CTheme.margin * 6,
+                        controller: songLyricController.controller,
+                        currLyricStyle: TextStyle(
+                          color: CTheme.secondaryBrand,
+                          fontSize: Get.textTheme.titleMedium?.fontSize ?? 16,
+                        ),
+                      ),
                     ),
-                  )
-            : const SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-              ),
-      ),
+                  ],
+                )
+              : Center(
+                  child: NoData(
+                    text: "没有歌词".tr,
+                    size: orientation == Orientation.portrait
+                        ? null
+                        : Get.height * 0.4,
+                  ),
+                )
+          : const SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+            ),
     );
   }
 
@@ -334,52 +375,57 @@ class _SongPageState extends State<SongPage> {
 
   Widget buildPortraitLayout(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(CTheme.padding * 5),
-        child: Obx(
-          () => Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (!songLyricController.isForceUpdateLyricWidget &&
-                  !songLyricController.isShow)
-                buildAlbum(context),
-              if (songLyricController.isForceUpdateLyricWidget ||
-                  songLyricController.isShow)
-                Expanded(
-                  child: buildLyric(context),
-                ),
-              buildCtrl(context),
-            ],
-          ),
+      child: Obx(
+        () => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (!songLyricController.isForceUpdateLyricWidget &&
+                !songLyricController.isShow)
+              Padding(
+                padding: const EdgeInsets.all(CTheme.padding * 5),
+                child: buildAlbum(context),
+              ),
+            if (songLyricController.isForceUpdateLyricWidget ||
+                songLyricController.isShow)
+              Expanded(
+                child: buildLyric(context),
+              ),
+            Padding(
+              padding: const EdgeInsets.all(CTheme.padding * 5),
+              child: buildCtrl(context),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget buildLandscapeLayout(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: CTheme.padding * 4,
-        horizontal: CTheme.padding * 5,
-      ),
-      child: Obx(
-        () => Row(
-          children: [
-            if (!songLyricController.isForceUpdateLyricWidget &&
-                !songLyricController.isShow)
-              Expanded(
-                flex: 1,
-                child: buildAlbum(context),
-              ),
-            if (songLyricController.isForceUpdateLyricWidget ||
-                songLyricController.isShow)
-              Expanded(
-                flex: 1,
-                child: buildLyric(context),
-              ),
-            const SizedBox(width: CTheme.padding * 5),
+    return Obx(
+      () => Row(
+        children: [
+          if (!songLyricController.isForceUpdateLyricWidget &&
+              !songLyricController.isShow)
             Expanded(
               flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(CTheme.padding * 5),
+                child: buildAlbum(context),
+              ),
+            ),
+          if (songLyricController.isForceUpdateLyricWidget ||
+              songLyricController.isShow)
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: CTheme.padding * 5),
+                child: buildLyric(context),
+              ),
+            ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(CTheme.padding * 5),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -387,8 +433,8 @@ class _SongPageState extends State<SongPage> {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
