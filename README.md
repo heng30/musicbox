@@ -22,7 +22,9 @@ It's a music player designed for Android platform. However, you can build it for
 - [x] manage music playlist
 - [x] search and download youtube(video) and bilibili(audio) music
 - [x] search, preview and download lyric
+- [x] adjust playing lyric speed
 - [x] setting: light/dark theme, Chinese/English language, http/socks5 proxy for downloading music
+- [x] backup and recover the database and config locally
 
 #### How to build?
 - Install `Rust` and `Cargo`
