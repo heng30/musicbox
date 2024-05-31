@@ -52,6 +52,8 @@ class CTheme {
   static const double padding = 4.0;
   static const double margin = 4.0;
   static const double iconSize = 24.0;
+
+  static const Duration animationDuration = Durations.long4;
 }
 
 class CIcons {

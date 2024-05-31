@@ -198,6 +198,7 @@ class BackupREcoverController extends GetxController {
     Get.defaultDialog(
       title: "提 示".tr,
       middleText: '${"恢复成功，请重启程序".tr}?',
+      barrierDismissible: false,
       confirm: ElevatedButton(
         onPressed: () async {
           Get.closeAllSnackbars();
@@ -207,15 +208,6 @@ class BackupREcoverController extends GetxController {
         child: Obx(
           () => Text(
             "确定重启".tr,
-            style: TextStyle(color: CTheme.inversePrimary),
-          ),
-        ),
-      ),
-      cancel: ElevatedButton(
-        onPressed: () => Get.back(),
-        child: Obx(
-          () => Text(
-            "取消".tr,
             style: TextStyle(color: CTheme.inversePrimary),
           ),
         ),

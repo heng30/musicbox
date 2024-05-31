@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../theme/theme.dart';
 import '../widgets/nodata.dart';
@@ -26,11 +27,19 @@ class _HomePageState extends State<HomePage> {
   final playerTileController = Get.find<PlayerTileController>();
   final songLyricController = Get.find<SongLyricController>();
 
+  final ItemScrollController _itemScrollController = ItemScrollController();
+
   void go2song(int index) async {
     songLyricController.updateController();
     await Get.toNamed("/song", arguments: {"currentSongIndex": index});
     playerTileController.playingSong = playlistController.playingSong();
     playlistController.updateSelectedSong();
+
+    _itemScrollController.scrollTo(
+      index: playlistController.currentSongIndex!,
+      duration: CTheme.animationDuration,
+      curve: Curves.easeInOutCubic,
+    );
   }
 
   bool closeOnConfirmed() {
@@ -91,7 +100,8 @@ class _HomePageState extends State<HomePage> {
     return Obx(
       () => Container(
         color: CTheme.background,
-        child: ListView.builder(
+        child: ScrollablePositionedList.builder(
+          itemScrollController: _itemScrollController,
           itemCount: playlistController.playlist.length,
           itemBuilder: (count, index) {
             final song = playlistController.playlist[index];

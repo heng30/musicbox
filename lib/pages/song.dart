@@ -34,7 +34,6 @@ class _SongPageState extends State<SongPage> {
   final currentSongIndex = Get.arguments["currentSongIndex"];
 
   final isShowAdjustLyricSpeedOverlay = false.obs;
-  bool isInitShowAdjustLyricSpeedOverlay = false;
 
   @override
   void initState() {
@@ -516,10 +515,10 @@ class _SongPageState extends State<SongPage> {
                     isShowAdjustLyricSpeedOverlay.value =
                         !isShowAdjustLyricSpeedOverlay.value;
 
-                    // print(isShowAdjustLyricSpeedOverlay);
-
-                    if (!isInitShowAdjustLyricSpeedOverlay) {
-                      isInitShowAdjustLyricSpeedOverlay = true;
+                    if (!songLyricController
+                        .isInitShowAdjustLyricSpeedOverlay) {
+                      songLyricController.isInitShowAdjustLyricSpeedOverlay =
+                          true;
                       showAdjustLyricSpeedOverlay(
                         context,
                         playlistController

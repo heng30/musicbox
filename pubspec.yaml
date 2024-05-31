@@ -57,6 +57,7 @@ dependencies:
   percent_indicator: ^4.0.1
   package_info_plus: ^8.0.0
   permission_handler: ^11.3.1
+  scrollable_positioned_list: ^0.3.8
 
   # this automatically add from the cmd: `flutter_rust_bridge_codegen integrate`
   rust_lib_musicbox:
