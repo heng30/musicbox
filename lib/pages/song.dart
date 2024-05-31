@@ -121,6 +121,7 @@ class _SongPageState extends State<SongPage> {
         IconButton(
           onPressed: () async {
             await song.updateLyricTimeOffset(LyricUpdateType.forward);
+            song.updateLyrics();
             songLyricController.updateControllerWithForceUpdateLyricWidget();
           },
           icon: const Icon(Icons.fast_rewind),
@@ -129,6 +130,7 @@ class _SongPageState extends State<SongPage> {
         IconButton(
           onPressed: () async {
             await song.updateLyricTimeOffset(LyricUpdateType.reset);
+            song.updateLyrics();
             songLyricController.updateControllerWithForceUpdateLyricWidget();
           },
           icon: const Icon(Icons.restore),
@@ -137,6 +139,7 @@ class _SongPageState extends State<SongPage> {
         IconButton(
           onPressed: () async {
             await song.updateLyricTimeOffset(LyricUpdateType.backword);
+            song.updateLyrics();
             songLyricController.updateControllerWithForceUpdateLyricWidget();
           },
           icon: const Icon(Icons.fast_forward),
@@ -503,6 +506,8 @@ class _SongPageState extends State<SongPage> {
                           snackPosition: SnackPosition.BOTTOM);
                       return;
                     }
+
+                    isShowAdjustLyricSpeedOverlay.value = false;
 
                     Get.toNamed("/lyric", arguments: {
                       "downloadPath": downloadPath,

@@ -212,6 +212,9 @@ class BackupREcoverController extends GetxController {
           ),
         ),
       ),
+      onWillPop: () async {
+        return false;
+      },
     );
   }
 }

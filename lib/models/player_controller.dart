@@ -83,7 +83,7 @@ class PlayerController extends GetxController {
         final downloadDir =
             await findController.getDownloadsDirectoryWithoutCreate();
         final maybeDownloadFile = File("$downloadDir/$name");
-        // log.d(maybeDownloadFile.path);
+
         if (await maybeDownloadFile.exists()) {
           src = DeviceFileSource(maybeDownloadFile.path);
         }

@@ -2,7 +2,7 @@
 
 run-evn=RUST_LOG=debug,sqlx=off,reqwest=off
 version=`git describe --tags --abbrev=0`
-android-build-flag=--release --obfuscate --split-debug-info=./debug-info
+android-build-flag=--release --obfuscate --split-debug-info=./build/debug-info
 
 all:
 	fvm flutter build apk

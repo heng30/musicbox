@@ -70,13 +70,15 @@ class Song {
       if (lyricTimeOffset != 0) {
         final tmpLyrics = items.map(
           (item) {
-            final startTime =
-                item.startTime! + Duration(milliseconds: lyricTimeOffset);
-            final endTime =
-                item.endTime! + Duration(milliseconds: lyricTimeOffset);
+            var startTime = item.startTime!.inMilliseconds + lyricTimeOffset;
+            var endTime = item.endTime!.inMilliseconds + lyricTimeOffset;
 
-            item.startTime = startTime;
-            item.endTime = endTime;
+            if (startTime < 0) startTime = 0;
+            if (endTime < 0) endTime = 0;
+
+            item.startTime = Duration(milliseconds: startTime);
+            item.endTime = Duration(milliseconds: endTime);
+
             return item;
           },
         ).toList();
@@ -176,21 +178,6 @@ class Song {
     } else {
       lyricTimeOffset = 0;
     }
-
-    final tmpLyrics = lyrics.map(
-      (item) {
-        final startTime =
-            item.startTime! + Duration(milliseconds: lyricTimeOffset);
-        final endTime = item.endTime! + Duration(milliseconds: lyricTimeOffset);
-
-        item.startTime = startTime;
-        item.endTime = endTime;
-        return item;
-      },
-    ).toList();
-
-    lyrics.clear();
-    lyrics.addAll(tmpLyrics);
 
     try {
       final dbController = Get.find<DbController>();
