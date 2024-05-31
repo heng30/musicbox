@@ -22,7 +22,7 @@ run-linux:
 build-rust:
 	cd ./rust && cargo build
 
-build-apk: build-apk-all build-apk-arm build-apk-arm64 build-apk-x64
+build-apk: remove-old-apk build-apk-all build-apk-arm build-apk-arm64 build-apk-x64
 
 build-apk-all: make-release-dir
 	- rm build/release/musicbox-${version}.apk
@@ -46,6 +46,9 @@ build-apk-x64: make-release-dir
 
 make-release-dir:
 	mkdir -p ./build/release
+
+remove-old-apk:
+	-rm -f ./build/release/*
 
 clean:
 	rm -rf ./flutter_jank_metrics_*.json

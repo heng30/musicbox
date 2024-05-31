@@ -34,6 +34,8 @@ class _SongPageState extends State<SongPage> {
   final currentSongIndex = Get.arguments["currentSongIndex"];
 
   final isShowAdjustLyricSpeedOverlay = false.obs;
+  bool isInitShowAdjustLyricSpeedOverlay = false;
+  OverlayEntry? overlayEntry;
 
   @override
   void initState() {
@@ -88,7 +90,7 @@ class _SongPageState extends State<SongPage> {
 
   void showAdjustLyricSpeedOverlay(BuildContext context, Song song) {
     OverlayState overlayState = Overlay.of(context);
-    OverlayEntry overlayEntry = OverlayEntry(
+    overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         top: 50,
         left: (Get.width - 200) / 2,
@@ -109,7 +111,7 @@ class _SongPageState extends State<SongPage> {
         ),
       ),
     );
-    overlayState.insert(overlayEntry);
+    overlayState.insert(overlayEntry!);
   }
 
   Widget buildAdjustLyricSpeed(BuildContext context, Song song) {
@@ -515,10 +517,8 @@ class _SongPageState extends State<SongPage> {
                     isShowAdjustLyricSpeedOverlay.value =
                         !isShowAdjustLyricSpeedOverlay.value;
 
-                    if (!songLyricController
-                        .isInitShowAdjustLyricSpeedOverlay) {
-                      songLyricController.isInitShowAdjustLyricSpeedOverlay =
-                          true;
+                    if (!isInitShowAdjustLyricSpeedOverlay) {
+                      isInitShowAdjustLyricSpeedOverlay = true;
                       showAdjustLyricSpeedOverlay(
                         context,
                         playlistController
@@ -547,6 +547,7 @@ class _SongPageState extends State<SongPage> {
       onPopInvoked: (didPop) {
         if (didPop) return;
         isShowAdjustLyricSpeedOverlay.value = false;
+        overlayEntry?.remove();
         Get.back();
       },
     );

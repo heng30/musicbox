@@ -48,8 +48,6 @@ class SongLyricController extends GetxController {
 
   String? downloadDir;
 
-  bool isInitShowAdjustLyricSpeedOverlay = false;
-
   SongLyricController() {
     if (!kReleaseMode) {
       fakeLyricList();
