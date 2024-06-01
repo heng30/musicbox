@@ -72,7 +72,6 @@ class PlayerController extends GetxController {
     if (song.audioLocation == AudioLocation.asset) {
       src = AssetSource(song.audioPath);
     } else if (song.audioLocation == AudioLocation.local) {
-      log.d(song.audioPath);
       if (await File(song.audioPath).exists()) {
         src = DeviceFileSource(song.audioPath);
       } else {

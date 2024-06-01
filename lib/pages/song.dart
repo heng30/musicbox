@@ -88,7 +88,7 @@ class _SongPageState extends State<SongPage> {
     );
   }
 
-  void showAdjustLyricSpeedOverlay(BuildContext context, Song song) {
+  void showAdjustLyricSpeedOverlay(BuildContext context) {
     OverlayState overlayState = Overlay.of(context);
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -105,7 +105,7 @@ class _SongPageState extends State<SongPage> {
               borderRadius: BorderRadius.circular(CTheme.borderRadius * 4),
             ),
             child: Center(
-              child: buildAdjustLyricSpeed(context, song),
+              child: buildAdjustLyricSpeed(context),
             ),
           ),
         ),
@@ -114,12 +114,14 @@ class _SongPageState extends State<SongPage> {
     overlayState.insert(overlayEntry!);
   }
 
-  Widget buildAdjustLyricSpeed(BuildContext context, Song song) {
+  Widget buildAdjustLyricSpeed(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
           onPressed: () async {
+            final song = playlistController
+                .playlist[playlistController.currentSongIndex!];
             await song.updateLyricTimeOffset(LyricUpdateType.forward);
             song.updateLyrics();
             songLyricController.updateControllerWithForceUpdateLyricWidget();
@@ -129,6 +131,8 @@ class _SongPageState extends State<SongPage> {
         const SizedBox(width: CTheme.padding * 5),
         IconButton(
           onPressed: () async {
+            final song = playlistController
+                .playlist[playlistController.currentSongIndex!];
             await song.updateLyricTimeOffset(LyricUpdateType.reset);
             song.updateLyrics();
             songLyricController.updateControllerWithForceUpdateLyricWidget();
@@ -138,6 +142,8 @@ class _SongPageState extends State<SongPage> {
         const SizedBox(width: CTheme.padding * 5),
         IconButton(
           onPressed: () async {
+            final song = playlistController
+                .playlist[playlistController.currentSongIndex!];
             await song.updateLyricTimeOffset(LyricUpdateType.backword);
             song.updateLyrics();
             songLyricController.updateControllerWithForceUpdateLyricWidget();
@@ -524,11 +530,7 @@ class _SongPageState extends State<SongPage> {
 
                     if (!isInitShowAdjustLyricSpeedOverlay) {
                       isInitShowAdjustLyricSpeedOverlay = true;
-                      showAdjustLyricSpeedOverlay(
-                        context,
-                        playlistController
-                            .playlist[playlistController.currentSongIndex!],
-                      );
+                      showAdjustLyricSpeedOverlay(context);
                     }
                   },
                   icon: const Icon(Icons.adjust_rounded),
