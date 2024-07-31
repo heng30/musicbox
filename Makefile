@@ -19,6 +19,9 @@ run:
 run-linux:
 	$(run-evn) fvm flutter run -d linux
 
+run-linux-in-nixos:
+	nix-shell --run "flutter run -d linux"
+
 build-rust:
 	cd ./rust && cargo build
 
