@@ -10,5 +10,5 @@ pkgs.mkShell {
     gst_all_1.gst-vaapi.dev
   ];
   # nativeBuildInputs is usually what you want -- tools you need to run
-  nativeBuildInputs = with pkgs.buildPackages; [ pkg-config flutter jdk17 clang ];
+  nativeBuildInputs = with pkgs.buildPackages; [ pkg-config flutter clang ];
 }
