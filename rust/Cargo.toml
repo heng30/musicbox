@@ -25,7 +25,7 @@ serde = { version = "1.0", features = ["serde_derive"] }
 env_logger = "0.10"
 reqwest = { version = "0.12", features = ["json", "socks", "stream"] }
 sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite"] }
-rustube = { git = "https://github.com/Heng30/rustube.git", features = [
+rustube = { git = "https://github.com/DzenanJupic/rustube", features = [
   "default",
   "socks",
   "callback",
@@ -45,7 +45,7 @@ reqwest = { version = "0.12", features = [
   "socks",
   "stream",
 ] }
-rustube = { git = "https://github.com/Heng30/rustube.git", features = [
+rustube = { git = "https://github.com/DzenanJupic/rustube.git", features = [
   "default",
   "native-tls-vendored",
   "socks",
