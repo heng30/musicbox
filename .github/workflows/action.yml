@@ -15,7 +15,7 @@ jobs:
 
       - run: |
           sudo apt-get update -y
-          sudo apt-get install -y ninja-build llvm curl
+          sudo apt-get install -y ninja-build llvm
 
       - run: echo "start install Rust..."
       - name: Install Rust
@@ -24,12 +24,10 @@ jobs:
           toolchain: stable
       - run: echo "end install Rust..."
 
-      - run: echo "start install sdk..."
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-      - run: sdkmanager tools platform-tools
-      - run: sdkmanager "platforms;android-35"
-      - run: echo "end install sdk..."
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          android-sdk-platform: '35'
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
