@@ -15,7 +15,10 @@ jobs:
 
       - run: |
           sudo apt-get update -y
-          sudo apt-get install -y ninja-build fvm llvm
+          sudo apt-get install -y ninja-build llvm curl
+
+      - run: |
+          curl -fsSL https://fvm.app/install.sh | bash
 
       - run: echo "start install Rust..."
       - name: Install Rust
