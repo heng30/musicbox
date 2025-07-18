@@ -24,7 +24,7 @@ jobs:
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
-            default: stable
+          toolchain: stable
       - run: echo "end install Rust..."
 
       - run: echo "start install jdk..."
