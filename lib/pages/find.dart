@@ -15,7 +15,6 @@ import '../widgets/nodata.dart';
 import '../widgets/searchbar.dart';
 import '../models/find_controller.dart';
 import '../models/setting_controller.dart';
-import '../src/rust/api/youtube.dart' as youtube;
 import '../src/rust/api/bilibili.dart' as bilibili;
 
 class FindPage extends StatefulWidget {
@@ -42,48 +41,11 @@ class _FindPageState extends State<FindPage> {
     refreshController.refreshCompleted();
   }
 
-  Future<void> searchYoutube(String text) async {
-    final proxyUrl = settingController.proxy.url(ProxyType.youtube);
-    final ids = await youtube.fetchIds(
-      keyword: text,
-      maxIdCount: max(1, settingController.find.searchCount),
-      proxyUrl: proxyUrl,
-    );
-
-    for (String id in ids) {
-      if (!findController.isSearching) {
-        return;
-      }
-
-      try {
-        final vinfo = await youtube.videoInfoById(id: id, proxyUrl: proxyUrl);
-        final info = Info(
-          raw: vinfo,
-          extention: "mp4",
-          proxyType: ProxyType.youtube,
-          albumArtImagePath: Albums.youtubeAsset,
-        );
-
-        // song duration too short or too long would be ignored
-        if (vinfo.lengthSeconds <
-                max(1, settingController.find.minSecondLength) ||
-            vinfo.lengthSeconds >
-                max(5, settingController.find.maxSecondLength)) {
-          continue;
-        }
-
-        findController.infoList.add(info);
-      } catch (e) {
-        log.d(e);
-      }
-    }
-  }
-
   Future<void> searchBilibili(String text) async {
     final proxyUrl = settingController.proxy.url(ProxyType.bilibili);
     final ids = await bilibili.bvFetchIds(
       keyword: text,
-      maxIdCount: max(1, settingController.find.searchCount),
+      maxIdCount: BigInt.from(max(1, settingController.find.searchCount)),
       proxyUrl: proxyUrl,
     );
 
@@ -103,9 +65,9 @@ class _FindPageState extends State<FindPage> {
 
         // song duration too short or too long would be ignored
         if (vinfo.lengthSeconds <
-                max(1, settingController.find.minSecondLength) ||
+                BigInt.from(max(1, settingController.find.minSecondLength)) ||
             vinfo.lengthSeconds >
-                max(5, settingController.find.maxSecondLength)) {
+                BigInt.from(max(5, settingController.find.maxSecondLength))) {
           continue;
         }
 
@@ -118,9 +80,8 @@ class _FindPageState extends State<FindPage> {
 
   void search(String text) async {
     focusNodeSearch.unfocus();
-    if (!settingController.find.enableYoutubeSearch &&
-        !settingController.find.enableBilibiliSearch) {
-      Get.snackbar("提 示".tr, "没有启用Youtube或Bilibili搜索".tr,
+    if (!settingController.find.enableBilibiliSearch) {
+      Get.snackbar("提 示".tr, "没有启用Bilibili搜索".tr,
           snackPosition: SnackPosition.BOTTOM);
       return;
     }
@@ -137,7 +98,7 @@ class _FindPageState extends State<FindPage> {
     }
 
     int searchErrorCount = 0;
-    int targetSearchErrorCount = 2;
+    int targetSearchErrorCount = 1;
     findController.retainDownloadingInfo();
     findController.isSearching = true;
 
@@ -153,33 +114,11 @@ class _FindPageState extends State<FindPage> {
       targetSearchErrorCount++;
     }
 
-    if (settingController.find.enableYoutubeSearch) {
-      try {
-        await searchYoutube(text);
-      } catch (e) {
-        Get.snackbar("搜索Youtube失败".tr, e.toString(),
-            snackPosition: SnackPosition.BOTTOM);
-        searchErrorCount++;
-      }
-    } else {
-      targetSearchErrorCount--;
-    }
-
     if (searchErrorCount != targetSearchErrorCount) {
       Get.snackbar("提 示".tr, "搜索完成".tr, snackPosition: SnackPosition.BOTTOM);
     }
 
     findController.isSearching = false;
-  }
-
-  Future<void> downlaodYoutube(Info info) async {
-    final progressStream = youtube.downloadVideoByIdWithCallback(
-      id: info.raw.videoId,
-      downloadPath: await findController.downloadPath(info),
-      proxyUrl: info.proxyUrl(),
-    );
-
-    info.setProgressStreamWithListen(progressStream, info);
   }
 
   Future<void> downlaodBilibili(Info info) async {
@@ -198,9 +137,7 @@ class _FindPageState extends State<FindPage> {
     info.downloadState = DownloadState.downloading;
 
     try {
-      if (info.proxyType == ProxyType.youtube) {
-        await downlaodYoutube(info);
-      } else if (info.proxyType == ProxyType.bilibili) {
+      if (info.proxyType == ProxyType.bilibili) {
         await downlaodBilibili(info);
       }
     } catch (e) {
@@ -368,10 +305,7 @@ class _FindPageState extends State<FindPage> {
                         child: GestureDetector(
                           onTap: () async {
                             late Uri url;
-                            if (info.proxyType == ProxyType.youtube) {
-                              url = Uri.parse(
-                                  youtube.watchUrl(id: info.raw.videoId));
-                            } else if (info.proxyType == ProxyType.bilibili) {
+                            if (info.proxyType == ProxyType.bilibili) {
                               url = Uri.parse(
                                   bilibili.bvWatchUrl(id: info.raw.videoId));
                             }
@@ -409,7 +343,7 @@ class _FindPageState extends State<FindPage> {
                     ],
                   ),
                 ),
-              if (info.raw.lengthSeconds > 0)
+              if (info.raw.lengthSeconds > BigInt.from(0))
                 Padding(
                   padding: const EdgeInsets.only(bottom: CTheme.padding * 2),
                   child: Row(
@@ -420,12 +354,12 @@ class _FindPageState extends State<FindPage> {
                             style: Theme.of(context).textTheme.titleMedium),
                       ),
                       Expanded(
-                        child: Text(formattedTime(info.raw.lengthSeconds)),
+                        child: Text(formattedTime(info.raw.lengthSeconds.toInt())),
                       ),
                     ],
                   ),
                 ),
-              if (info.raw.viewCount > 0)
+              if (info.raw.viewCount > BigInt.from(0))
                 Padding(
                   padding: const EdgeInsets.only(bottom: CTheme.padding * 2),
                   child: Row(
@@ -436,7 +370,7 @@ class _FindPageState extends State<FindPage> {
                             style: Theme.of(context).textTheme.titleMedium),
                       ),
                       Expanded(
-                        child: Text(formattedNumber(info.raw.viewCount)),
+                        child: Text(formattedNumber(info.raw.viewCount.toInt())),
                       ),
                     ],
                   ),
@@ -500,7 +434,7 @@ class _FindPageState extends State<FindPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Text(
-            formattedTime(info.raw.lengthSeconds),
+            formattedTime(info.raw.lengthSeconds.toInt()),
             overflow: TextOverflow.ellipsis,
           ),
           if (info.downloadState == DownloadState.downloading ||

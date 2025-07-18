@@ -90,8 +90,8 @@ class Info {
     _progressStream = stream;
     _progressStreamSubscription = _progressStream!.listen(
       (value) {
-        if (value.totalSize != null && value.totalSize! > 0) {
-          info.downloadRate = value.currentSize * 100 / value.totalSize!;
+        if (value.totalSize != null && value.totalSize! > BigInt.from(0)) {
+          info.downloadRate = value.currentSize * BigInt.from(100) / value.totalSize!;
         }
       },
       onDone: () async {
@@ -179,8 +179,8 @@ class FindController extends GetxController {
             videoId: "vdMTIe5ihYg",
             bvCid: 0,
             shortDescription: "shortDescription-$i",
-            viewCount: 100,
-            lengthSeconds: 320,
+            viewCount: BigInt.from(100),
+            lengthSeconds: BigInt.from(320),
           ),
         ),
       );

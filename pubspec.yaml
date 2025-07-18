@@ -62,7 +62,7 @@ dependencies:
   # this automatically add from the cmd: `flutter_rust_bridge_codegen integrate`
   rust_lib_musicbox:
     path: rust_builder
-  flutter_rust_bridge: 2.0.0-dev.33
+  flutter_rust_bridge: 2.1.0
 
 dev_dependencies:
   flutter_test:

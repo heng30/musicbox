@@ -4,13 +4,10 @@ run-evn=RUST_LOG=debug
 version=`git describe --tags --abbrev=0`
 android-build-flag=--release --obfuscate --split-debug-info=./build/debug-info
 
-all:
-	fvm flutter build apk
+all: build-arm build-arm64 build-x64
 
-run:
+debug:
 	$(run-evn) fvm flutter run
-
-build: build-arm build-arm64 build-x64
 
 build-arm:
 	fvm flutter build apk ${android-build-flag} --target-platform=android-arm
@@ -30,12 +27,12 @@ clean:
 	- rm -rf ./flutter_jank_metrics_*.json
 
 # just call this cmd once
-integrate-rust:
-	flutter_rust_bridge_codegen integrate
+# integrate-rust:
+# 	flutter_rust_bridge_codegen integrate
 
 # generate dart codes
-# generate-rust:
-# 	flutter_rust_bridge_codegen generate
+generate-rust:
+	flutter_rust_bridge_codegen generate
 
 # watch the rust codes and generate dart codes on the background
 generate-rust-watch:

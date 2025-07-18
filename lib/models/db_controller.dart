@@ -4,7 +4,6 @@ import 'package:sqflite/sqflite.dart';
 
 import './util.dart';
 import './setting_controller.dart';
-import '../src/rust/api/db.dart' as rustdb;
 
 class DbController extends GetxController {
   static const playlistTable = "playlist";
@@ -18,9 +17,6 @@ class DbController extends GetxController {
       if (isSqfliteSupportPlatform()) {
         await createDb(settingController.dbPath);
         await createTable(playlistTable);
-      } else if (isRustSqliteSupportPlatform()) {
-        await rustdb.createDb(dbPath: settingController.dbPath);
-        await createTable(playlistTable);
       } else {
         log.d("Database not implement");
       }
@@ -33,9 +29,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         db = await openDatabase(dbPath, version: 1);
-        return true;
-      } else if (isRustSqliteSupportPlatform()) {
-        await rustdb.createDb(dbPath: settingController.dbPath);
         return true;
       } else {
         log.d("Create database not implement");
@@ -51,8 +44,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await deleteDatabase(settingController.dbPath);
-      } else if (isRustSqliteSupportPlatform()) {
-        await rustdb.deleteDb(dbPath: settingController.dbPath);
       } else {
         log.d("Database not implement");
       }
@@ -67,8 +58,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await db.close();
-      } else if (isRustSqliteSupportPlatform()) {
-        await rustdb.closeDb();
       } else {
         log.d("Database not implement");
       }
@@ -86,8 +75,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await db.execute(sql);
-      } else if (isRustSqliteSupportPlatform()) {
-        await rustdb.createTable(sql: sql);
       } else {
         log.d("Database not implement");
         return false;
@@ -109,8 +96,6 @@ class DbController extends GetxController {
             await txn.rawInsert(sql);
           },
         );
-      } else if (isRustSqliteSupportPlatform()) {
-        await rustdb.insert(sql: sql);
       } else {
         log.d("Database not implement");
         return false;
@@ -128,8 +113,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await db.rawUpdate(sql);
-      } else if (isRustSqliteSupportPlatform()) {
-        await rustdb.update(sql: sql);
       } else {
         log.d("Database not implement");
         return false;
@@ -147,8 +130,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await db.rawDelete(sql);
-      } else if (isRustSqliteSupportPlatform()) {
-        await rustdb.delete(sql: sql);
       } else {
         log.d("Database not implement");
         return false;
@@ -166,8 +147,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await db.rawDelete(sql);
-      } else if (isRustSqliteSupportPlatform()) {
-        await rustdb.deleteAll(sql: sql);
       } else {
         log.d("Database delete all not implement");
         return false;
@@ -186,8 +165,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         return await db.rawQuery(sql);
-      } else if (isRustSqliteSupportPlatform()) {
-        return await rustdb.select(sql: sql);
       } else {
         log.d("Database not implement");
         return [];
@@ -203,8 +180,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         return await db.rawQuery(sql);
-      } else if (isRustSqliteSupportPlatform()) {
-        return await rustdb.selectAll(sql: sql);
       } else {
         log.d("Database select all not implement");
         return [];
@@ -221,8 +196,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         await db.execute(sql);
-      } else if (isRustSqliteSupportPlatform()) {
-        await rustdb.dropTable(sql: sql);
       } else {
         log.d("Database drop table not implement");
         return false;
@@ -240,8 +213,6 @@ class DbController extends GetxController {
     try {
       if (isSqfliteSupportPlatform()) {
         return Sqflite.firstIntValue(await db.rawQuery(sql)) ?? 0;
-      } else if (isRustSqliteSupportPlatform()) {
-        return await rustdb.rowCount(sql: sql);
       } else {
         log.d("Database not implement");
         return -1;

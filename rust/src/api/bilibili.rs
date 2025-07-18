@@ -10,7 +10,8 @@ use tokio::{
     sync::mpsc::{self, error::TrySendError},
 };
 
-mod bilibili {
+pub mod bilibili {
+    use super::*;
     use anyhow::Result;
     use regex::Regex;
     use std::{
@@ -21,7 +22,8 @@ mod bilibili {
     use tokio_stream::StreamExt;
     use url::Url;
 
-    use super::*;
+    pub use crate::api::data::ProgressData;
+    pub use tokio::sync::mpsc::Sender;
 
     const API_HOST_URL: &'static str = "https://api.bilibili.com";
 

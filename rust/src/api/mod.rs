@@ -1,11 +1,9 @@
-pub mod log;
-pub mod db;
-pub mod data;
-pub mod util;
-pub mod lyric;
-pub mod youtube;
 pub mod bilibili;
+pub mod data;
+pub mod log;
+pub mod lyric;
 pub mod msg_center;
+pub mod util;
 
 const SINK_CHANNEL_SIZE: usize = 4096;
 
