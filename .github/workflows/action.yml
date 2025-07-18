@@ -48,9 +48,9 @@ jobs:
           ndk-version: r26d
       - run: echo "end install ndk..."
 
-      - run: echo "start build for linux..."
+      - run: echo "start build for Android..."
       - run: make
-      - run: echo "end build for linux..."
+      - run: echo "end build for Android..."
 
       - name: Get the release version from the tag
         shell: bash
