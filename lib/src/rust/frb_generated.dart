@@ -81,14 +81,12 @@ abstract class RustLibApi extends BaseApi {
   Stream<ProgressData> crateApiBilibiliBvDownloadVideoByIdWithCallback(
       {required String id,
       required PlatformInt64 cid,
-      required String downloadPath,
-      String? proxyUrl});
+      required String downloadPath});
 
   Future<List<String>> crateApiBilibiliBvFetchIds(
-      {required String keyword, required BigInt maxIdCount, String? proxyUrl});
+      {required String keyword, required BigInt maxIdCount});
 
-  Future<InfoData> crateApiBilibiliBvVideoInfo(
-      {required String bvid, String? proxyUrl});
+  Future<InfoData> crateApiBilibiliBvVideoInfo({required String bvid});
 
   String crateApiBilibiliBvWatchUrl({required String id});
 
@@ -109,7 +107,7 @@ abstract class RustLibApi extends BaseApi {
   Future<BvInfo> crateApiBilibiliBilibiliClientInfo(
       {required Client that, required String bvid});
 
-  Future<Client> crateApiBilibiliBilibiliClientNew({String? proxyUrl});
+  Future<Client> crateApiBilibiliBilibiliClientNew();
 
   Future<VideoUrl> crateApiBilibiliBilibiliClientVideoUrl(
       {required Client that,
@@ -223,8 +221,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Stream<ProgressData> crateApiBilibiliBvDownloadVideoByIdWithCallback(
       {required String id,
       required PlatformInt64 cid,
-      required String downloadPath,
-      String? proxyUrl}) {
+      required String downloadPath}) {
     final sink = RustStreamSink<ProgressData>();
     unawaited(handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -233,7 +230,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(id, serializer);
         sse_encode_i_64(cid, serializer);
         sse_encode_String(downloadPath, serializer);
-        sse_encode_opt_String(proxyUrl, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 2, port: port_);
       },
@@ -242,7 +238,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiBilibiliBvDownloadVideoByIdWithCallbackConstMeta,
-      argValues: [sink, id, cid, downloadPath, proxyUrl],
+      argValues: [sink, id, cid, downloadPath],
       apiImpl: this,
     )));
     return sink.stream;
@@ -251,18 +247,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiBilibiliBvDownloadVideoByIdWithCallbackConstMeta =>
       const TaskConstMeta(
         debugName: "bv_download_video_by_id_with_callback",
-        argNames: ["sink", "id", "cid", "downloadPath", "proxyUrl"],
+        argNames: ["sink", "id", "cid", "downloadPath"],
       );
 
   @override
   Future<List<String>> crateApiBilibiliBvFetchIds(
-      {required String keyword, required BigInt maxIdCount, String? proxyUrl}) {
+      {required String keyword, required BigInt maxIdCount}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(keyword, serializer);
         sse_encode_usize(maxIdCount, serializer);
-        sse_encode_opt_String(proxyUrl, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 3, port: port_);
       },
@@ -271,24 +266,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiBilibiliBvFetchIdsConstMeta,
-      argValues: [keyword, maxIdCount, proxyUrl],
+      argValues: [keyword, maxIdCount],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta get kCrateApiBilibiliBvFetchIdsConstMeta => const TaskConstMeta(
         debugName: "bv_fetch_ids",
-        argNames: ["keyword", "maxIdCount", "proxyUrl"],
+        argNames: ["keyword", "maxIdCount"],
       );
 
   @override
-  Future<InfoData> crateApiBilibiliBvVideoInfo(
-      {required String bvid, String? proxyUrl}) {
+  Future<InfoData> crateApiBilibiliBvVideoInfo({required String bvid}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(bvid, serializer);
-        sse_encode_opt_String(proxyUrl, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 4, port: port_);
       },
@@ -297,7 +290,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiBilibiliBvVideoInfoConstMeta,
-      argValues: [bvid, proxyUrl],
+      argValues: [bvid],
       apiImpl: this,
     ));
   }
@@ -305,7 +298,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiBilibiliBvVideoInfoConstMeta =>
       const TaskConstMeta(
         debugName: "bv_video_info",
-        argNames: ["bvid", "proxyUrl"],
+        argNames: ["bvid"],
       );
 
   @override
@@ -456,11 +449,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Client> crateApiBilibiliBilibiliClientNew({String? proxyUrl}) {
+  Future<Client> crateApiBilibiliBilibiliClientNew() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_opt_String(proxyUrl, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 10, port: port_);
       },
@@ -470,7 +462,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiBilibiliBilibiliClientNewConstMeta,
-      argValues: [proxyUrl],
+      argValues: [],
       apiImpl: this,
     ));
   }
@@ -478,7 +470,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiBilibiliBilibiliClientNewConstMeta =>
       const TaskConstMeta(
         debugName: "Client_new",
-        argNames: ["proxyUrl"],
+        argNames: [],
       );
 
   @override
@@ -1490,12 +1482,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  String? dco_decode_opt_String(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_String(raw);
-  }
-
-  @protected
   SenderProgressData?
       dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSenderProgressData(
           dynamic raw) {
@@ -2154,17 +2140,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  String? sse_decode_opt_String(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return (sse_decode_String(deserializer));
-    } else {
-      return null;
-    }
-  }
-
-  @protected
   SenderProgressData?
       sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSenderProgressData(
           SseDeserializer deserializer) {
@@ -2780,16 +2755,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_msg_type(MsgType self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
-  }
-
-  @protected
-  void sse_encode_opt_String(String? self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_String(self, serializer);
-    }
   }
 
   @protected

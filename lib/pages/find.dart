@@ -42,11 +42,9 @@ class _FindPageState extends State<FindPage> {
   }
 
   Future<void> searchBilibili(String text) async {
-    final proxyUrl = settingController.proxy.url(ProxyType.bilibili);
     final ids = await bilibili.bvFetchIds(
       keyword: text,
       maxIdCount: BigInt.from(max(1, settingController.find.searchCount)),
-      proxyUrl: proxyUrl,
     );
 
     for (String id in ids) {
@@ -55,11 +53,10 @@ class _FindPageState extends State<FindPage> {
       }
 
       try {
-        final vinfo = await bilibili.bvVideoInfo(bvid: id, proxyUrl: proxyUrl);
+        final vinfo = await bilibili.bvVideoInfo(bvid: id);
         final info = Info(
           raw: vinfo,
           extention: "m4s",
-          proxyType: ProxyType.bilibili,
           albumArtImagePath: Albums.bilibiliAsset,
         );
 
@@ -126,7 +123,6 @@ class _FindPageState extends State<FindPage> {
       id: info.raw.videoId,
       cid: info.raw.bvCid,
       downloadPath: await findController.downloadPath(info),
-      proxyUrl: info.proxyUrl(),
     );
 
     info.setProgressStreamWithListen(progressStream, info);
@@ -137,9 +133,7 @@ class _FindPageState extends State<FindPage> {
     info.downloadState = DownloadState.downloading;
 
     try {
-      if (info.proxyType == ProxyType.bilibili) {
-        await downlaodBilibili(info);
-      }
+      await downlaodBilibili(info);
     } catch (e) {
       log.d(e);
     }
@@ -304,12 +298,7 @@ class _FindPageState extends State<FindPage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () async {
-                            late Uri url;
-                            if (info.proxyType == ProxyType.bilibili) {
-                              url = Uri.parse(
-                                  bilibili.bvWatchUrl(id: info.raw.videoId));
-                            }
-
+                            Uri url = Uri.parse(bilibili.bvWatchUrl(id: info.raw.videoId));
                             try {
                               await launchUrl(url);
                             } catch (e) {

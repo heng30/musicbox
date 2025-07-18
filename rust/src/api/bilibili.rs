@@ -39,19 +39,11 @@ pub mod bilibili {
     }
 
     impl Client {
-        pub fn new(proxy_url: Option<String>) -> Result<Self> {
+        pub fn new() -> Result<Self> {
             const AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36";
 
-            let client = match proxy_url {
-                Some(url) => reqwest::Client::builder()
-                    .user_agent(AGENT)
-                    .proxy(reqwest::Proxy::all(url)?)
-                    .build()?,
-                None => reqwest::Client::builder().user_agent(AGENT).build()?,
-            };
-
             Ok(Client {
-                agent: client,
+                agent: reqwest::Client::builder().user_agent(AGENT).build()?,
                 content_length: AtomicU64::new(0),
             })
         }
@@ -231,17 +223,13 @@ pub mod bilibili {
     }
 }
 
-pub async fn bv_fetch_ids(
-    keyword: String,
-    max_id_count: usize,
-    proxy_url: Option<String>,
-) -> Result<Vec<String>> {
-    let client = bilibili::Client::new(proxy_url)?;
+pub async fn bv_fetch_ids(keyword: String, max_id_count: usize) -> Result<Vec<String>> {
+    let client = bilibili::Client::new()?;
     client.fetch_ids(keyword, max_id_count).await
 }
 
-pub async fn bv_video_info(bvid: String, proxy_url: Option<String>) -> Result<InfoData> {
-    let client = bilibili::Client::new(proxy_url)?;
+pub async fn bv_video_info(bvid: String) -> Result<InfoData> {
+    let client = bilibili::Client::new()?;
     let info = client.info(bvid).await?;
     Ok(InfoData {
         title: info.title,
@@ -270,9 +258,8 @@ pub async fn bv_download_video_by_id_with_callback(
     id: String,
     cid: i64,
     download_path: String,
-    proxy_url: Option<String>,
 ) -> Result<()> {
-    let client = bilibili::Client::new(proxy_url)?;
+    let client = bilibili::Client::new()?;
     let audio_urls = client.audio_urls(id.clone(), cid).await?;
     let (tx, mut rx) = mpsc::channel(SINK_CHANNEL_SIZE);
 

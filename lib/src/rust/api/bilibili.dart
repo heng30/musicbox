@@ -8,23 +8,19 @@ import 'data.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 Future<List<String>> bvFetchIds(
-        {required String keyword,
-        required BigInt maxIdCount,
-        String? proxyUrl}) =>
-    RustLib.instance.api.crateApiBilibiliBvFetchIds(
-        keyword: keyword, maxIdCount: maxIdCount, proxyUrl: proxyUrl);
-
-Future<InfoData> bvVideoInfo({required String bvid, String? proxyUrl}) =>
+        {required String keyword, required BigInt maxIdCount}) =>
     RustLib.instance.api
-        .crateApiBilibiliBvVideoInfo(bvid: bvid, proxyUrl: proxyUrl);
+        .crateApiBilibiliBvFetchIds(keyword: keyword, maxIdCount: maxIdCount);
+
+Future<InfoData> bvVideoInfo({required String bvid}) =>
+    RustLib.instance.api.crateApiBilibiliBvVideoInfo(bvid: bvid);
 
 Stream<ProgressData> bvDownloadVideoByIdWithCallback(
         {required String id,
         required PlatformInt64 cid,
-        required String downloadPath,
-        String? proxyUrl}) =>
+        required String downloadPath}) =>
     RustLib.instance.api.crateApiBilibiliBvDownloadVideoByIdWithCallback(
-        id: id, cid: cid, downloadPath: downloadPath, proxyUrl: proxyUrl);
+        id: id, cid: cid, downloadPath: downloadPath);
 
 String bvWatchUrl({required String id}) =>
     RustLib.instance.api.crateApiBilibiliBvWatchUrl(id: id);

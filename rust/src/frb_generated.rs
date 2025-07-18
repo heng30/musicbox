@@ -109,7 +109,6 @@ fn wire__crate__api__bilibili__bv_download_video_by_id_with_callback_impl(
             let api_id = <String>::sse_decode(&mut deserializer);
             let api_cid = <i64>::sse_decode(&mut deserializer);
             let api_download_path = <String>::sse_decode(&mut deserializer);
-            let api_proxy_url = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
@@ -120,7 +119,6 @@ fn wire__crate__api__bilibili__bv_download_video_by_id_with_callback_impl(
                                 api_id,
                                 api_cid,
                                 api_download_path,
-                                api_proxy_url,
                             )
                             .await?;
                         Ok(output_ok)
@@ -155,17 +153,13 @@ fn wire__crate__api__bilibili__bv_fetch_ids_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_keyword = <String>::sse_decode(&mut deserializer);
             let api_max_id_count = <usize>::sse_decode(&mut deserializer);
-            let api_proxy_url = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
-                        let output_ok = crate::api::bilibili::bv_fetch_ids(
-                            api_keyword,
-                            api_max_id_count,
-                            api_proxy_url,
-                        )
-                        .await?;
+                        let output_ok =
+                            crate::api::bilibili::bv_fetch_ids(api_keyword, api_max_id_count)
+                                .await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -197,13 +191,11 @@ fn wire__crate__api__bilibili__bv_video_info_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_bvid = <String>::sse_decode(&mut deserializer);
-            let api_proxy_url = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
-                        let output_ok =
-                            crate::api::bilibili::bv_video_info(api_bvid, api_proxy_url).await?;
+                        let output_ok = crate::api::bilibili::bv_video_info(api_bvid).await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -512,12 +504,11 @@ fn wire__crate__api__bilibili__bilibili__Client_new_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_proxy_url = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || {
-                        let output_ok = crate::api::bilibili::bilibili::Client::new(api_proxy_url)?;
+                        let output_ok = crate::api::bilibili::bilibili::Client::new()?;
                         Ok(output_ok)
                     })(),
                 )
@@ -1931,17 +1922,6 @@ impl SseDecode for crate::api::data::MsgType {
     }
 }
 
-impl SseDecode for Option<String> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        if (<bool>::sse_decode(deserializer)) {
-            return Some(<String>::sse_decode(deserializer));
-        } else {
-            return None;
-        }
-    }
-}
-
 impl SseDecode for Option<Sender<ProgressData>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3280,16 +3260,6 @@ impl SseEncode for crate::api::data::MsgType {
             },
             serializer,
         );
-    }
-}
-
-impl SseEncode for Option<String> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <bool>::sse_encode(self.is_some(), serializer);
-        if let Some(value) = self {
-            <String>::sse_encode(value, serializer);
-        }
     }
 }
 

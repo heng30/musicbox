@@ -156,9 +156,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   MsgType dco_decode_msg_type(dynamic raw);
 
   @protected
-  String? dco_decode_opt_String(dynamic raw);
-
-  @protected
   SenderProgressData?
       dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSenderProgressData(
           dynamic raw);
@@ -335,9 +332,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   MsgType sse_decode_msg_type(SseDeserializer deserializer);
-
-  @protected
-  String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
   SenderProgressData?
@@ -519,9 +513,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_msg_type(MsgType self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
   void

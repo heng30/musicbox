@@ -34,7 +34,6 @@ IconData downloadStateIcon(DownloadState state) {
 
 class Info {
   final InfoData raw;
-  ProxyType proxyType;
   String extention;
   String albumArtImagePath;
 
@@ -140,7 +139,6 @@ class Info {
 
   Info({
     required this.raw,
-    this.proxyType = ProxyType.youtube,
     this.extention = "mp3",
     String? albumArtImagePath,
     bool isPlaying = false,
@@ -148,10 +146,6 @@ class Info {
   })  : _isPlaying = isPlaying.obs,
         _downloadState = downloadState.obs,
         albumArtImagePath = albumArtImagePath ?? Albums.youtubeAsset;
-
-  String? proxyUrl() {
-    return Get.find<SettingController>().proxy.url(proxyType);
-  }
 }
 
 class FindController extends GetxController {

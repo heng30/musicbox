@@ -143,44 +143,6 @@ class _SettingFindPageState extends State<SettingFindPage> {
             FilteringTextInputFormatter.digitsOnly
           ],
         ),
-        const SizedBox(height: CTheme.padding * 5),
-        SettingSwitch(
-          margin: EdgeInsets.zero,
-          title: settingController.find.enableYoutubeSearch
-              ? '已启用Youtube搜索'.tr
-              : '未启用Youtube搜索'.tr,
-          isOn: settingController.find.enableYoutubeSearch,
-          icon: Icons.smart_display,
-          onChanged: (v) => settingController.find.enableYoutubeSearch = v,
-        ),
-        const SizedBox(height: CTheme.padding * 5),
-        SettingSwitch(
-          margin: EdgeInsets.zero,
-          title: settingController.find.enableBilibiliSearch
-              ? '已启用Bilibili搜索'.tr
-              : '未启用Bilibili搜索'.tr,
-          isOn: settingController.find.enableBilibiliSearch,
-          icon: Icons.smart_display,
-          onChanged: (v) => settingController.find.enableBilibiliSearch = v,
-        ),
-      ],
-    );
-  }
-
-  Widget buildOthers(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: CTheme.margin * 5, width: double.infinity),
-        if (isFFmpegKitSupportPlatform())
-          SettingSwitch(
-            margin: EdgeInsets.zero,
-            title: settingController.find.enableVideoToAudio
-                ? '已启用视频转音频'.tr
-                : '未启用视频转音频'.tr,
-            isOn: settingController.find.enableVideoToAudio,
-            icon: Icons.transform,
-            onChanged: (v) => settingController.find.enableVideoToAudio = v,
-          ),
       ],
     );
   }
@@ -194,7 +156,6 @@ class _SettingFindPageState extends State<SettingFindPage> {
         child: ListView(
           children: [
             buildSearch(context, focusScopeNode),
-            buildOthers(context),
           ],
         ),
       ),

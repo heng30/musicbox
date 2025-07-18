@@ -25,8 +25,8 @@ abstract class Client implements RustOpaqueInterface {
   Future<BvInfo> info({required String bvid});
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
-  static Future<Client> newInstance({String? proxyUrl}) => RustLib.instance.api
-      .crateApiBilibiliBilibiliClientNew(proxyUrl: proxyUrl);
+  static Future<Client> newInstance() =>
+      RustLib.instance.api.crateApiBilibiliBilibiliClientNew();
 
   Future<VideoUrl> videoUrl(
       {required String bvid,

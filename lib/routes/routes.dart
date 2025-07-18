@@ -12,7 +12,6 @@ import "../pages/about.dart";
 import "../pages/donate.dart";
 import "../pages/feedback.dart";
 import '../pages/setting/settings.dart';
-import '../pages/setting/proxy.dart';
 import '../pages/setting/find.dart';
 
 class AppPage {
@@ -54,10 +53,6 @@ class AppPage {
       name: "/settings",
       page: () => const SettingsPage(),
       children: [
-        GetPage(
-          name: "/proxy",
-          page: () => const SettingProxyPage(),
-        ),
         GetPage(
           name: "/find",
           page: () => const SettingFindPage(),
