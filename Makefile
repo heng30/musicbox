@@ -21,14 +21,6 @@ build-x64:
 	fvm flutter build apk ${android-build-flag} --target-platform=android-x64
 	cp build/app/outputs/flutter-apk/app-release.apk build/musicbox-x64-${version}.apk
 
-build-action:
-	flutter build apk ${android-build-flag} --target-platform=android-arm
-	cp build/app/outputs/flutter-apk/app-release.apk build/musicbox-arm-${version}.apk
-	flutter build apk ${android-build-flag} --target-platform=android-arm64
-	cp build/app/outputs/flutter-apk/app-release.apk build/musicbox-arm64-${version}.apk
-	flutter build apk ${android-build-flag} --target-platform=android-x64
-	cp build/app/outputs/flutter-apk/app-release.apk build/musicbox-x64-${version}.apk
-
 clean:
 	fvm flutter clean
 	- rm -rf ./rust/target
