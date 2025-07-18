@@ -24,6 +24,13 @@ jobs:
           toolchain: stable
       - run: echo "end install Rust..."
 
+      - run: echo "start install sdk..."
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      - run: sdkmanager tools platform-tools
+      - run: sdkmanager "platforms;android-35"
+      - run: echo "end install sdk..."
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
