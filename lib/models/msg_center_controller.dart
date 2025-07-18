@@ -17,7 +17,7 @@ class MsgCenterController extends GetxController {
     stream.listen(
       (item) {
         switch (item.ty) {
-          case MsgType.youtubeDownloadError:
+          case MsgType.downloadError:
             updateFindInfoListDownloadStatusToError(item.data);
             break;
           case MsgType.plainText:

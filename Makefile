@@ -11,30 +11,24 @@ debug:
 
 build-arm:
 	fvm flutter build apk ${android-build-flag} --target-platform=android-arm
-	cp build/app/outputs/flutter-apk/app-release.apk musicbox-arm-${version}.apk
+	cp build/app/outputs/flutter-apk/app-release.apk build/musicbox-arm-${version}.apk
 
 build-arm64:
 	fvm flutter build apk ${android-build-flag} --target-platform=android-arm64
-	cp build/app/outputs/flutter-apk/app-release.apk musicbox-arm64-${version}.apk
+	cp build/app/outputs/flutter-apk/app-release.apk build/musicbox-arm64-${version}.apk
 
 build-x64:
 	fvm flutter build apk ${android-build-flag} --target-platform=android-x64
-	cp build/app/outputs/flutter-apk/app-release.apk musicbox-x64-${version}.apk
+	cp build/app/outputs/flutter-apk/app-release.apk build/musicbox-x64-${version}.apk
 
 clean:
 	fvm flutter clean
 	- rm -rf ./rust/target
 	- rm -rf ./flutter_jank_metrics_*.json
 
-# just call this cmd once
-# integrate-rust:
-# 	flutter_rust_bridge_codegen integrate
-
-# generate dart codes
 generate-rust:
 	flutter_rust_bridge_codegen generate
 
-# watch the rust codes and generate dart codes on the background
 generate-rust-watch:
 	flutter_rust_bridge_codegen generate --watch
 

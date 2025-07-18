@@ -78,7 +78,7 @@ class MsgItem {
 
 enum MsgType {
   plainText,
-  youtubeDownloadError,
+  downloadError,
   ;
 }
 

@@ -22,7 +22,7 @@ pub struct ProgressData {
 #[derive(Debug, Clone)]
 pub enum MsgType {
     PlainText,
-    YoutubeDownloadError,
+    DownloadError,
 }
 
 #[derive(Debug, Clone)]

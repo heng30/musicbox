@@ -1,10 +1,10 @@
 use anyhow::Result;
+use regex::Regex;
 use scraper::{Html, Selector};
 use tokio::{fs, io::AsyncWriteExt};
 use url::Url;
-use regex::Regex;
 
-const LYRIC_BASE_URL: &str = "https://www.musicenc.com";
+const LYRIC_BASE_URL: &str = "https://www.toomic.com";
 
 #[derive(Default, Clone, Debug)]
 pub struct SearchLyricItem {
@@ -171,7 +171,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_lyric_all() -> Result<()> {
-        let items = search_lyric("love story".to_string()).await?;
+        let items = search_lyric("泪桥".to_string()).await?;
         assert!(items.len() > 0);
 
         let lyric = get_lyric(items[0].token.clone()).await?;

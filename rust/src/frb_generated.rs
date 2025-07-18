@@ -1916,7 +1916,7 @@ impl SseDecode for crate::api::data::MsgType {
         let mut inner = <i32>::sse_decode(deserializer);
         return match inner {
             0 => crate::api::data::MsgType::PlainText,
-            1 => crate::api::data::MsgType::YoutubeDownloadError,
+            1 => crate::api::data::MsgType::DownloadError,
             _ => unreachable!("Invalid variant for MsgType: {}", inner),
         };
     }
@@ -2629,7 +2629,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::data::MsgType {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
             Self::PlainText => 0.into_dart(),
-            Self::YoutubeDownloadError => 1.into_dart(),
+            Self::DownloadError => 1.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -3253,7 +3253,7 @@ impl SseEncode for crate::api::data::MsgType {
         <i32>::sse_encode(
             match self {
                 crate::api::data::MsgType::PlainText => 0,
-                crate::api::data::MsgType::YoutubeDownloadError => 1,
+                crate::api::data::MsgType::DownloadError => 1,
                 _ => {
                     unimplemented!("");
                 }

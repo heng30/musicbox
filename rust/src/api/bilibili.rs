@@ -155,7 +155,21 @@ pub mod bilibili {
 
                 if let Some(value) = cap.get(1) {
                     log::debug!("Found: {}", value.as_str());
-                    ids.insert(value.as_str().to_string());
+
+                    //  检查音频链接是否有效
+                    let bvid = value.as_str().to_string();
+                    if let Ok(info) = bv_video_info(bvid.clone()).await {
+                        if let Ok(audio_urls) = self.audio_urls(bvid.clone(), info.bv_cid).await {
+                            for audio_url in audio_urls {
+                                if let Ok(len) = self.content_length(audio_url).await {
+                                    if len > 0 {
+                                        ids.insert(bvid);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -288,7 +302,7 @@ pub async fn bv_download_video_by_id_with_callback(
                     };
 
                     errs.push(MsgItem {
-                        ty: MsgType::YoutubeDownloadError,
+                        ty: MsgType::DownloadError,
                         data: serde_json::to_string(&de).unwrap_or("{}".to_string()),
                     });
                 }
@@ -324,7 +338,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_bv_fetch_ids() -> Result<()> {
-        let ids = bv_fetch_ids("泪桥".to_string(), 10, None).await?;
+        let ids = bv_fetch_ids("泪桥".to_string(), 10).await?;
         assert!(ids.len() > 0);
 
         for id in ids.into_iter() {
@@ -336,7 +350,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_bv_video_info() -> Result<()> {
-        let info = bv_video_info(BV_ID.to_string(), None).await?;
+        let info = bv_video_info(BV_ID.to_string()).await?;
         println!("{info:?}");
 
         Ok(())
@@ -350,8 +364,8 @@ mod tests {
         let (tx, mut rx) = mpsc::channel(SINK_CHANNEL_SIZE);
 
         tokio::spawn(async move {
-            let info = bv_video_info(BV_ID.to_string(), None).await.unwrap();
-            let client = bilibili::Client::new(None).unwrap();
+            let info = bv_video_info(BV_ID.to_string()).await.unwrap();
+            let client = bilibili::Client::new().unwrap();
             let audio_urls = client
                 .audio_urls(BV_ID.to_string(), info.bv_cid)
                 .await
