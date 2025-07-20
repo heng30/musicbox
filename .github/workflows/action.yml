@@ -18,22 +18,19 @@ jobs:
           sudo apt-get install -y ninja-build llvm
           curl -fsSL https://fvm.app/install.sh | bash
 
-      - run: echo "start install Rust..."
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - run: echo "end install Rust..."
 
-      - name: echo "start building..."
-      - run: make build-action
-      - run: echo "end build..."
+      - name: Build APK
+        shell: bash
+        run: make build-action
 
       - name: Get the release version from the tag
         shell: bash
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - run: echo "start packing..."
       - name: Export package
         shell: bash
         if: startsWith(github.ref, 'refs/tags/')
@@ -48,7 +45,6 @@ jobs:
 
           output="$binary_name-x64-${{ env.VERSION }}.apk"
           echo "ASSET_X64=build/$output" >> $GITHUB_ENV
-      - run: echo "end packing..."
 
       - name: Upload the package
         uses: softprops/action-gh-release@v2
