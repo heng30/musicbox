@@ -16,6 +16,7 @@ jobs:
       - run: |
           sudo apt-get update -y
           sudo apt-get install -y ninja-build llvm
+          curl -fsSL https://fvm.app/install.sh | bash
 
       - run: echo "start install Rust..."
       - name: Install Rust
@@ -24,17 +25,9 @@ jobs:
           toolchain: stable
       - run: echo "end install Rust..."
 
-      - name: Install Android SDK
-        uses: android-actions/setup-android@v2
-        with:
-          android-sdk-platform: '35'
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: 3.22.0
-      - run: flutter pub get
+      - name: echo "start building..."
       - run: make build-action
+      - run: echo "end build..."
 
       - name: Get the release version from the tag
         shell: bash
