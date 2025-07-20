@@ -7,7 +7,6 @@ import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:audiotagger/audiotagger.dart';
 
 import './song.dart';
 import './albums.dart';
@@ -264,8 +263,6 @@ class PlaylistController extends GetxController {
 
     var songs = <Song>[];
     if (result != null) {
-      final tagger = Audiotagger();
-
       for (var item in result.xFiles) {
         final entrys = basenameWithoutExtension(item.name).split('_');
         String trackName = entrys.first;
@@ -273,18 +270,6 @@ class PlaylistController extends GetxController {
 
         if (entrys.length > 1) {
           artistName = entrys[1];
-        }
-
-        if (item.path.endsWith(".mp3")) {
-          try {
-            final tag = await tagger.readTags(path: item.path);
-            trackName = tag?.title ?? entrys.first;
-            artistName = tag?.artist ?? "";
-          } catch (e) {
-            Logger().d("$e");
-          } finally {
-            if (trackName.isEmpty) trackName = entrys.first;
-          }
         }
 
         songs.add(
