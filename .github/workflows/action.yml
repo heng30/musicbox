@@ -25,7 +25,7 @@ jobs:
 
       - name: Build APK
         shell: bash
-        run: make build-action
+        run: make
 
       - name: Get the release version from the tag
         shell: bash
