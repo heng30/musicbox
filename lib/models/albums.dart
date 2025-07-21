@@ -2,7 +2,6 @@ import 'dart:math';
 
 class Albums {
   static const String noneAsset = "assets/images/album_none.png";
-  static const String youtubeAsset = "assets/images/Youtube.png";
   static const String bilibiliAsset = "assets/images/Bilibili.png";
 
   static int _currentIndex = 0;

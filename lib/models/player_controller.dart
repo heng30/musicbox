@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:musicbox/models/albums.dart';
 import 'package:path/path.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import './song.dart';
@@ -95,6 +97,24 @@ class PlayerController extends GetxController {
     }
 
     return src;
+  }
+
+  Image genAlbumArtImage(String path) {
+    if (path.contains("assets/images/")) {
+      return Image.asset(
+        path,
+        fit: BoxFit.cover,
+      );
+    } else {
+      try {
+        return Image.file(File(path), fit: BoxFit.cover);
+      } catch (_) {
+        return Image.asset(
+          Albums.random(),
+          fit: BoxFit.cover,
+        );
+      }
+    }
   }
 
   Future<void> setLyric(int index) async {

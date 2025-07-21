@@ -13,6 +13,7 @@ import '../models/albums.dart';
 import '../theme/theme.dart';
 import '../widgets/nodata.dart';
 import '../widgets/searchbar.dart';
+import '../models/player_controller.dart';
 import '../models/find_controller.dart';
 import '../models/setting_controller.dart';
 import '../src/rust/api/bilibili.dart' as bilibili;
@@ -26,6 +27,7 @@ class FindPage extends StatefulWidget {
 
 class _FindPageState extends State<FindPage> {
   final findController = Get.find<FindController>();
+  final playerController = Get.find<PlayerController>();
   final settingController = Get.find<SettingController>();
 
   // no need to dispose
@@ -77,11 +79,6 @@ class _FindPageState extends State<FindPage> {
 
   void search(String text) async {
     focusNodeSearch.unfocus();
-    if (!settingController.find.enableBilibiliSearch) {
-      Get.snackbar("提 示".tr, "没有启用Bilibili搜索".tr,
-          snackPosition: SnackPosition.BOTTOM);
-      return;
-    }
 
     if (findController.isSearching) {
       Get.snackbar("提 示".tr, "正在搜索...".tr, snackPosition: SnackPosition.BOTTOM);
@@ -99,16 +96,12 @@ class _FindPageState extends State<FindPage> {
     findController.retainDownloadingInfo();
     findController.isSearching = true;
 
-    if (settingController.find.enableBilibiliSearch) {
-      try {
-        await searchBilibili(text);
-      } catch (e) {
-        Get.snackbar("搜索Bilibili失败".tr, e.toString(),
-            snackPosition: SnackPosition.BOTTOM);
-        searchErrorCount++;
-      }
-    } else {
-      targetSearchErrorCount++;
+    try {
+      await searchBilibili(text);
+    } catch (e) {
+      Get.snackbar("搜索Bilibili失败".tr, e.toString(),
+          snackPosition: SnackPosition.BOTTOM);
+      searchErrorCount++;
     }
 
     if (searchErrorCount != targetSearchErrorCount) {
@@ -119,7 +112,13 @@ class _FindPageState extends State<FindPage> {
   }
 
   Future<void> downlaodBilibili(Info info) async {
-    final progressStream = bilibili.bvDownloadVideoByIdWithCallback(
+    // 下载封面图
+    await bilibili.bvDownloadPic(
+        url: info.raw.picUrl,
+        downloadPath: await findController.downloadPicPath(info));
+
+    // 下载音频
+    final progressStream = bilibili.bvDownloadAudioByIdWithCallback(
       id: info.raw.videoId,
       cid: info.raw.bvCid,
       downloadPath: await findController.downloadPath(info),
@@ -298,7 +297,8 @@ class _FindPageState extends State<FindPage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () async {
-                            Uri url = Uri.parse(bilibili.bvWatchUrl(id: info.raw.videoId));
+                            Uri url = Uri.parse(
+                                bilibili.bvWatchUrl(id: info.raw.videoId));
                             try {
                               await launchUrl(url);
                             } catch (e) {
@@ -343,7 +343,8 @@ class _FindPageState extends State<FindPage> {
                             style: Theme.of(context).textTheme.titleMedium),
                       ),
                       Expanded(
-                        child: Text(formattedTime(info.raw.lengthSeconds.toInt())),
+                        child:
+                            Text(formattedTime(info.raw.lengthSeconds.toInt())),
                       ),
                     ],
                   ),
@@ -359,7 +360,8 @@ class _FindPageState extends State<FindPage> {
                             style: Theme.of(context).textTheme.titleMedium),
                       ),
                       Expanded(
-                        child: Text(formattedNumber(info.raw.viewCount.toInt())),
+                        child:
+                            Text(formattedNumber(info.raw.viewCount.toInt())),
                       ),
                     ],
                   ),
@@ -477,7 +479,7 @@ class _FindPageState extends State<FindPage> {
       ),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(CTheme.borderRadius),
-        child: Image.asset(info.albumArtImagePath),
+        child: playerController.genAlbumArtImage(info.albumArtImagePath),
       ),
       trailing: SizedBox(
         width: 100,

@@ -4,6 +4,7 @@ use super::{
 };
 use crate::frb_generated::StreamSink;
 use anyhow::Result;
+use std::path::Path;
 use tokio::{
     fs,
     io::AsyncWriteExt,
@@ -46,6 +47,19 @@ pub mod bilibili {
                 agent: reqwest::Client::builder().user_agent(AGENT).build()?,
                 content_length: AtomicU64::new(0),
             })
+        }
+
+        pub async fn request_pic(&self, url: String) -> Result<Vec<u8>> {
+            log::debug!("Request : {}", url);
+            let req = self.agent.get(url);
+            let rsp = req
+                .send()
+                .await?
+                .error_for_status()?
+                .bytes()
+                .await?
+                .to_vec();
+            Ok(rsp)
         }
 
         async fn request_web(&self, url: String) -> Result<String> {
@@ -250,6 +264,7 @@ pub async fn bv_video_info(bvid: String) -> Result<InfoData> {
         video_id: info.bvid,
         short_description: info.desc,
         length_seconds: info.duration as u64,
+        pic_url: info.pic,
 
         author: match info.desc_v2.first() {
             None => info.owner.name.clone(),
@@ -267,7 +282,17 @@ pub async fn bv_video_info(bvid: String) -> Result<InfoData> {
     })
 }
 
-pub async fn bv_download_video_by_id_with_callback(
+// 下载封面图
+pub async fn bv_download_pic(url: String, download_path: String) -> Result<()> {
+    let client = bilibili::Client::new()?;
+    let data = client.request_pic(url).await?;
+    let mut file = fs::File::create(Path::new(&download_path)).await?;
+    file.write_all(&data).await?;
+    Ok(())
+}
+
+// 下载音频
+pub async fn bv_download_audio_by_id_with_callback(
     sink: StreamSink<ProgressData>,
     id: String,
     cid: i64,

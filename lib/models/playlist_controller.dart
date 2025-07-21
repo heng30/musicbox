@@ -253,12 +253,12 @@ class PlaylistController extends GetxController {
   }
 
   static Future<List<Song>> loadLocal() async {
+    final findController = Get.find<FindController>();
+
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.any,
-      // type: FileType.custom,
-      // allowedExtensions: ['mp3', 'mp4', 'm4s', 'wav', 'flac', 'ogg'],
-      initialDirectory: Get.find<FindController>().downloadDir,
+      initialDirectory: findController.downloadDir,
     );
 
     var songs = <Song>[];
@@ -272,11 +272,25 @@ class PlaylistController extends GetxController {
           artistName = entrys[1];
         }
 
+        var albumArtImagePath =
+            (await findController.getDownloadsPicDirectoryWithoutCreate()) +
+                "/" +
+                trackName +
+                "_" +
+                artistName +
+                ".jpg";
+
+        Logger().d("${albumArtImagePath}");
+
+        if (!(await File(albumArtImagePath).exists())) {
+          albumArtImagePath = Albums.next();
+        }
+
         songs.add(
           Song(
             songName: trackName,
             artistName: artistName,
-            albumArtImagePath: Albums.next(),
+            albumArtImagePath: albumArtImagePath,
             audioPath: item.path,
           ),
         );

@@ -8,9 +8,8 @@ pub struct InfoData {
     pub short_description: String,
     pub view_count: u64,
     pub length_seconds: u64,
-
-    // only for bilibili
     pub bv_cid: i64,
+    pub pic_url: String,
 }
 
 #[derive(Debug, Clone, Default)]

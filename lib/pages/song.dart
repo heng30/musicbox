@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:mmoo_lyric/lyric_widget.dart';
+import 'package:musicbox/models/albums.dart';
 
 import '../theme/theme.dart';
 import '../theme/controller.dart';
@@ -198,6 +200,11 @@ class _SongPageState extends State<SongPage> {
     final orientation = MediaQuery.of(context).orientation;
     final song =
         playlistController.playlist[playlistController.currentSongIndex!];
+    final albumArtImage =
+        playerController.genAlbumArtImage(song.albumArtImagePath);
+
+    // final log = Logger();
+    // log.d("---- ${song.albumArtImagePath}");
 
     return NeuBox(
       child: Column(
@@ -208,10 +215,7 @@ class _SongPageState extends State<SongPage> {
               child: GestureDetector(
                 child: SizedBox(
                   width: double.infinity,
-                  child: Image.asset(
-                    song.albumArtImagePath,
-                    fit: BoxFit.cover,
-                  ),
+                  child: albumArtImage,
                 ),
                 onTap: () {
                   songLyricController.isShow = !songLyricController.isShow;
@@ -226,10 +230,7 @@ class _SongPageState extends State<SongPage> {
                 child: GestureDetector(
                   child: SizedBox(
                     width: double.infinity,
-                    child: Image.asset(
-                      song.albumArtImagePath,
-                      fit: BoxFit.cover,
-                    ),
+                    child: albumArtImage,
                   ),
                   onTap: () {
                     songLyricController.isShow = !songLyricController.isShow;

@@ -15,29 +15,21 @@
 [Demo Video](https://www.bilibili.com/video/BV1rT421U76C/?vd_source=da23da82658adda9cbdfd045a9e6daf7#reply1704805075)
 
 #### Introduction
-It's a music player designed for Android platform. However, you can build it for Linux that is my development environment. If you want to build a Macos, ios or Windows version, you can try it without guarantee it will work. It's based on `Flutter` and `Rust`.
+It's a music player designed for Android platform. Based on `Flutter` and `Rust`.
 
 #### Features
 - [x] play local music
 - [x] manage music playlist
-- [x] search and download youtube(video) and bilibili(audio) music
+- [x] search and download bilibili audio
 - [x] search, preview and download lyric
 - [x] adjust playing lyric speed
-- [x] setting: light/dark theme, Chinese/English language, http/socks5 proxy for downloading music
 - [x] backup and recover the database and config locally
 
 #### How to build?
-- Install `Rust` and `Cargo`
-- Install `Flutter` and `FVM`(optional)
-- Install Android `sdk`, `ndk`, `jdk`, and set environment variables
+- Install `Cargo` and `FVM`
 - Run `make` to build a release version android APK
-- Run `make run` to run it on desktop platform
+- Run `make debug` to debug
 - Refer to [Makefile](./Makefile) for more information
-
-#### Development Environment
-- Linux: 6.7.2-arch1-2 #1 SMP PREEMPT_DYNAMIC Wed, 31 Jan 2024 09:22:15 +0000 x86_64 GNU/Linux
-- Flutter version: 3.22.0
-- Rust version: 1.77.1
 
 #### Reference
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)

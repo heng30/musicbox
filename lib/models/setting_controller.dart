@@ -8,86 +8,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../lang/translation_service.dart';
 
-class Proxy implements TomlEncodableValue {
-  Proxy({
-    this.httpUrl = "127.0.0.1",
-    this.httpPort = 3128,
-    this.socks5Url = "127.0.0.1",
-    this.socks5Port = 1080,
-    bool enableYoutubeHttp = false,
-    bool enableYoutubeSocks5 = false,
-    bool enableBilibiliHttp = false,
-    bool enableBilibiliSocks5 = false,
-  })  : _enableYoutubeHttp = enableYoutubeHttp.obs,
-        _enableYoutubeSocks5 = enableYoutubeSocks5.obs,
-        _enableBilibiliHttp = enableBilibiliHttp.obs,
-        _enableBilibiliSocks5 = enableBilibiliSocks5.obs;
-
-  @override
-  dynamic toTomlValue() {
-    return {
-      'httpUrl': httpUrl,
-      'httpPort': httpPort,
-      'socks5Url': httpUrl,
-      'socks5Port': socks5Port,
-      'enableYoutubeHttp': enableYoutubeHttp,
-      'enableYoutubeSocks5': enableYoutubeSocks5,
-      'enableBilibiliHttp': enableBilibiliHttp,
-      'enableBilibiliSocks5': enableBilibiliSocks5,
-    };
-  }
-
-  void fromMap(Map<String, dynamic> m) {
-    httpUrl = m['httpUrl'] ?? "127.0.0.1";
-    httpPort = m['httpPort'] ?? 3128;
-    socks5Url = m['socks5Url'] ?? "127.0.0.1";
-    socks5Port = m['socks5Port'] ?? 1080;
-    enableYoutubeHttp = m['enableYoutubeHttp'] ?? false;
-    enableYoutubeSocks5 = m['enableYoutubeSocks5'] ?? false;
-    enableBilibiliHttp = m['enableBilibiliHttp'] ?? false;
-    enableBilibiliSocks5 = m['enableBilibiliSocks5'] ?? false;
-  }
-
-  String httpUrl;
-  int httpPort;
-
-  String socks5Url;
-  int socks5Port;
-
-  final RxBool _enableYoutubeHttp;
-  final RxBool _enableYoutubeSocks5;
-  final RxBool _enableBilibiliHttp;
-  final RxBool _enableBilibiliSocks5;
-
-  bool get enableYoutubeHttp => _enableYoutubeHttp.value;
-  set enableYoutubeHttp(bool v) => _enableYoutubeHttp.value = v;
-
-  bool get enableYoutubeSocks5 => _enableYoutubeSocks5.value;
-  set enableYoutubeSocks5(bool v) => _enableYoutubeSocks5.value = v;
-
-  bool get enableBilibiliHttp => _enableBilibiliHttp.value;
-  set enableBilibiliHttp(bool v) => _enableBilibiliHttp.value = v;
-
-  bool get enableBilibiliSocks5 => _enableBilibiliSocks5.value;
-  set enableBilibiliSocks5(bool v) => _enableBilibiliSocks5.value = v;
-}
-
 class Find implements TomlEncodableValue {
   int searchCount = 10;
   int minSecondLength = 90;
   int maxSecondLength = 600;
-
-  final _enableYoutubeSearch = false.obs;
-  bool get enableYoutubeSearch => _enableYoutubeSearch.value;
-  set enableYoutubeSearch(bool v) => _enableYoutubeSearch.value = v;
-
-  final _enableBilibiliSearch = true.obs;
-  bool get enableBilibiliSearch => _enableBilibiliSearch.value;
-  set enableBilibiliSearch(bool v) => _enableBilibiliSearch.value = v;
-
-  final _enableVideoToAudio = false.obs;
-  bool get enableVideoToAudio => _enableVideoToAudio.value;
-  set enableVideoToAudio(bool v) => _enableVideoToAudio.value = v;
 
   Find({
     this.searchCount = 10,
@@ -101,9 +25,6 @@ class Find implements TomlEncodableValue {
       'searchCount': searchCount,
       'minSecondLength': minSecondLength,
       'maxSecondLength': maxSecondLength,
-      'enableYoutubeSearch': enableYoutubeSearch,
-      'enableBilibiliSearch': enableBilibiliSearch,
-      'enableVideoToAudio': enableVideoToAudio,
     };
   }
 
@@ -111,9 +32,6 @@ class Find implements TomlEncodableValue {
     searchCount = m['searchCount'] ?? 10;
     minSecondLength = m['minSecondLength'] ?? 90;
     maxSecondLength = m['maxSecondLength'] ?? 600;
-    enableYoutubeSearch = m['enableYoutubeSearch'] ?? false;
-    enableBilibiliSearch = m['enableBilibiliSearch'] ?? true;
-    enableVideoToAudio = m['enableVideoToAudio'] ?? false;
   }
 }
 
@@ -124,7 +42,6 @@ class SettingController extends GetxController {
   double playbackSpeed = 1.0;
   String appid = const Uuid().v4();
 
-  Proxy proxy = Proxy();
   Find find = Find();
 
   late String configPath;
@@ -165,7 +82,6 @@ class SettingController extends GetxController {
       appid = conf['appid'] ?? const Uuid().v4();
       playbackSpeed = conf['playbackSpeed'] ?? 1.0;
       find.fromMap(conf['find']);
-      proxy.fromMap(conf['proxy']);
 
       log.d(conf.toString());
     } catch (e) {
@@ -184,7 +100,6 @@ class SettingController extends GetxController {
       'isLangZh': isLangZh,
       'playbackSpeed': playbackSpeed,
       'find': find,
-      'proxy': proxy,
     }).toString();
 
     final f = File(configPath);

@@ -15,11 +15,16 @@ Future<List<String>> bvFetchIds(
 Future<InfoData> bvVideoInfo({required String bvid}) =>
     RustLib.instance.api.crateApiBilibiliBvVideoInfo(bvid: bvid);
 
-Stream<ProgressData> bvDownloadVideoByIdWithCallback(
+Future<void> bvDownloadPic(
+        {required String url, required String downloadPath}) =>
+    RustLib.instance.api
+        .crateApiBilibiliBvDownloadPic(url: url, downloadPath: downloadPath);
+
+Stream<ProgressData> bvDownloadAudioByIdWithCallback(
         {required String id,
         required PlatformInt64 cid,
         required String downloadPath}) =>
-    RustLib.instance.api.crateApiBilibiliBvDownloadVideoByIdWithCallback(
+    RustLib.instance.api.crateApiBilibiliBvDownloadAudioByIdWithCallback(
         id: id, cid: cid, downloadPath: downloadPath);
 
 String bvWatchUrl({required String id}) =>

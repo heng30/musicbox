@@ -38,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.1.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1488248529;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1172591305;
 
 // Section: executor
 
@@ -80,7 +80,7 @@ fn wire__crate__api__init_app_impl(
         },
     )
 }
-fn wire__crate__api__bilibili__bv_download_video_by_id_with_callback_impl(
+fn wire__crate__api__bilibili__bv_download_audio_by_id_with_callback_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -88,7 +88,7 @@ fn wire__crate__api__bilibili__bv_download_video_by_id_with_callback_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "bv_download_video_by_id_with_callback",
+            debug_name: "bv_download_audio_by_id_with_callback",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -114,13 +114,52 @@ fn wire__crate__api__bilibili__bv_download_video_by_id_with_callback_impl(
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
                         let output_ok =
-                            crate::api::bilibili::bv_download_video_by_id_with_callback(
+                            crate::api::bilibili::bv_download_audio_by_id_with_callback(
                                 api_sink,
                                 api_id,
                                 api_cid,
                                 api_download_path,
                             )
                             .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__bilibili__bv_download_pic_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "bv_download_pic",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_url = <String>::sse_decode(&mut deserializer);
+            let api_download_path = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::bilibili::bv_download_pic(api_url, api_download_path)
+                                .await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -511,6 +550,66 @@ fn wire__crate__api__bilibili__bilibili__Client_new_impl(
                         let output_ok = crate::api::bilibili::bilibili::Client::new()?;
                         Ok(output_ok)
                     })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__bilibili__bilibili__Client_request_pic_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "Client_request_pic",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Client>,
+            >>::sse_decode(&mut deserializer);
+            let api_url = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok = crate::api::bilibili::bilibili::Client::request_pic(
+                            &*api_that_guard,
+                            api_url,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
                 )
             }
         },
@@ -1756,6 +1855,7 @@ impl SseDecode for crate::api::data::InfoData {
         let mut var_viewCount = <u64>::sse_decode(deserializer);
         let mut var_lengthSeconds = <u64>::sse_decode(deserializer);
         let mut var_bvCid = <i64>::sse_decode(deserializer);
+        let mut var_picUrl = <String>::sse_decode(deserializer);
         return crate::api::data::InfoData {
             title: var_title,
             author: var_author,
@@ -1764,6 +1864,7 @@ impl SseDecode for crate::api::data::InfoData {
             view_count: var_viewCount,
             length_seconds: var_lengthSeconds,
             bv_cid: var_bvCid,
+            pic_url: var_picUrl,
         };
     }
 }
@@ -2240,129 +2341,136 @@ fn pde_ffi_dispatcher_primary_impl(
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
         1 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
-        2 => wire__crate__api__bilibili__bv_download_video_by_id_with_callback_impl(
+        2 => wire__crate__api__bilibili__bv_download_audio_by_id_with_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        3 => wire__crate__api__bilibili__bv_fetch_ids_impl(port, ptr, rust_vec_len, data_len),
-        4 => wire__crate__api__bilibili__bv_video_info_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire__crate__api__bilibili__bilibili__Client_audio_urls_impl(
+        3 => wire__crate__api__bilibili__bv_download_pic_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire__crate__api__bilibili__bv_fetch_ids_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire__crate__api__bilibili__bv_video_info_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire__crate__api__bilibili__bilibili__Client_audio_urls_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__bilibili__bilibili__Client_download_impl(
+        8 => wire__crate__api__bilibili__bilibili__Client_download_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__bilibili__bilibili__Client_fetch_ids_impl(
+        9 => wire__crate__api__bilibili__bilibili__Client_fetch_ids_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__bilibili__bilibili__Client_info_impl(
+        10 => wire__crate__api__bilibili__bilibili__Client_info_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => {
+        11 => {
             wire__crate__api__bilibili__bilibili__Client_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        11 => wire__crate__api__bilibili__bilibili__Client_video_url_impl(
+        12 => wire__crate__api__bilibili__bilibili__Client_request_pic_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__api__data__info_data_default_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire__crate__api__data__progress_data_default_impl(port, ptr, rust_vec_len, data_len),
-        14 => {
+        13 => wire__crate__api__bilibili__bilibili__Client_video_url_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        14 => wire__crate__api__data__info_data_default_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire__crate__api__data__progress_data_default_impl(port, ptr, rust_vec_len, data_len),
+        16 => {
             wire__crate__api__data__bilibili__audio_default_impl(port, ptr, rust_vec_len, data_len)
         }
-        15 => wire__crate__api__data__bilibili__bv_info_default_impl(
+        17 => wire__crate__api__data__bilibili__bv_info_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => {
+        18 => {
             wire__crate__api__data__bilibili__dash_default_impl(port, ptr, rust_vec_len, data_len)
         }
-        17 => wire__crate__api__data__bilibili__desc_v_2_default_impl(
+        19 => wire__crate__api__data__bilibili__desc_v_2_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        18 => wire__crate__api__data__bilibili__dimension_default_impl(
+        20 => wire__crate__api__data__bilibili__dimension_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        19 => {
+        21 => {
             wire__crate__api__data__bilibili__durl_default_impl(port, ptr, rust_vec_len, data_len)
         }
-        20 => {
+        22 => {
             wire__crate__api__data__bilibili__owner_default_impl(port, ptr, rust_vec_len, data_len)
         }
-        21 => {
+        23 => {
             wire__crate__api__data__bilibili__page_default_impl(port, ptr, rust_vec_len, data_len)
         }
-        22 => {
+        24 => {
             wire__crate__api__data__bilibili__rights_default_impl(port, ptr, rust_vec_len, data_len)
         }
-        23 => wire__crate__api__data__bilibili__segment_base_default_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        24 => {
-            wire__crate__api__data__bilibili__stat_default_impl(port, ptr, rust_vec_len, data_len)
-        }
-        25 => wire__crate__api__data__bilibili__support_format_default_impl(
+        25 => wire__crate__api__data__bilibili__segment_base_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
         26 => {
+            wire__crate__api__data__bilibili__stat_default_impl(port, ptr, rust_vec_len, data_len)
+        }
+        27 => wire__crate__api__data__bilibili__support_format_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        28 => {
             wire__crate__api__data__bilibili__video_default_impl(port, ptr, rust_vec_len, data_len)
         }
-        27 => wire__crate__api__data__bilibili__video_quality_default_impl(
+        29 => wire__crate__api__data__bilibili__video_quality_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        28 => wire__crate__api__data__bilibili__video_url_default_impl(
+        30 => wire__crate__api__data__bilibili__video_url_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        29 => wire__crate__api__log__init_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire__crate__api__log__init_logger_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire__crate__api__lyric__get_lyric_impl(port, ptr, rust_vec_len, data_len),
-        32 => wire__crate__api__lyric__save_lyric_impl(port, ptr, rust_vec_len, data_len),
-        33 => wire__crate__api__lyric__search_lyric_impl(port, ptr, rust_vec_len, data_len),
-        34 => wire__crate__api__lyric__search_lyric_item_default_impl(
+        31 => wire__crate__api__log__init_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire__crate__api__log__init_logger_impl(port, ptr, rust_vec_len, data_len),
+        33 => wire__crate__api__lyric__get_lyric_impl(port, ptr, rust_vec_len, data_len),
+        34 => wire__crate__api__lyric__save_lyric_impl(port, ptr, rust_vec_len, data_len),
+        35 => wire__crate__api__lyric__search_lyric_impl(port, ptr, rust_vec_len, data_len),
+        36 => wire__crate__api__lyric__search_lyric_item_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        35 => wire__crate__api__msg_center__msg_center_init_impl(port, ptr, rust_vec_len, data_len),
-        36 => wire__crate__api__msg_center__send_impl(port, ptr, rust_vec_len, data_len),
-        37 => wire__crate__api__util__create_dir_all_impl(port, ptr, rust_vec_len, data_len),
+        37 => wire__crate__api__msg_center__msg_center_init_impl(port, ptr, rust_vec_len, data_len),
+        38 => wire__crate__api__msg_center__send_impl(port, ptr, rust_vec_len, data_len),
+        39 => wire__crate__api__util__create_dir_all_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2375,7 +2483,7 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        5 => wire__crate__api__bilibili__bv_watch_url_impl(ptr, rust_vec_len, data_len),
+        6 => wire__crate__api__bilibili__bv_watch_url_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2598,6 +2706,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::data::InfoData {
             self.view_count.into_into_dart().into_dart(),
             self.length_seconds.into_into_dart().into_dart(),
             self.bv_cid.into_into_dart().into_dart(),
+            self.pic_url.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -3136,6 +3245,7 @@ impl SseEncode for crate::api::data::InfoData {
         <u64>::sse_encode(self.view_count, serializer);
         <u64>::sse_encode(self.length_seconds, serializer);
         <i64>::sse_encode(self.bv_cid, serializer);
+        <String>::sse_encode(self.pic_url, serializer);
     }
 }
 

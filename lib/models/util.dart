@@ -3,28 +3,6 @@ import 'package:get/get.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-bool isDesktopPlatform() {
-  return Platform.isMacOS ||
-      Platform.isLinux ||
-      Platform.isWindows ||
-      Platform.isFuchsia;
-}
-
-bool isSqfliteSupportPlatform() {
-  return Platform.isIOS || Platform.isAndroid;
-}
-
-bool isRustSqliteSupportPlatform() {
-  return Platform.isLinux ||
-      Platform.isWindows ||
-      Platform.isMacOS ||
-      Platform.isFuchsia;
-}
-
-bool isFFmpegKitSupportPlatform() {
-  return false;
-}
-
 String formattedTime(int seconds) {
   int hours = (seconds / 3600).truncate();
   int minutes = ((seconds % 3600) / 60).truncate();
@@ -56,29 +34,21 @@ String formattedNumber(int num) {
   return result;
 }
 
-Future<void> ffmpegConvert(String input, String args, String output) async {
-  if (!isFFmpegKitSupportPlatform()) {
-    return;
-  }
-}
-
 Future<bool> getPermission() async {
-  if (Platform.isAndroid) {
-    final androidVersion = await DeviceInfoPlugin().androidInfo;
-    if (androidVersion.version.sdkInt >= 30) {
-      await Permission.manageExternalStorage.request();
-      if (!(await Permission.manageExternalStorage.isGranted)) {
-        Get.snackbar("提 示".tr, "请赋予管理外部存储权限，否则无法保存下载文件".tr,
-            snackPosition: SnackPosition.BOTTOM);
-        return false;
-      }
-    } else {
-      await Permission.storage.request();
-      if (!(await Permission.storage.isGranted)) {
-        Get.snackbar("提 示".tr, "请赋予管理外部存储权限，否则无法保存下载文件".tr,
-            snackPosition: SnackPosition.BOTTOM);
-        return false;
-      }
+  final androidVersion = await DeviceInfoPlugin().androidInfo;
+  if (androidVersion.version.sdkInt >= 30) {
+    await Permission.manageExternalStorage.request();
+    if (!(await Permission.manageExternalStorage.isGranted)) {
+      Get.snackbar("提 示".tr, "请赋予管理外部存储权限，否则无法保存下载文件".tr,
+          snackPosition: SnackPosition.BOTTOM);
+      return false;
+    }
+  } else {
+    await Permission.storage.request();
+    if (!(await Permission.storage.isGranted)) {
+      Get.snackbar("提 示".tr, "请赋予管理外部存储权限，否则无法保存下载文件".tr,
+          snackPosition: SnackPosition.BOTTOM);
+      return false;
     }
   }
 

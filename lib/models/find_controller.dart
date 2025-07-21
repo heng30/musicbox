@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
+// import 'package:path/path.dart' as path;
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import "../models/util.dart";
@@ -90,11 +90,11 @@ class Info {
     _progressStreamSubscription = _progressStream!.listen(
       (value) {
         if (value.totalSize != null && value.totalSize! > BigInt.from(0)) {
-          info.downloadRate = value.currentSize * BigInt.from(100) / value.totalSize!;
+          info.downloadRate =
+              value.currentSize * BigInt.from(100) / value.totalSize!;
         }
       },
       onDone: () async {
-        final settingController = Get.find<SettingController>();
         final playlistController = Get.find<PlaylistController>();
         final filepath = await findController.downloadPath(info);
 
@@ -103,20 +103,8 @@ class Info {
         }
 
         info.downloadState = DownloadState.downloaded;
-
-        if (settingController.find.enableVideoToAudio) {
-          try {
-            await convertVideoToAudio(info);
-          } catch (e) {
-            Logger().d(e);
-            playlistController
-                .add([await Song.fromInfo(info)], isShowMsg: false);
-          }
-        } else {
-          Get.snackbar("下载成功".tr, filepath,
-              snackPosition: SnackPosition.BOTTOM);
-          playlistController.add([await Song.fromInfo(info)], isShowMsg: false);
-        }
+        Get.snackbar("下载成功".tr, filepath, snackPosition: SnackPosition.BOTTOM);
+        playlistController.add([await Song.fromInfo(info)], isShowMsg: false);
       },
       onError: (e) async {
         await removeDownloadFailedFile();
@@ -145,13 +133,14 @@ class Info {
     DownloadState downloadState = DownloadState.undownload,
   })  : _isPlaying = isPlaying.obs,
         _downloadState = downloadState.obs,
-        albumArtImagePath = albumArtImagePath ?? Albums.youtubeAsset;
+        albumArtImagePath = albumArtImagePath ?? Albums.bilibiliAsset;
 }
 
 class FindController extends GetxController {
   final infoList = <Info>[].obs;
   final log = Logger();
   String? downloadDir;
+  String? downloadPicDir;
 
   final _isSearching = false.obs;
   bool get isSearching => _isSearching.value;
@@ -171,6 +160,7 @@ class FindController extends GetxController {
             title: "title-$i",
             author: "author-$i",
             videoId: "vdMTIe5ihYg",
+            picUrl: "",
             bvCid: 0,
             shortDescription: "shortDescription-$i",
             viewCount: BigInt.from(100),
@@ -190,15 +180,18 @@ class FindController extends GetxController {
 
   Future<String> getDownloadsDirectoryWithoutCreate() async {
     try {
-      if (Platform.isAndroid) {
-        final pname = (await PackageInfo.fromPlatform()).packageName;
-        return "/storage/emulated/0/$pname/music";
-      } else {
-        final tmpDir = await getDownloadsDirectory() ??
-            await getApplicationCacheDirectory();
+      final pname = (await PackageInfo.fromPlatform()).packageName;
+      return "/storage/emulated/0/$pname/music";
+    } catch (e) {
+      log.d(e.toString());
+      return "";
+    }
+  }
 
-        return "${tmpDir.path}/music";
-      }
+  Future<String> getDownloadsPicDirectoryWithoutCreate() async {
+    try {
+      final pname = (await PackageInfo.fromPlatform()).packageName;
+      return "/storage/emulated/0/$pname/pic";
     } catch (e) {
       log.d(e.toString());
       return "";
@@ -207,31 +200,18 @@ class FindController extends GetxController {
 
   Future<void> createDownloadDir() async {
     try {
-      if (Platform.isAndroid) {
-        if (!(await getPermission())) {
-          return;
-        }
-
-        final pname = (await PackageInfo.fromPlatform()).packageName;
-        final d = Directory("/storage/emulated/0/$pname/music");
-
-        if (!(await d.exists())) {
-          await d.create(recursive: true);
-        }
-
-        downloadDir = d.path;
-      } else {
-        final tmpDir = await getDownloadsDirectory() ??
-            await getApplicationCacheDirectory();
-
-        final d = Directory("${tmpDir.path}/music");
-
-        if (!(await d.exists())) {
-          await d.create(recursive: true);
-        }
-
-        downloadDir = d.path;
+      if (!(await getPermission())) {
+        return;
       }
+
+      final pname = (await PackageInfo.fromPlatform()).packageName;
+      final d = Directory("/storage/emulated/0/$pname/music");
+
+      if (!(await d.exists())) {
+        await d.create(recursive: true);
+      }
+
+      downloadDir = d.path;
     } catch (e) {
       if (Get.find<SettingController>().isFirstLaunch) {
         log.d("Create music download directory failed. $e");
@@ -258,18 +238,36 @@ class FindController extends GetxController {
     final pname = (await PackageInfo.fromPlatform()).packageName;
     return path.contains(pname);
   }
-}
 
-// TODO
-Future<void> convertVideoToAudio(Info info) async {
-  if (!isFFmpegKitSupportPlatform()) {
-    return;
+  Future<void> createDownloadPicDir() async {
+    try {
+      if (!(await getPermission())) {
+        return;
+      }
+
+      final pname = (await PackageInfo.fromPlatform()).packageName;
+      final d = Directory("/storage/emulated/0/$pname/pic");
+
+      if (!(await d.exists())) {
+        await d.create(recursive: true);
+      }
+
+      downloadPicDir = d.path;
+    } catch (e) {
+      if (Get.find<SettingController>().isFirstLaunch) {
+        log.d("Create music download directory failed. $e");
+      } else {
+        Get.snackbar("创建下载目录失败".tr, e.toString(),
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    }
   }
 
-  final findController = Get.find<FindController>();
-  final mp4Path = await findController.downloadPath(info);
-  final mp3Path = "${path.withoutExtension(mp4Path)}.mp3";
+  Future<String> downloadPicPath(Info info) async {
+    if (downloadPicDir == null) {
+      await createDownloadPicDir();
+    }
 
-  Get.snackbar("开始转换".tr, "$mp4Path -> $mp3Path",
-      snackPosition: SnackPosition.BOTTOM);
+    return "$downloadPicDir/${info.raw.title}_${info.raw.author}.jpg";
+  }
 }

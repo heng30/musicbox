@@ -140,7 +140,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(CTheme.borderRadius),
-                  child: Image.asset(song.albumArtImagePath),
+                  child:
+                      playerController.genAlbumArtImage(song.albumArtImagePath),
                 ),
                 trailing: buildTrailing(context, index),
               ),
@@ -172,7 +173,7 @@ class _HomePageState extends State<HomePage> {
             ),
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(CTheme.borderRadius),
-              child: Image.asset(song.albumArtImagePath),
+              child: playerController.genAlbumArtImage(song.albumArtImagePath),
             ),
             trailing: IconButton(
               icon: playerController.isPlaying

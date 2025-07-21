@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../theme/theme.dart';
 import '../widgets/nodata.dart';
+import '../models/player_controller.dart';
 import '../models/playlist_controller.dart';
 
 class ManagePage extends StatefulWidget {
@@ -15,6 +16,7 @@ class ManagePage extends StatefulWidget {
 
 class _ManagePageState extends State<ManagePage> {
   final playlistController = Get.find<PlaylistController>();
+  final playerController = Get.find<PlayerController>();
 
   Widget _buildTrailing(BuildContext context, int index) {
     final song = playlistController.playlist[index];
@@ -59,7 +61,7 @@ class _ManagePageState extends State<ManagePage> {
       ),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(CTheme.borderRadius),
-        child: Image.asset(song.albumArtImagePath),
+        child: playerController.genAlbumArtImage(song.albumArtImagePath),
       ),
       trailing: _buildTrailing(context, index),
     );

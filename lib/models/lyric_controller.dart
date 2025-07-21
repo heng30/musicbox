@@ -138,43 +138,24 @@ class SongLyricController extends GetxController {
   }
 
   Future<String> getDownloadsDirectoryWithoutCreate() async {
-    if (Platform.isAndroid) {
-      final pname = (await PackageInfo.fromPlatform()).packageName;
-      return "/storage/emulated/0/$pname/lyric";
-    } else {
-      final tmpDir =
-          await getDownloadsDirectory() ?? await getApplicationCacheDirectory();
-      return "${tmpDir.path}/lyric";
-    }
+    final pname = (await PackageInfo.fromPlatform()).packageName;
+    return "/storage/emulated/0/$pname/lyric";
   }
 
   Future<void> createDownloadDir() async {
     try {
-      if (Platform.isAndroid) {
-        if (!(await getPermission())) {
-          return;
-        }
-
-        final pname = (await PackageInfo.fromPlatform()).packageName;
-        final d = Directory("/storage/emulated/0/$pname/lyric");
-
-        if (!(await d.exists())) {
-          await d.create(recursive: true);
-        }
-
-        downloadDir = d.path;
-      } else {
-        final tmpDir = await getDownloadsDirectory() ??
-            await getApplicationCacheDirectory();
-
-        final d = Directory("${tmpDir.path}/lyric");
-
-        if (!(await d.exists())) {
-          await d.create(recursive: true);
-        }
-
-        downloadDir = d.path;
+      if (!(await getPermission())) {
+        return;
       }
+
+      final pname = (await PackageInfo.fromPlatform()).packageName;
+      final d = Directory("/storage/emulated/0/$pname/lyric");
+
+      if (!(await d.exists())) {
+        await d.create(recursive: true);
+      }
+
+      downloadDir = d.path;
     } catch (e) {
       if (Get.find<SettingController>().isFirstLaunch) {
         log.d("Create lyric download directory failed. $e");

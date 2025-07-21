@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../theme/theme.dart';
 import '../widgets/searchbar.dart';
 import '../widgets/nodata.dart';
+import '../models/player_controller.dart';
 import '../models/playlist_controller.dart';
 import '../models/player_tile_controller.dart';
 import '../models/song.dart';
@@ -18,6 +19,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controllerSearch = TextEditingController();
   final FocusNode _focusNodeSearch = FocusNode();
+  final playerController = Get.find<PlayerController>();
   final playlistController = Get.find<PlaylistController>();
   final playerTileController = Get.find<PlayerTileController>();
 
@@ -85,7 +87,8 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(CTheme.borderRadius),
-                      child: Image.asset(song.albumArtImagePath),
+                      child: playerController
+                          .genAlbumArtImage(song.albumArtImagePath),
                     ),
                     onTap: () {
                       var realIndex =

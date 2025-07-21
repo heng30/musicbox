@@ -28,6 +28,8 @@ abstract class Client implements RustOpaqueInterface {
   static Future<Client> newInstance() =>
       RustLib.instance.api.crateApiBilibiliBilibiliClientNew();
 
+  Future<Uint8List> requestPic({required String url});
+
   Future<VideoUrl> videoUrl(
       {required String bvid,
       required PlatformInt64 cid,

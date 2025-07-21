@@ -16,31 +16,18 @@ class BackupREcoverController extends GetxController {
 
   Future<bool> createBackupDir() async {
     try {
-      if (Platform.isAndroid) {
-        if (!(await getPermission())) {
-          return false;
-        }
-
-        final pname = (await PackageInfo.fromPlatform()).packageName;
-        final d = Directory("/storage/emulated/0/$pname/backup");
-
-        if (!(await d.exists())) {
-          await d.create(recursive: true);
-        }
-
-        backupDir = d.path;
-      } else {
-        final tmpDir = await getDownloadsDirectory() ??
-            await getApplicationCacheDirectory();
-
-        final d = Directory("${tmpDir.path}/backup");
-
-        if (!(await d.exists())) {
-          await d.create(recursive: true);
-        }
-
-        backupDir = d.path;
+      if (!(await getPermission())) {
+        return false;
       }
+
+      final pname = (await PackageInfo.fromPlatform()).packageName;
+      final d = Directory("/storage/emulated/0/$pname/backup");
+
+      if (!(await d.exists())) {
+        await d.create(recursive: true);
+      }
+
+      backupDir = d.path;
       return true;
     } catch (e) {
       Get.snackbar("创建备份目录失败".tr, e.toString(),

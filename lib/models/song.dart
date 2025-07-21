@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter/material.dart';
 import 'package:mmoo_lyric/lyric.dart';
 import 'package:mmoo_lyric/lyric_util.dart';
 
@@ -136,7 +137,7 @@ class Song {
     return Song(
       songName: info.raw.title,
       artistName: info.raw.author,
-      albumArtImagePath: Albums.random(),
+      albumArtImagePath: await findController.downloadPicPath(info),
       audioPath: await findController.downloadPath(info),
     );
   }
@@ -145,7 +146,7 @@ class Song {
       : uuid = json['uuid'],
         songName = json['songName'],
         artistName = json['artistName'] ?? "",
-        albumArtImagePath = Albums.random(),
+        albumArtImagePath = json['albumArtImagePath'] ?? Albums.random(),
         audioPath = json['audioPath'],
         audioLocation = audioLocationFromStr(json['audioLocation']),
         lyricTimeOffset = (json['lyricTimeOffset'] ?? 0) as int,
@@ -156,6 +157,7 @@ class Song {
       'uuid': uuid,
       'songName': songName,
       'artistName': artistName,
+      'albumArtImagePath': albumArtImagePath,
       'audioPath': audioPath,
       'audioLocation': audioLocation.toString(),
       'isFavorite': isFavorite,

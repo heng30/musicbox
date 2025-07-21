@@ -17,6 +17,7 @@ class InfoData {
   final BigInt viewCount;
   final BigInt lengthSeconds;
   final PlatformInt64 bvCid;
+  final String picUrl;
 
   const InfoData({
     required this.title,
@@ -26,6 +27,7 @@ class InfoData {
     required this.viewCount,
     required this.lengthSeconds,
     required this.bvCid,
+    required this.picUrl,
   });
 
   static Future<InfoData> default_() =>
@@ -39,7 +41,8 @@ class InfoData {
       shortDescription.hashCode ^
       viewCount.hashCode ^
       lengthSeconds.hashCode ^
-      bvCid.hashCode;
+      bvCid.hashCode ^
+      picUrl.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -52,7 +55,8 @@ class InfoData {
           shortDescription == other.shortDescription &&
           viewCount == other.viewCount &&
           lengthSeconds == other.lengthSeconds &&
-          bvCid == other.bvCid;
+          bvCid == other.bvCid &&
+          picUrl == other.picUrl;
 }
 
 class MsgItem {
