@@ -275,9 +275,7 @@ class PlaylistController extends GetxController {
         var albumArtImagePath =
             (await findController.getDownloadsPicDirectoryWithoutCreate()) +
                 "/" +
-                trackName +
-                "_" +
-                artistName +
+                basenameWithoutExtension(item.name) +
                 ".jpg";
 
         Logger().d("${albumArtImagePath}");

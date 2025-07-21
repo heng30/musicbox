@@ -1,5 +1,9 @@
 name: GitHub Actions
 on: [push]
+
+permissions:
+  contents: write
+
 jobs:
   action-run:
     runs-on: ubuntu-latest

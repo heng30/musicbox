@@ -11,6 +11,8 @@ use tokio::{
     sync::mpsc::{self, error::TrySendError},
 };
 
+const DEFAULT_ALBUM_ART_IMAGE: &[u8] = include_bytes!("../../../assets/images/album_none.png");
+
 pub mod bilibili {
     use super::*;
     use anyhow::Result;
@@ -285,7 +287,11 @@ pub async fn bv_video_info(bvid: String) -> Result<InfoData> {
 // 下载封面图
 pub async fn bv_download_pic(url: String, download_path: String) -> Result<()> {
     let client = bilibili::Client::new()?;
-    let data = client.request_pic(url).await?;
+    let data = client
+        .request_pic(url)
+        .await
+        .unwrap_or(Vec::from(DEFAULT_ALBUM_ART_IMAGE));
+
     let mut file = fs::File::create(Path::new(&download_path)).await?;
     file.write_all(&data).await?;
     Ok(())

@@ -106,14 +106,7 @@ class PlayerController extends GetxController {
         fit: BoxFit.cover,
       );
     } else {
-      try {
-        return Image.file(File(path), fit: BoxFit.cover);
-      } catch (_) {
-        return Image.asset(
-          Albums.random(),
-          fit: BoxFit.cover,
-        );
-      }
+      return Image.file(File(path), fit: BoxFit.cover);
     }
   }
 
